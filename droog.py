@@ -4,15 +4,28 @@ class Map:
 	def __init__(self, height, width):
 		self.width = width
 		self.height = height
+		self.tiles = []
+		for y in range(height):
+			self.tiles.append(list())
+			for x in range(width):
+				self.tiles[y].append(' ')
+				if y == 0 or y == height - 2:
+					self.tiles[y][x] = '#'
+				elif x == 0 or x == width - 2:
+					self.tiles[y][x] = '#'
+		
 	def isEmpty(self, y, x):
-		if y == 0 or y == height:
-			return False
-		if x == 0 or x == width:
-			return False
-		return True
+		if (self.tiles[y][x] == ' '):
+			return True
+		return False
 
 class Hero:
 	pass
+	
+def drawMap(aMap, aWindow):
+	for y in range(aMap.height - 1):
+		for x in range(aMap.width - 1):
+			aWindow.addch(y, x, ord(aMap.tiles[y][x]))
 
 hero = Hero()
 
@@ -27,6 +40,9 @@ hero.x = width / 2
 hero.y = height / 2
 
 theMap = Map(height, width)
+
+# draw the map
+drawMap(theMap, mainw)
 
 # draw the hero
 mainw.addch(hero.y, hero.x, ord("@"))
@@ -67,4 +83,6 @@ while command != ord('q'):
 	mainw.addch(hero.y, hero.x, ord("@"))
 	mainw.move(hero.y, hero.x)
 
+curses.nocbreak()
+curses.echo()
 curses.endwin()
