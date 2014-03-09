@@ -17,10 +17,12 @@ class Renderer:
         self.main_window = curses.initscr()
         curses.noecho()
         curses.cbreak()
+        self.main_window.scrollok(1)
+
         
-        self.map_window = curses.newwin(MAP_ROWS, MAP_COLUMNS, 0, 0)
-        self.hero_x = MAP_COLUMNS/2 + 1
-        self.hero_y = MAP_ROWS/2 + 1
+        self.map_window = curses.newwin(MAP_ROWS, MAP_COLUMNS+1, 0, 0)
+        self.hero_x = MAP_COLUMNS/2
+        self.hero_y = MAP_ROWS/2
         
         self.main_window.refresh()
 
@@ -32,9 +34,11 @@ class Renderer:
     
     def map(self, map_):
         """Draws a Map onto the renderer's map window."""
-        for y in range(map_.height - 1):
-            for x in range(map_.width - 1):
+        for y in range(map_.height):
+            for x in range(map_.width):
                 self.map_window.addch(y, x, ord(map_.tiles[y][x]))
+        self.map_window.addch(self.hero_y, self.hero_x, ord('@'))
+        self.map_window.move(self.hero_y, self.hero_x)
         self.map_window.refresh()
                 
     def input(self):

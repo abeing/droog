@@ -7,9 +7,9 @@ class Map:
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(' ')
-                if y == 0 or y == height - 2:
+                if y == 0 or y == height - 1:
                     self.tiles[y][x] = '#'
-                elif x == 0 or x == width - 2:
+                elif x == 0 or x == width - 1:
                     self.tiles[y][x] = '#'
 
     def isEmpty(self, y, x):
