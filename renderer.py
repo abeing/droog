@@ -21,6 +21,8 @@ class Renderer:
         self.map_window = curses.newwin(MAP_ROWS, MAP_COLUMNS, 0, 0)
         self.hero_x = MAP_COLUMNS/2 + 1
         self.hero_y = MAP_ROWS/2 + 1
+        
+        self.main_window.refresh()
 
     def shutdown(self):
         """Ends curses and restores the terminal state."""
@@ -32,8 +34,8 @@ class Renderer:
         """Draws a Map onto the renderer's map window."""
         for y in range(map_.height - 1):
             for x in range(map_.width - 1):
-                self.main_window.addch(y, x, ord(map_.tiles[y][x]))
-        self.main_window.refresh()
+                self.map_window.addch(y, x, ord(map_.tiles[y][x]))
+        self.map_window.refresh()
                 
     def input(self):
         return self.main_window.getch()
