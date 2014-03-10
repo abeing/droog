@@ -1,20 +1,20 @@
-import curses
-import map
-import renderer
+import ui as _ui
+import world as _world
+
 
 class Hero:
     pass
 
-render = renderer.Renderer()
-theMap = map.Map(renderer.MAP_ROWS, renderer.MAP_COLUMNS)
+ui = _ui.UI()
+world = _world.World(_ui.AREA_ROWS, _ui.AREA_COLUMNS)
 
 # draw the map
-render.map(theMap)
+ui.draw_area(world)
 
 command = ' '
 
 while command != ord('q'):
-    command = render.input()
+    command = ui.input()
 #    old_hero_x, old_hero_y = hero.x, hero.y
 #    if command == ord('h'):
 #        hero.x -= 1
@@ -36,14 +36,14 @@ while command != ord('q'):
 #    elif command == ord('n'):
 #        hero.x += 1
 #        hero.y += 1
-    
+
 #    if not theMap.isEmpty(hero.y, hero.x):
 #        hero.x = old_hero_x
 #        hero.y = old_hero_y
-        
+
     # draw the hero
 #    map_window.addch(old_hero_y, old_hero_x, ord(' '))
 #    map_window.addch(hero.y, hero.x, ord("@"))
 #    map_window.move(hero.y, hero.x)
 
-render.shutdown()
+ui.shutdown()

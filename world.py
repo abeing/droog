@@ -1,5 +1,9 @@
-class Map:
+class World:
     def __init__(self, height, width):
+        """Creates a World of the specified width and height.
+
+        Currently the world is a large box.
+        """
         self.width = width
         self.height = height
         self.tiles = []
@@ -13,6 +17,7 @@ class Map:
                     self.tiles[y][x] = '#'
 
     def isEmpty(self, y, x):
+        """Returns True if the location is empty."""
         if (self.tiles[y][x] == ' '):
             return True
         return False
