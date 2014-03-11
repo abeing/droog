@@ -1,4 +1,8 @@
 import random
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class World:
@@ -43,16 +47,24 @@ class World:
         for x in range(self.width):
             self.tiles[equator][x] = '#'
         roads.append(((equator, 0), (equator, self.width)))
+        log.info('Equator road from %r to %r', (equator, 0),
+                 (equator, self.width))
 
         meridian = int(random.triangular(low=0, high=self.width,
                                          mode=self.width / 2))
         for y in range(self.height):
             self.tiles[y][meridian] = '#'
         roads.append(((0, meridian), (self.height, meridian)))
+        log.info('Meridian road from %r to %r', (0, meridian),
+                 (self.height, meridian))
 
         for i in range(10):  # make ten additional roads for now
             ((begin_y, begin_x), (end_y, end_x)) = random.choice(roads)
             if (begin_y == end_y):  # We chose a horizontal road
                 # bisect = random.range(begin_x, end_x)
                 # direction = random.range(0, 2)
-                pass  # TODO: continue here
+                log.info('Creating road %d horizontally', i)
+            elif (begin_x == end_x):  # We chose a vertical road
+                log.info('Creating road %d vertically', i)
+            else:
+                log.error('Road is neither horizontal nor vertical')

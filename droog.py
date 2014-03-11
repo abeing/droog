@@ -1,5 +1,9 @@
 import ui as _ui
 import world as _world
+import logging
+
+
+logging.basicConfig(filename="droog.log", level=logging.INFO)
 
 
 class Hero:
