@@ -23,9 +23,25 @@ class World:
 
     def isEmpty(self, y, x):
         """Returns True if the location is empty."""
-        if (self.tiles[y][x] == ' '):
-            return True
-        return False
+        return self.tiles[y][x] == ' '
+
+    def _add_road(self, start_y, start_x, delta_y, delta_x, beta):
+        """Adds a road to the map
+
+        Starting at (start_y, start_x) and heading in a direction specified by
+        delta_y and delta_x, draw a map until we reach the edge of the map.  If
+        we run into another road, continue with probability beta, otherwise
+        stop."""
+        keep_going = True
+        y = start_y
+        x = start_x
+        while 0 <= y < self.height and 0 <= x < self.width and keep_going:
+            self.tiles[y][x] = '#'
+            y += delta_y
+            x += delta_x
+            if 0 <= y < self.height and 0 <= x < self.width \
+                    and self.tiles[y][x] == '#':
+                keep_going = random.uniform(0, 1) < beta
 
     def _generate(self):
         """Generates a city map.
@@ -54,16 +70,14 @@ class World:
 
         equator = int(random.triangular(low=0, high=self.height,
                                         mode=self.height / 2))
-        for x in range(self.width):
-            self.tiles[equator][x] = '#'
+        self._add_road(equator, 0, 0, 1, 1.0)
         roads.append(((equator, 0), (equator, self.width - 1)))
         log.info('Equator road from %r to %r', (equator, 0),
                  (equator, self.width))
 
         meridian = int(random.triangular(low=0, high=self.width,
                                          mode=self.width / 2))
-        for y in range(self.height):
-            self.tiles[y][meridian] = '#'
+        self._add_road(0, meridian, 1, 0, 1.0)
         roads.append(((0, meridian), (self.height - 1, meridian)))
         log.info('Meridian road from %r to %r', (0, meridian),
                  (self.height, meridian))
@@ -75,49 +89,23 @@ class World:
             # case and west in the horizontal case. Zero is both directions in
             # either case.
             direction = random.randint(-1, 1)
-            if (begin_y == end_y):  # We chose a horizontal road, we will make
-                                    # a vertical road
+            if begin_y == end_y:  # We chose a horizontal road, we will make
+                                  # a vertical road
                 bisect = random.randint(begin_x, end_x)
-                log.info('Creating road %d horizontally from %r heading %d', i,
+                log.info('Creating road %d vertically from %r heading %d', i,
                          (begin_y, bisect), direction)
-                y = begin_y
-                x = bisect
-                if (direction > -1):  # Going south.
-                    keep_going = True
-                    while y < self.height and keep_going:
-                        self.tiles[y][x] = '#'
-                        y += 1
-                        if y < self.height and self.tiles[y][x] == '#':
-                            keep_going = random.uniform(0, 1) < beta
-                y = begin_y  # Reset y for the both-direction case.
-                if (direction < 1):  # Going north.
-                    keep_going = True
-                    while y >= 0 and keep_going:
-                        self.tiles[y][x] = '#'
-                        y -= 1
-                        if y >= 0 and self.tiles[y][x] == '#':
-                            keep_going = random.uniform(0, 1) < beta
-            elif (begin_x == end_x):  # We chose a vertical road, we will make
+                if direction > -1:  # Going south.
+                    self._add_road(begin_y, bisect, 1, 0, beta)
+                if direction < 1:  # Going north.
+                    self._add_road(begin_y, bisect, -1, 0, beta)
+            elif begin_x == end_x:  # We chose a vertical road, we will make
                                       # a horizontal road
                 bisect = random.randint(begin_y, end_y)
-                log.info('Creating road %d vertically from %r heading %d', i,
+                log.info('Creating road %d horizontally from %r heading %d', i,
                          (bisect, begin_x), direction)
-                y = bisect
-                x = begin_x
-                if (direction > -1):  # Going east.
-                    keep_going = True
-                    while x < self.width and keep_going:
-                        self.tiles[y][x] = '#'
-                        x += 1
-                        if x < self.width and self.tiles[y][x] == '#':
-                            keep_going = random.uniform(0, 1) < beta
-                x = begin_x
-                if (direction < 1):  # Going west.
-                    keep_going = True
-                    while x >= 0 and keep_going:
-                        self.tiles[y][x] = '#'
-                        x -= 1
-                        if x >= 0 and self.tiles[y][x] == '#':
-                            keep_going = random.uniform(0, 1) < beta
+                if direction > -1:  # Going east.
+                    self._add_road(bisect, begin_x, 0, 1, beta)
+                if direction < 1:  # Going west.
+                    self._add_road(bisect, begin_x, 0, -1, beta)
             else:
                 log.error('Road is neither horizontal nor vertical')
