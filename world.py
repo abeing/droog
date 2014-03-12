@@ -10,11 +10,12 @@ class World:
     def __init__(self, height, width):
         """Creates a World of the specified width and height.
 
-        Currently the world is a large box.
+        The world is a grid of streets with the hero in the center.
         """
         self.width = width
         self.height = height
         self.tiles = []
+        self.hero_location = (self.height / 2, self.width / 2)
         for y in range(height):
             self.tiles.append(list())
             for x in range(width):
@@ -24,6 +25,17 @@ class World:
     def isEmpty(self, y, x):
         """Returns True if the location is empty."""
         return self.tiles[y][x] == ' '
+
+    def valid_location(self, y, x):
+        return 0 <= y < self.height and 0 <= x < self.width
+
+    def glyph_at(self, y, x):
+        """Returns the world glyph at the specified location.  If the location
+        coordinates are out of bounds, returns a blank."""
+        if self.valid_location(y, x):
+            return self.tiles[y][x]
+        else:
+            return ' '
 
     def _add_road(self, start_y, start_x, delta_y, delta_x, beta):
         """Adds a road to the map
@@ -35,7 +47,7 @@ class World:
         keep_going = True
         y = start_y
         x = start_x
-        while 0 <= y < self.height and 0 <= x < self.width and keep_going:
+        while self.valid_location(y, x) and keep_going:
             self.tiles[y][x] = '#'
             y += delta_y
             x += delta_x
