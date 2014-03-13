@@ -32,6 +32,14 @@ class UI:
         # updates through child windows.
         self.main_window.refresh()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        curses.nocbreak()
+        curses.echo()
+        curses.endwin()
+
     def shutdown(self):
         """Ends curses and restores the terminal state."""
         curses.nocbreak()
