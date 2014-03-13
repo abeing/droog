@@ -17,6 +17,15 @@ def move_hero(delta_y, delta_x):
     if world.valid_location(new_hero_y, new_hero_x):
         world.hero_location = (new_hero_y, new_hero_x)
 
+movements = {'h': (0, -1),   # West
+             'l': (0, 1),    # East
+             'j': (1, 0),    # South
+             'k': (-1, 0),   # North
+             'y': (-1, -1),  # Northwest
+             'u': (-1, 1),   # Northeast
+             'b': (1, -1),   # Southwest
+             'n': (1, 1),    # Southeast
+             }
 with _ui.UI() as ui:
     world = _world.World(200, 200)
 
@@ -24,22 +33,9 @@ with _ui.UI() as ui:
     ui.draw_area(world)
 
     command = ' '
-    while command != ord('q'):
+    while command != 'q':
         ui.draw_area(world)
-        command = ui.input()
-        if command == ord('h'):
-            move_hero(0, -1)
-        elif command == ord('l'):
-            move_hero(0, 1)
-        elif command == ord('j'):
-            move_hero(1, 0)
-        elif command == ord('k'):
-            move_hero(-1, 0)
-        elif command == ord('y'):
-            move_hero(-1, -1)
-        elif command == ord('u'):
-            move_hero(-1, 1)
-        elif command == ord('b'):
-            move_hero(1, -1)
-        elif command == ord('n'):
-            move_hero(1, 1)
+        command = chr(ui.input())
+        if command in movements:
+            delta_y, delta_x = movements[command]
+            move_hero(delta_y, delta_x)
