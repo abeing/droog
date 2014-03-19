@@ -10,6 +10,9 @@ class Hero:
     pass
 
 
+world = _world.World(200, 200)
+
+
 def move_hero(delta_y, delta_x):
     (old_hero_y, old_hero_x) = world.hero_location
     new_hero_y = old_hero_y + delta_y
@@ -26,15 +29,14 @@ movements = {'h': (0, -1),   # West
              'b': (1, -1),   # Southwest
              'n': (1, 1),    # Southeast
              }
-with _ui.UI() as ui:
-    world = _world.World(200, 200)
 
-    # draw the map
-    ui.draw_area(world)
+
+with _ui.UI() as ui:
 
     command = ' '
     while command != 'q':
         ui.draw_area(world)
+        ui.draw_status("Test")
         command = chr(ui.input())
         if command in movements:
             delta_y, delta_x = movements[command]
