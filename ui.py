@@ -74,9 +74,12 @@ class UI:
                                 '@', curses.A_REVERSE)
         self.area_window.refresh()
 
-    def draw_status(self, status):
+    def draw_status(self, world):
         """Draws the status information."""
-        self.status_line.addstr(0, 0, "Status")
+        hero_y, hero_x = world.hero_location
+        coordinates = "({0}, {1})".format(hero_y, hero_x)
+        self.status_line.addstr(0, 0, coordinates)
+        self.status_line.clrtoeol()
         self.status_line.refresh()
 
     def refresh(self):
