@@ -7,8 +7,9 @@ log = logging.getLogger(__name__)
 
 
 class World:
-    def __init__(self, height, width):
-        """Creates a World of the specified width and height.
+    def __init__(self, height, width, road_count=22, beta=0.5):
+        """Creates a World of the specified width, height, number of roads and
+        probability of intersection continuations.
 
         The world is a grid of streets with the hero in the center.
         """
@@ -20,7 +21,7 @@ class World:
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(' ')
-        self._generate()
+        self._generate(road_count, beta)
 
     def isEmpty(self, y, x):
         """Returns True if the location is empty."""
@@ -55,7 +56,7 @@ class World:
                     and self.tiles[y][x] == '#':
                 keep_going = random.uniform(0, 1) < beta
 
-    def _generate(self):
+    def _generate(self, road_count=10, beta=0.5):
         """Generates a city map.
 
         We first draw a horizontal road somewhere near the equator of the map,
@@ -70,12 +71,6 @@ class World:
         draw a road in one, the other or both directions from it. We draw until
         we reach another road or the edge of the world. If we reach a road,
         we will continue with probability ß."""
-
-        # Number of roads beyond the equator and meridian to create.
-        road_count = 3
-
-        # Probability that new roads crossing existing roads continue.
-        beta = 0.5
 
         # We'll store the roads we create here.
         roads = []
@@ -121,3 +116,11 @@ class World:
                     self._add_road(bisect, begin_x, 0, -1, beta)
             else:
                 log.error('Road is neither horizontal nor vertical')
+        self._log()
+
+    def _log(self):
+        with open("world.dump", "w") as dump_file:
+            for y in range(self.height):
+                for x in range(self.width):
+                    dump_file.write(self.tiles[y][x])
+                dump_file.write("\n")
