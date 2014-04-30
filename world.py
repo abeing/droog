@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import random
 import logging
+import math
 
 
 log = logging.getLogger(__name__)
@@ -16,12 +17,14 @@ class World:
         self.width = width
         self.height = height
         self.tiles = []
-        self.hero_location = (self.height / 2, self.width / 2)
+
+        self.hero_location = self._position_hero()
         for y in range(height):
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(' ')
         self._generate(road_count, beta)
+        self._add_shield_generator()
 
     def isEmpty(self, y, x):
         """Returns True if the location is empty."""
@@ -37,6 +40,18 @@ class World:
             return self.tiles[y][x]
         else:
             return ' '
+
+    def _position_hero(self):
+        """Calculates the location for the hero.
+
+        The hero will start close to half way between the center and edge of
+        the map, using a normal distribution."""
+
+        rand_dist = random.normalvariate(self.width / 4, self.width / 8)
+        rand_dir = random.uniform(0, 359)
+        y = int(rand_dist * math.sin(rand_dir)) + self.height / 2
+        x = int(rand_dist * math.cos(rand_dir)) + self.width / 2
+        return (y, x)
 
     def _add_road(self, start_y, start_x, delta_y, delta_x, beta):
         """Adds a road to the map
@@ -124,3 +139,10 @@ class World:
                 for x in range(self.width):
                     dump_file.write(self.tiles[y][x])
                 dump_file.write("\n")
+
+    def _add_shield_generator(self):
+        """Places a shield generator in the center of the map."""
+
+        y = self.height / 2
+        x = self.width / 2
+        self.tiles[y][x] = "G"
