@@ -54,7 +54,7 @@ class World:
         The hero will start close to half way between the center and edge of
         the map, using a normal distribution."""
 
-        rand_dist = random.normalvariate(self.width / 2, self.width / 8)
+        rand_dist = random.triangular(0, self.width / 2 - 1)
         rand_dir = random.uniform(0, 359)
         y = int(rand_dist * math.sin(rand_dir)) + self.height / 2
         x = int(rand_dist * math.cos(rand_dir)) + self.width / 2
