@@ -18,7 +18,7 @@ def move_hero(delta_y, delta_x):
     (old_hero_y, old_hero_x) = world.hero_location
     new_hero_y = old_hero_y + delta_y
     new_hero_x = old_hero_x + delta_x
-    if world.valid_location(new_hero_y, new_hero_x):
+    if world.is_walkable(new_hero_y, new_hero_x):
         world.hero_location = (new_hero_y, new_hero_x)
         log.info('Moved hero from %r to %r', (old_hero_y, old_hero_x),
                  (new_hero_y, new_hero_x))

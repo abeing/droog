@@ -25,18 +25,25 @@ class World:
                 self.tiles[y].append(' ')
         self._generate(road_count, beta)
         self._add_shield_generator()
+        self._add_shield()
 
-    def isEmpty(self, y, x):
+    def is_empty(self, y, x):
         """Returns True if the location is empty."""
         return self.tiles[y][x] == ' '
 
-    def valid_location(self, y, x):
+    def is_walkable(self, y, x):
+        """Returns True if the location can be traversed by walking."""
+        if self.is_valid_location(y, x):
+            return self.tiles[y][x] == ' ' or self.tiles[y][x] == '#'
+        return False
+
+    def is_valid_location(self, y, x):
         return 0 <= y < self.height and 0 <= x < self.width
 
     def glyph_at(self, y, x):
         """Returns the world glyph at the specified location.  If the location
         coordinates are out of bounds, returns a blank."""
-        if self.valid_location(y, x):
+        if self.is_valid_location(y, x):
             return self.tiles[y][x]
         else:
             return ' '
@@ -63,7 +70,7 @@ class World:
         keep_going = True
         y = start_y
         x = start_x
-        while self.valid_location(y, x) and keep_going:
+        while self.is_valid_location(y, x) and keep_going:
             self.tiles[y][x] = '#'
             y += delta_y
             x += delta_x
@@ -146,3 +153,16 @@ class World:
         y = self.height / 2
         x = self.width / 2
         self.tiles[y][x] = "G"
+
+    def _add_shield(self):
+        """Creates the shield border around the navigable map."""
+
+        shield_character = '~'
+
+        for y in range(0, self.height):
+            self.tiles[y][0] = shield_character
+            self.tiles[y][self.width - 1] = shield_character
+
+        for x in range(self.width):
+            self.tiles[0][x] = shield_character
+            self.tiles[self.height - 1][x] = shield_character
