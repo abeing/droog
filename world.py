@@ -52,7 +52,7 @@ class World:
         """Calculates the location for the hero.
 
         The hero will start close to half way between the center and edge of
-        the map, using a normal distribution."""
+        the map, using a triangular distribution."""
 
         rand_dist = random.triangular(0, self.width / 2 - 1)
         rand_dir = random.uniform(0, 359)
