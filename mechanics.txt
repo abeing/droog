@@ -1,0 +1,18 @@
+Creature Statistics
+===================
+
+Each creature has three base statistics: Strength, Dexterity and Constitution.
+
+
+Strength
+  - Melee chance to hit
+  - Melee damage
+  - Encumbrance limit
+
+Dexterity
+  - Ranged chance to hit
+  - Melee dodge
+
+Constitution
+  - Resistance to wounds
+  - Wounds to die
