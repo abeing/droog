@@ -107,4 +107,57 @@ Melee Attacks
   - Melee stat is the higher of strength or dexterity
 - Damage: 1d6 + Strength + Weapon Damage - Damage Reduction vs Con * 2
   - If exceeds 2 * Con then target takes a wound
-  - If exceeds 4 * Con then target die∏s
+  - If exceeds 4 * Con then target dies
+
+Time System
+============
+
+**Action Points** measure how much a creature may do ever time its turn comes
+up. All units have a AP amount to spend per turn. The number of AP a unit has
+is determined by adding modifiers based on their *Dexterity* and *Size* to 2.
+
+| Size   | Dexterity | AP |
+|--------|-----------|----|
+| Large  | Low       | +1 |
+| Medium | Medium    | +2 |
+| Small  | High      | +3 |
+
+Some examples:
+- a large slow COP has 2 + 1 (Dexterity) + 1 (Size) = 4 AP
+- a medium creature has 2 + 2 (Dexterity) + 2 (Size) = 6 AP
+- a small, fast zombie dog has 2 + 3 (Dexterity) + 3 (Size) = 8 AP
+
+Actions
+-------
+
+- Melee attack : 2 AP
+- Ranged attack : 2 AP
+- Aimed ranged attacks : 3 or 4 AP (undecided)
+- Reload : ? AP
+- Walk one square orthogonally : 1 AP
+- Walk one square diagonally : 1.5 AP (decimal part hidden from the player)
+- Walk one square orhtogonally through rough terrain : 2 AP
+- Walk one square diagonally through rought terrain : 3 AP
+- Activate an item : ? AP
+
+Time Limit
+----------
+
+If 1 AP is 1 s then 7 hours is 60 s * 60 min/hr * 7 hr/game = 25,200 AP/game.
+
+Is that too many? Let's look at Nethack:
+- 40k-80k turns per game is reasonable
+- < 30k to ascend is *fast*
+- < 20k to ascend is *very fast*
+- < 15k to ascend is attainable only by a few players
+- 2,135 is the world record ascension
+- 1.8M is the longest recorded game
+
+In one day on nethack.alt.org:
+- average failed game took 3,267.36 turns
+- median failed game took 1,846 turns
+- average ascension took 67,496 turns
+- median ascension took 67,496 turns
+
+At the moment a time limit of 25,200 AP seems reasonable at less then half a
+nethack win.
