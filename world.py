@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 class World:
-    def __init__(self, height, width, road_count=22, beta=0.5):
+    def __init__(self, height, width, road_count=0, beta=0.5):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
 
@@ -18,6 +18,12 @@ class World:
         self.height = height
         self.tiles = []
 
+        if road_count == 0:
+            if height > width:
+                road_count = height / 10
+            else:
+                road_count = width / 10
+            
         self.hero_location = self._position_hero()
         for y in range(height):
             self.tiles.append(list())

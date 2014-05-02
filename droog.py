@@ -11,7 +11,7 @@ class Hero:
     pass
 
 
-world = _world.World(200, 200)
+world = _world.World(800, 800)
 
 
 def move_hero(delta_y, delta_x):
