@@ -29,19 +29,19 @@ class World:
         for y in range(height):
             self.tiles.append(list())
             for x in range(width):
-                self.tiles[y].append(tile.makeEmpty())
+                self.tiles[y].append(tile.make_empty())
         self._generate(road_count, beta)
         self._add_shield_generator()
         self._add_shield()
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
-        return self.tiles[y][x].walkable()
+        return self.tiles[y][x].walkable
 
     def is_walkable(self, y, x):
         """Returns True if the location can be traversed by walking."""
         if self.is_valid_location(y, x):
-            return self.tiles[y][x].walkable()
+            return self.tiles[y][x].walkable
         return False
 
     def is_valid_location(self, y, x):
@@ -51,7 +51,7 @@ class World:
         """Returns the world glyph at the specified location.  If the location
         coordinates are out of bounds, returns a shield character."""
         if self.is_valid_location(y, x):
-            return self.tiles[y][x].glyph()
+            return self.tiles[y][x].glyph
         else:
             return '~'
 
@@ -78,11 +78,11 @@ class World:
         y = start_y
         x = start_x
         while self.is_valid_location(y, x) and keep_going:
-            self.tiles[y][x] = tile.makeStreet()
+            self.tiles[y][x] = tile.make_street()
             y += delta_y
             x += delta_x
             if 0 <= y < self.height and 0 <= x < self.width \
-                    and self.tiles[y][x].glyph() == '#':
+                    and self.tiles[y][x].glyph == '#':
                 keep_going = random.uniform(0, 1) < beta
 
     def _generate(self, road_count=10, beta=0.5):
@@ -151,7 +151,7 @@ class World:
         with open("world.dump", "w") as dump_file:
             for y in range(self.height):
                 for x in range(self.width):
-                    dump_file.write(self.tiles[y][x].glyph())
+                    dump_file.write(self.tiles[y][x].glyph)
                 dump_file.write("\n")
 
     def _add_shield_generator(self):
@@ -159,7 +159,7 @@ class World:
 
         y = self.height / 2
         x = self.width / 2
-        self.tiles[y][x] = tile.makeShieldGenerator()
+        self.tiles[y][x] = tile.make_shield_generator()
 
     def _add_shield(self):
         """Creates the shield border around the navigable map."""
@@ -167,9 +167,9 @@ class World:
         shield_character = '~'
 
         for y in range(0, self.height):
-            self.tiles[y][0] = tile.makeShield()
-            self.tiles[y][self.width - 1] = tile.makeShield()
+            self.tiles[y][0] = tile.make_shield()
+            self.tiles[y][self.width - 1] = tile.make_shield()
 
         for x in range(self.width):
-            self.tiles[0][x] = tile.makeShield()
-            self.tiles[self.height - 1][x] = tile.makeShield()
+            self.tiles[0][x] = tile.make_shield()
+            self.tiles[self.height - 1][x] = tile.make_shield()

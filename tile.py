@@ -1,23 +1,17 @@
 class Tile:
 	def __init__(self, glyph, description, walkable):
-		self._glyph = glyph
-		self._description = description
-		self._walkable = walkable
+		self.glyph = glyph
+		self.description = description
+		self.walkable = walkable
 
-	def walkable(self):
-		return self._walkable
-
-	def glyph(self):
-		return self._glyph
-
-def makeStreet():
+def make_street():
 	return Tile('#', "Street", True)
 
-def makeEmpty():
+def make_empty():
 	return Tile(' ', "Open Space", True)
 
-def makeShield():
+def make_shield():
 	return Tile('~', "Shield", False)
 
-def makeShieldGenerator():
+def make_shield_generator():
 	return Tile('G', "Shield Generator", False)
