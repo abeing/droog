@@ -66,6 +66,10 @@ class UI:
             for x in range(left, right):
                 self.area_window.addstr(y - top, x - left,
                                         world.glyph_at(y, x))
+                creature = world.creature_at(y, x)
+                if creature is not None:
+                    self.area_window.addstr(y - top, x - left,
+                                            creature.glyph)
 
         # The hero is drawn in the center last so we can always see him or
         # her. The curses is then placed on top of the hero for visual

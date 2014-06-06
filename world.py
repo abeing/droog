@@ -3,6 +3,7 @@ import random
 import logging
 import math
 import tile
+import creature
 
 
 log = logging.getLogger(__name__)
@@ -35,6 +36,7 @@ class World:
         self._generate(road_count, beta)
         self._add_shield_generator()
         self._add_shield()
+        self._add_zombie()
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -43,7 +45,8 @@ class World:
     def is_walkable(self, y, x):
         """Returns True if the location can be traversed by walking."""
         if self.is_valid_location(y, x):
-            return self.tiles[y][x].walkable
+            return self.tiles[y][x].walkable \
+                and self.tiles[y][x].creature is None
         return False
 
     def is_valid_location(self, y, x):
@@ -56,6 +59,15 @@ class World:
             return self.tiles[y][x].glyph
         else:
             return '~'
+
+    def creature_at(self, y, x):
+        """Returns the creature at the specified location or None if there is
+        no creature at that location or if the location coordinates are out of
+        bounds."""
+        if self.is_valid_location(y, x):
+            return self.tiles[y][x].creature
+        else:
+            return None
 
     def _position_hero(self):
         """Calculates the location for the hero.
@@ -173,3 +185,19 @@ class World:
         for x in range(self.width):
             self.tiles[0][x] = tile.make_shield()
             self.tiles[self.height - 1][x] = tile.make_shield()
+
+    def _add_zombie(self):
+        """Creates and adds a zombie monster to the map at a reasonable, random
+        location."""
+
+        attempts = 5  # We will attempt to place a zombie this number of times.
+                      # If they all fail we stop attempting to place a zombie.
+
+        y = int(random.uniform(0, self.height))
+        x = int(random.uniform(0, self.width))
+
+        while attempts > 0:
+            if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
+                self.tiles[y][x].creature = creature.make_zombie()
+                log.info('Zombie placed at (%r, %r)', y, x)
+            attempts -= 1
