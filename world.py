@@ -9,6 +9,8 @@ log = logging.getLogger(__name__)
 
 
 class World:
+    """Representation of the game world."""
+
     def __init__(self, height, width, road_count=0, beta=0.5):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
@@ -24,7 +26,7 @@ class World:
                 road_count = height / 10
             else:
                 road_count = width / 10
-            
+
         self.hero_location = self._position_hero()
         for y in range(height):
             self.tiles.append(list())
@@ -163,8 +165,6 @@ class World:
 
     def _add_shield(self):
         """Creates the shield border around the navigable map."""
-
-        shield_character = '~'
 
         for y in range(0, self.height):
             self.tiles[y][0] = tile.make_shield()
