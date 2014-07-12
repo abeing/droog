@@ -2,6 +2,8 @@ import curses
 
 AREA_ROWS = 23
 AREA_COLUMNS = 47
+HERO_ROWS = 10
+HERO_COLUMNS = 30
 STATUS_ROWS = 1
 STATUS_COLUMNS = 47
 
@@ -11,10 +13,11 @@ class UI:
         """Initializes the rendering environment.
 
         Currently this initializes curses and creates the following curses
-        windows:
+        windows and borders around them:
 
         -- area_window : 23 rows, 47 columns displays the map with the hero in
                          the center
+        -- hero_window : 10 rows, 30 columns displays the hero information
         """
 
         self.main_window = curses.initscr()
@@ -27,6 +30,19 @@ class UI:
         # bottom-right-most character.
         self.area_window = self.main_window.subwin(AREA_ROWS, AREA_COLUMNS + 1,
                                                    0, 0)
+
+        # Draw the border between the area window and the right windows.
+        for y in range(0, AREA_ROWS):
+            self.main_window.addch(y, AREA_COLUMNS, '|')
+
+        self.hero_window = self.main_window.subwin(HERO_ROWS, HERO_COLUMNS + 1,
+                                                   0, AREA_COLUMNS + 2)
+
+        # Draw the border between the hero window and the message window,
+        self.main_window.addch(HERO_ROWS + 1, AREA_COLUMNS, '+')
+        for x in range(AREA_COLUMNS + 1, 79):
+            self.main_window.addch(HERO_ROWS + 1, x, '-')
+
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    STATUS_COLUMNS + 1,
                                                    AREA_ROWS, 0)
