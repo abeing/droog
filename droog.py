@@ -1,17 +1,14 @@
 import ui as _ui
 import world as _world
 import logging
-
+import hero as _hero
 
 logging.basicConfig(filename="droog.log", level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-class Hero:
-    pass
-
-
 world = _world.World(200, 200)
+hero = _hero.Hero()
 
 
 def move_hero(delta_y, delta_x):
@@ -40,6 +37,7 @@ with _ui.UI() as ui:
     while command != 'q':
         ui.draw_area(world)
         ui.draw_status(world)
+        ui.draw_hero(hero)
         command = chr(ui.input())
         if command in movements:
             delta_y, delta_x = movements[command]

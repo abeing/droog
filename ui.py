@@ -102,6 +102,12 @@ class UI:
         self.status_line.clrtoeol()
         self.status_line.refresh()
 
+    def draw_hero(self, hero):
+        """Draws the hero information window. Does not draw the actual @
+        symbol on the map; that is handled by draw_area."""
+        self.hero_window.addstr(0, 0, hero.name)
+        self.hero_window.refresh()
+
     def refresh(self):
         pass
 
