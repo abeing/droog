@@ -26,3 +26,35 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
     [ ] Move the creature, map features, etc. definitions to data files. Forget about scripting for
         now. If something cannot be moved -- just leave it for now.
 [ ] Step 9 - Items
+    [ ] Add ites. For start, just objects you can pick up -- no properties.
+    [ ] Gradually give them properties, kinds, stats, etc.
+    [ ] Implement inventory
+    [ ] Implement picking up and dropping.
+    [ ] Equipping and using (no effects yet)
+    [ ] Also add stacking
+    [ ] Containers (if you want them), etc?
+[ ] Step 10 - Magic
+    [ ] Add item effects.
+    [ ] Add special monster attacks
+    [ ] Add spells (abilities)
+    [ ] Add items and monsters to test them.
+[ ] Step 11 - Simple game
+    [ ] Try to make a simple, hard-coded game.
+    [ ] Play it and give it to your friends.
+    [ ] Test the mechanics you've implemented so far.
+    [ ] See if the game is fun.
+    [ ] Change everything you need to change.
+    [ ] Don't forget to test a lot.
+    [ ] Always ask someone to test the game's 'fun factor', or test it yourself after a while;
+        it's hard to notice some things right away.
+[ ] Step 12 - Levels
+    [ ] Write your level generators.
+    [ ] Add more monsters and items, with their effects, as needed.
+[ ] Step 14 - Citizens
+    [ ] Add NPCs, shopkeepers, and simple quests if you need them.
+[ ] Step 15 - Free at last
+    [ ] Start adding and testing all the 'unique' features you thought were so cool months (years?) ago,
+        when you started the whole thing.
+    [ ] Revise your opinions of them and see if they fit the game.
+    [ ] Write your pet random plot generator, factions system, infinite wilderness generator,
+        neural network AI, or other unique feature, since you can now test it in a working game.
