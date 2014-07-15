@@ -38,6 +38,7 @@ with _ui.UI() as ui:
         ui.draw_area(world)
         ui.draw_status(world)
         ui.draw_hero(hero)
+        ui.draw_messages()
         command = chr(ui.input())
         if command in movements:
             delta_y, delta_x = movements[command]

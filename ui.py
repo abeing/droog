@@ -4,6 +4,8 @@ AREA_ROWS = 23
 AREA_COLUMNS = 47
 HERO_ROWS = 10
 HERO_COLUMNS = 30
+MESSAGE_ROWS = 10
+MESSAGE_COUMNS = 30
 STATUS_ROWS = 1
 STATUS_COLUMNS = 47
 
@@ -18,6 +20,7 @@ class UI:
         -- area_window : 23 rows, 47 columns displays the map with the hero in
                          the center
         -- hero_window : 10 rows, 30 columns displays the hero information
+        -- message_window : 10 rows, 30 columns display messages
         """
 
         self.main_window = curses.initscr()
@@ -36,12 +39,17 @@ class UI:
             self.main_window.addch(y, AREA_COLUMNS, '|')
 
         self.hero_window = self.main_window.subwin(HERO_ROWS, HERO_COLUMNS + 1,
-                                                   0, AREA_COLUMNS + 2)
+                                                   0, AREA_COLUMNS + 1)
 
         # Draw the border between the hero window and the message window,
         self.main_window.addch(HERO_ROWS + 1, AREA_COLUMNS, '+')
         for x in range(AREA_COLUMNS + 1, 79):
             self.main_window.addch(HERO_ROWS + 1, x, '-')
+
+        self.message_window = self.main_window.subwin(MESSAGE_ROWS,
+                                                      MESSAGE_COUMNS,
+                                                      2 + HERO_ROWS,
+                                                      1 + AREA_COLUMNS)
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    STATUS_COLUMNS + 1,
@@ -107,6 +115,11 @@ class UI:
         symbol on the map; that is handled by draw_area."""
         self.hero_window.addstr(0, 0, hero.name)
         self.hero_window.refresh()
+
+    def draw_messages(self):
+        """Draws the most recent messages in the message log."""
+        self.message_window.addstr(0, 0, "This is the message window.")
+        self.message_window.refresh()
 
     def refresh(self):
         pass
