@@ -1,13 +1,15 @@
 import curses
+import logging
 
-AREA_ROWS = 23
-AREA_COLUMNS = 47
-HERO_ROWS = 10
-HERO_COLUMNS = 30
-MESSAGE_ROWS = 10
-MESSAGE_COUMNS = 30
+AREA_ROWS = 20
+AREA_COLUMNS = 60
+HERO_ROWS = AREA_ROWS
+HERO_COLUMNS = 18
+MESSAGE_ROWS = 3
 STATUS_ROWS = 1
 STATUS_COLUMNS = 47
+
+log = logging.getLogger(__name__)
 
 
 class UI:
@@ -20,7 +22,7 @@ class UI:
         -- area_window : 23 rows, 47 columns displays the map with the hero in
                          the center
         -- hero_window : 10 rows, 30 columns displays the hero information
-        -- message_window : 10 rows, 30 columns display messages
+        -- message_window : 3 rows, full width, displays messages
         """
 
         self.main_window = curses.initscr()
@@ -28,32 +30,37 @@ class UI:
         curses.cbreak()
         curses.curs_set(0)
 
+        # Our screen size
+        height, width = self.main_window.getmaxyx()
+        log.info('Main window has %r width and %r height', width, height)
+
         # We make the area_window actually be one column larger than necessary
         # because curses will throw an error if we write to the
         # bottom-right-most character.
         self.area_window = self.main_window.subwin(AREA_ROWS, AREA_COLUMNS + 1,
-                                                   0, 0)
+                                                   4, 0)
 
-        # Draw the border between the area window and the right windows.
-        for y in range(0, AREA_ROWS):
+        # Draw the border between the area window and the hero windows.
+        for y in range(MESSAGE_ROWS, AREA_ROWS + MESSAGE_ROWS):
             self.main_window.addch(y, AREA_COLUMNS, '|')
 
         self.hero_window = self.main_window.subwin(HERO_ROWS, HERO_COLUMNS + 1,
-                                                   0, AREA_COLUMNS + 1)
+                                                   MESSAGE_ROWS + 1,
+                                                   AREA_COLUMNS + 1)
 
         # Draw the border between the hero window and the message window,
-        self.main_window.addch(HERO_ROWS + 1, AREA_COLUMNS, '+')
-        for x in range(AREA_COLUMNS + 1, 79):
-            self.main_window.addch(HERO_ROWS + 1, x, '-')
+        for x in range(0, width):
+            self.main_window.addch(3, x, '-')
+        self.main_window.addch(3, AREA_COLUMNS, '+')
 
         self.message_window = self.main_window.subwin(MESSAGE_ROWS,
-                                                      MESSAGE_COUMNS,
-                                                      2 + HERO_ROWS,
-                                                      1 + AREA_COLUMNS)
+                                                      width,
+                                                      0,
+                                                      0)
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
-                                                   STATUS_COLUMNS + 1,
-                                                   AREA_ROWS, 0)
+                                                   width,
+                                                   AREA_ROWS + 3, 0)
 
         # The hero will always be present in the center.
         self.hero_x_offset = AREA_COLUMNS / 2
