@@ -139,6 +139,12 @@ class UI:
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
         self.hero_window.addstr(0, 0, hero.name)
+        self.hero_window.addstr(1, 1, "Low strength")
+        self.hero_window.addstr(2, 1, "High dexterity")
+        self.hero_window.addstr(4, 0, "Equipped:")
+        self.hero_window.addstr(5, 1, "9mm pistol (6)")
+        self.hero_window.addstr(7, 0, "Inventory:")
+        self.hero_window.addstr(8, 1, "2 pistol clips")
         self.hero_window.refresh()
 
     def draw_messages(self):
