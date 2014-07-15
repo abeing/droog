@@ -5,9 +5,6 @@ import sys
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
 
-AREA_ROWS = 20
-AREA_COLUMNS = 60
-HERO_ROWS = AREA_ROWS
 HERO_COLUMNS = 18
 MESSAGE_ROWS = 3
 STATUS_ROWS = 1
@@ -47,25 +44,31 @@ class UI:
             sys.exit(1)
 
         # Calculate the area window size (it should be the biggest)
+        self.area_width = width - HERO_COLUMNS - 1
+        self.area_height = height - MESSAGE_ROWS - STATUS_ROWS - 1
+        log.info('Area window has %r width and %r height', self.area_width,
+                 self.area_height)
 
         # We make the area_window actually be one column larger than necessary
         # because curses will throw an error if we write to the
         # bottom-right-most character.
-        self.area_window = self.main_window.subwin(AREA_ROWS, AREA_COLUMNS + 1,
+        self.area_window = self.main_window.subwin(self.area_height,
+                                                   self.area_width + 1,
                                                    4, 0)
 
         # Draw the border between the area window and the hero windows.
-        for y in range(MESSAGE_ROWS, AREA_ROWS + MESSAGE_ROWS):
-            self.main_window.addch(y, AREA_COLUMNS, '|')
+        for y in range(MESSAGE_ROWS, self.area_height + MESSAGE_ROWS):
+            self.main_window.addch(y, self.area_width, '|')
 
-        self.hero_window = self.main_window.subwin(HERO_ROWS, HERO_COLUMNS + 1,
+        self.hero_window = self.main_window.subwin(self.area_height,
+                                                   HERO_COLUMNS,
                                                    MESSAGE_ROWS + 1,
-                                                   AREA_COLUMNS + 1)
+                                                   self.area_width + 1)
 
         # Draw the border between the hero window and the message window,
         for x in range(0, width):
             self.main_window.addch(3, x, '-')
-        self.main_window.addch(3, AREA_COLUMNS, '+')
+        self.main_window.addch(3, self.area_width, '+')
 
         self.message_window = self.main_window.subwin(MESSAGE_ROWS,
                                                       width,
@@ -74,11 +77,12 @@ class UI:
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    width,
-                                                   AREA_ROWS + 3, 0)
+                                                   self.area_height
+                                                   + MESSAGE_ROWS, 0)
 
         # The hero will always be present in the center.
-        self.hero_x_offset = AREA_COLUMNS / 2
-        self.hero_y_offset = AREA_ROWS / 2
+        self.hero_x_offset = self.area_width / 2
+        self.hero_y_offset = self.area_height / 2
 
         # We need to refresh the main window at least once, even if we do all
         # updates through child windows.
