@@ -57,7 +57,7 @@ class UI:
                                                    4, 0)
 
         # Draw the border between the area window and the hero windows.
-        for y in range(MESSAGE_ROWS, self.area_height + MESSAGE_ROWS):
+        for y in range(MESSAGE_ROWS, self.area_height + MESSAGE_ROWS + 1):
             self.main_window.addch(y, self.area_width, '|')
 
         self.hero_window = self.main_window.subwin(self.area_height,
@@ -77,7 +77,7 @@ class UI:
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    width,
-                                                   self.area_height
+                                                   self.area_height + 1
                                                    + MESSAGE_ROWS, 0)
 
         # The hero will always be present in the center.
