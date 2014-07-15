@@ -1,5 +1,9 @@
 import curses
 import logging
+import sys
+
+MINIMUM_WIDTH = 80
+MINIMUM_HEIGHT = 24
 
 AREA_ROWS = 20
 AREA_COLUMNS = 60
@@ -33,6 +37,16 @@ class UI:
         # Our screen size
         height, width = self.main_window.getmaxyx()
         log.info('Main window has %r width and %r height', width, height)
+
+        # Ensure that our screen size is at least the minimum required
+        if width < MINIMUM_WIDTH or height < MINIMUM_HEIGHT:
+            self.shutdown()
+            print 'ERROR: Terminal window too small.'
+            print 'Minimum width: %r' % MINIMUM_WIDTH
+            print 'Minimum height: %r' % MINIMUM_HEIGHT
+            sys.exit(1)
+
+        # Calculate the area window size (it should be the biggest)
 
         # We make the area_window actually be one column larger than necessary
         # because curses will throw an error if we write to the
