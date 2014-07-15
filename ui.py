@@ -147,9 +147,10 @@ class UI:
         self.hero_window.addstr(8, 1, "2 pistol clips")
         self.hero_window.refresh()
 
-    def draw_messages(self):
+    def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
-        self.message_window.addstr(0, 0, "This is the message window.")
+        while not messages.empty():
+            self.message_window.addstr(0, 0, messages.get())
         self.message_window.refresh()
 
     def refresh(self):
