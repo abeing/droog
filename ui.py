@@ -111,6 +111,14 @@ class UI:
         right = hero_x + self.hero_x_offset
         top = hero_y - self.hero_y_offset
         bottom = hero_y + self.hero_y_offset
+
+        # If the area is an odd height and/or width we want to add one to the
+        # bottom and/or right to prevent a gutter of undrawn map.
+        if not self.area_width % 2 == 0:
+            right += 1
+        if not self.area_height % 2 == 0:
+            bottom += 1
+
         for y in range(top, bottom):
             for x in range(left, right):
                 self.area_window.addstr(y - top, x - left,
