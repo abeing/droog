@@ -3,9 +3,7 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
 
 [X] Step 1 - Decide to write a game
 [X] Step 2 - Hello world
-[ ] Step 3 - It's a boy!
-    [ ] Make the routines that display map characters, status lines and messages.
-        [ ] I should check to make sure that my message routines work correctly.
+[X] Step 3 - It's a boy!
 [ ] Step 4 - The map
     [ ] Maybe make a look command?
     [ ] Maybe add doors and open/close commands
