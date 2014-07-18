@@ -74,6 +74,7 @@ class UI:
                                                       width,
                                                       0,
                                                       0)
+        self.message_window.scrollok(True)
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    width,
@@ -157,8 +158,28 @@ class UI:
 
     def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
+
+        height, width = self.message_window.getmaxyx()
+        line = 0
+        column = 0
+
         while not messages.empty():
-            self.message_window.addstr(0, 0, messages.get())
+            message = messages.get()
+            words = message.split()
+            for word in words:
+                log.info("line %r col %r", line, column)
+                if (column + len(word) > width):
+                    line += 1
+                    column = 0
+                if line == height:
+                    self.main_window.addstr(line, 75, "MORE", curses.A_REVERSE)
+                    self.main_window.refresh()
+                    self.message_window.getch()
+                    self.message_window.scroll(1)
+                    self.main_window.addstr(line, 75, "----")
+                    line = height - 1
+                self.message_window.addstr(line, column, word)
+                column += len(word) + 1
         self.message_window.refresh()
 
     def refresh(self):

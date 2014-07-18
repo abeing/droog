@@ -35,7 +35,13 @@ movements = {'h': (0, -1),   # West
 
 with _ui.UI() as ui:
 
-    messages.put("Welcome to Droog.")
+    messages.put("Welcome to Droog. This is a very long line and should extend"
+                 " beyond the edge of the screen. This means that it will not"
+                 " be displayed.")
+    messages.put("This is a second message.")
+    messages.put("This is the third and final message!")
+    messages.put("This is the fourth and really final messages that should"
+                 " make all of this scroll.")
 
     command = ' '
     while command != 'q':
