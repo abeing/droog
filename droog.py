@@ -35,11 +35,12 @@ movements = {'h': (0, -1),   # West
 
 
 def look(ui):
-    messages.put("You see here nothing.")
+    """Enters look mode. Look mode allows the player to move the cursor around
+    the map area with the cursor-movement keys. While looking, the status line
+    updates with information about whatever is under the cursor at the time."""
     refresh(ui)
     command = chr(ui.input())
     while command in movements:
-        messages.put("Still looking.")
         refresh(ui)
         command = chr(ui.input())
     messages.put("Done looking")
