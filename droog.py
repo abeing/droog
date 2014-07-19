@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 messages = Queue.Queue()
 world = _world.World(200, 200)
 hero = _hero.Hero()
+status = ""
 
 
 def move_hero(delta_y, delta_x):
@@ -33,23 +34,35 @@ movements = {'h': (0, -1),   # West
              }
 
 
+def look(ui):
+    messages.put("You see here nothing.")
+    refresh(ui)
+    command = chr(ui.input())
+    while command in movements:
+        messages.put("Still looking.")
+        refresh(ui)
+        command = chr(ui.input())
+    messages.put("Done looking")
+
+
+def refresh(ui):
+    ui.draw_area(world)
+    ui.draw_status(status)
+    ui.draw_hero(hero)
+    ui.draw_messages(messages)
+
+
 with _ui.UI() as ui:
 
-    messages.put("Welcome to Droog. This is a very long line and should extend"
-                 " beyond the edge of the screen. This means that it will not"
-                 " be displayed.")
-    messages.put("This is a second message.")
-    messages.put("This is the third and final message!")
-    messages.put("This is the fourth and really final messages that should"
-                 " make all of this scroll.")
+    messages.put("Welcome to Droog.")
 
     command = ' '
     while command != 'q':
-        ui.draw_area(world)
-        ui.draw_status(world)
-        ui.draw_hero(hero)
-        ui.draw_messages(messages)
+        refresh(ui)
         command = chr(ui.input())
         if command in movements:
             delta_y, delta_x = movements[command]
             move_hero(delta_y, delta_x)
+        if command == '/':
+            status = "Look where?"
+            look(ui)

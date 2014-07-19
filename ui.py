@@ -75,6 +75,8 @@ class UI:
                                                       0,
                                                       0)
         self.message_window.scrollok(True)
+        self.message_column = 0
+        self.message_row = 0
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    width,
@@ -136,11 +138,9 @@ class UI:
                                 '@', curses.A_REVERSE)
         self.area_window.refresh()
 
-    def draw_status(self, world):
-        """Draws the status information."""
-        hero_y, hero_x = world.hero_location
-        coordinates = "({0}, {1})".format(hero_y, hero_x)
-        self.status_line.addstr(0, 0, coordinates)
+    def draw_status(self, message):
+        """Draws the status message, if any."""
+        self.status_line.addstr(0, 0, message)
         self.status_line.clrtoeol()
         self.status_line.refresh()
 
@@ -160,26 +160,27 @@ class UI:
         """Draws the most recent messages in the message log."""
 
         height, width = self.message_window.getmaxyx()
-        line = 0
-        column = 0
 
         while not messages.empty():
             message = messages.get()
             words = message.split()
             for word in words:
-                log.info("line %r col %r", line, column)
-                if (column + len(word) > width):
-                    line += 1
-                    column = 0
-                if line == height:
-                    self.main_window.addstr(line, 75, "MORE", curses.A_REVERSE)
+                log.info("line %r col %r", self.message_row,
+                         self.message_column)
+                if (self.message_column + len(word) > width):
+                    self.message_row += 1
+                    self.message_column = 0
+                if self.message_row == height:
+                    self.main_window.addstr(self.message_row, 75, "MORE",
+                                            curses.A_REVERSE)
                     self.main_window.refresh()
                     self.message_window.getch()
                     self.message_window.scroll(1)
-                    self.main_window.addstr(line, 75, "----")
-                    line = height - 1
-                self.message_window.addstr(line, column, word)
-                column += len(word) + 1
+                    self.main_window.addstr(self.message_row, 75, "----")
+                    self.message_row = height - 1
+                self.message_window.addstr(self.message_row,
+                                           self.message_column, word)
+                self.message_column += len(word) + 1
         self.message_window.refresh()
 
     def refresh(self):
