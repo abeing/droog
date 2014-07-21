@@ -34,18 +34,6 @@ movements = {'h': (0, -1),   # West
              }
 
 
-def look(ui):
-    """Enters look mode. Look mode allows the player to move the cursor around
-    the map area with the cursor-movement keys. While looking, the status line
-    updates with information about whatever is under the cursor at the time."""
-    refresh(ui)
-    command = chr(ui.input())
-    while command in movements:
-        refresh(ui)
-        command = chr(ui.input())
-    messages.put("Done looking")
-
-
 def refresh(ui):
     ui.draw_area(world)
     ui.draw_status(status)
@@ -66,4 +54,4 @@ with _ui.UI() as ui:
             move_hero(delta_y, delta_x)
         if command == '/':
             status = "Look where?"
-            look(ui)
+            ui.look()

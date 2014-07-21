@@ -12,6 +12,16 @@ STATUS_COLUMNS = 47
 
 log = logging.getLogger(__name__)
 
+movements = {'h': (0, -1),   # West
+             'l': (0, 1),    # East
+             'j': (1, 0),    # South
+             'k': (-1, 0),   # North
+             'y': (-1, -1),  # Northwest
+             'u': (-1, 1),   # Northeast
+             'b': (1, -1),   # Southwest
+             'n': (1, 1),    # Southeast
+             }
+
 
 class UI:
     def __init__(self):
@@ -182,6 +192,28 @@ class UI:
                                            self.message_column, word)
                 self.message_column += len(word) + 1
         self.message_window.refresh()
+
+    def look(self):
+        """Enters look mode. Look mode allows the player to move the cursor
+        around the map area with the cursor-movement keys. While looking, the
+        status line updates with information about whatever is under the cursor
+        at the time."""
+        curses.curs_set(1)
+        max_y, max_x = self.area_window.getmaxyx()
+        y = self.hero_y_offset
+        x = self.hero_x_offset
+
+        command = chr(self.input())
+        while command in movements:
+            delta_y, delta_x = movements[command]
+            y += delta_y
+            x += delta_x
+            if y > 0 and y < max_y and x > 0 and x < max_x:
+                log.info("Highlighting %r, %r.", y, x)
+                self.area_window.move(y, x)
+                self.area_window.refresh()
+            command = chr(self.input())
+        curses.curs_set(0)
 
     def refresh(self):
         pass
