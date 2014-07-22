@@ -53,4 +53,4 @@ with _ui.UI() as ui:
             delta_y, delta_x = movements[command]
             move_hero(delta_y, delta_x)
         if command == '/':
-            ui.look()
+            ui.look(world)

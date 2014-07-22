@@ -117,13 +117,27 @@ class UI:
         curses.curs_set(1)
         curses.endwin()
 
-    def draw_area(self, world):
-        """Draws an area of the world onto the renderer's area window."""
+    def map_bounds(self, world):
+        """Calculate world coordinates visible in the UI area.
+
+        Return the left and right limit of the x-axis and top and bottom
+        limit of the y-axis of the world-coordinates visible in the area
+        window.
+
+        The coorindates are returned as a tuple of (left, right, top, bottom).
+
+        The calculation is based on the hero's location.
+        """
         (hero_y, hero_x) = world.hero_location
         left = hero_x - self.hero_x_offset
         right = hero_x + self.hero_x_offset
         top = hero_y - self.hero_y_offset
         bottom = hero_y + self.hero_y_offset
+	return (left, right, top, bottom)
+
+    def draw_area(self, world):
+        """Draws an area of the world onto the renderer's area window."""
+	(left, right, top, bottom) = self.map_bounds(world)
 
         # If the area is an odd height and/or width we want to add one to the
         # bottom and/or right to prevent a gutter of undrawn map.
@@ -193,7 +207,7 @@ class UI:
                 self.message_column += len(word) + 1
         self.message_window.refresh()
 
-    def look(self):
+    def look(self, world):
         """Enters look mode. Look mode allows the player to move the cursor
         around the map area with the cursor-movement keys. While looking, the
         status line updates with information about whatever is under the cursor
@@ -206,6 +220,7 @@ class UI:
 	self.area_window.move(y, x)
 	self.area_window.refresh()
 
+	(left, right, top, bottom) = self.map_bounds(world)
 
         command = chr(self.input())
         while command in movements:
@@ -214,7 +229,9 @@ class UI:
             x += delta_x
             if y >= 0 and y < max_y and x >= 0 and x < max_x - 1:
                 log.info("Highlighting %r, %r.", y, x)
-		self.draw_status("You see here something.")
+                description = world.description_at(y + top,
+                                                   x + left)
+		self.draw_status("You see here %s." % description)
                 self.area_window.move(y, x)
                 self.area_window.refresh()
 	    else:

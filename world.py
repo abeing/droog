@@ -69,6 +69,23 @@ class World:
         else:
             return None
 
+    def description_at(self, y, x):
+        """Return a description of the location specified.
+
+        The description of a map location is description of the first of the
+        following elements at that location: monster, item, tile.
+
+        If the location is invalid, the empty string is returned.
+        """
+        if self.is_valid_location(y, x):
+            if (y, x) == self.hero_location:
+                return "yourself"
+            if self.tiles[y][x].creature:
+                return self.tiles[y][x].creature.name
+            else:
+                return self.tiles[y][x].description
+        return ""
+ 
     def _position_hero(self):
         """Calculates the location for the hero.
 

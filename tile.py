@@ -8,16 +8,16 @@ class Tile:
 
 
 def make_street():
-    return Tile('#', "Street", True)
+    return Tile('#', "a street", True)
 
 
 def make_empty():
-    return Tile(' ', "Open Space", True)
+    return Tile(' ', "open space", True)
 
 
 def make_shield():
-    return Tile('~', "Shield", False)
+    return Tile('~', "the shield", False)
 
 
 def make_shield_generator():
-    return Tile('G', "Shield Generator", False)
+    return Tile('G', "the shield generator", False)
