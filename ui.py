@@ -198,20 +198,25 @@ class UI:
         around the map area with the cursor-movement keys. While looking, the
         status line updates with information about whatever is under the cursor
         at the time."""
-        curses.curs_set(1)
         max_y, max_x = self.area_window.getmaxyx()
         y = self.hero_y_offset
         x = self.hero_x_offset
+        curses.curs_set(1)
+	self.area_window.move(y, x)
+	self.area_window.refresh()
 
         command = chr(self.input())
         while command in movements:
             delta_y, delta_x = movements[command]
             y += delta_y
             x += delta_x
-            if y > 0 and y < max_y and x > 0 and x < max_x:
+            if y >= 0 and y < max_y and x >= 0 and x < max_x - 1:
                 log.info("Highlighting %r, %r.", y, x)
                 self.area_window.move(y, x)
                 self.area_window.refresh()
+	    else:
+		y -= delta_y
+		x -= delta_x
             command = chr(self.input())
         curses.curs_set(0)
 
