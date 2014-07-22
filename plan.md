@@ -4,12 +4,10 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
 [X] Step 1 - Decide to write a game
 [X] Step 2 - Hello world
 [X] Step 3 - It's a boy!
-[ ] Step 4 - The map
-    [ ] Maybe make a look command?
-    [ ] Maybe add doors and open/close commands
+[X] Step 4 - The map
 [ ] Step 6 - It's alive! Alive!
-    [ ] Implement other creatures (monsters) and time.
-    [ ] Add a single monster to begin with.
+    [ ] Implement other creatures (monsters) and time. 
+    [X] Add a single monster to begin with.
     [ ] Give him some simple AI (like, say, stay still, or maybe move randomly).
     [ ] Start with my turn-your turn, then implment the time system you want
         (or, usually, a simplification of it and gradually make it more complicated later.)
