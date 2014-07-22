@@ -3,13 +3,15 @@ class Creature:
         """Creates a creature."""
         self.glyph = glyph
         self.name = name
-        self.str = 2
-        self.dex = 2
-        self.con = 2
+        self.str = str 
+        self.dex = dex 
+        self.con = con
+        self.ap_max = 2 + self.dex
+        self.ap = self.ap_max
 
 
-def make_hero():
-    return Creature('@', "the hero", 2, 2, 2)
+def make_hero(name):
+    return Creature('@', name, 2, 3, 2)
 
 
 def make_zombie():

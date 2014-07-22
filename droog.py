@@ -1,7 +1,7 @@
 import ui as _ui
 import world as _world
 import logging
-import hero as _hero
+import creature
 import Queue
 
 logging.basicConfig(filename="droog.log", level=logging.INFO)
@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 messages = Queue.Queue()
 world = _world.World(200, 200)
-hero = _hero.Hero()
+hero = creature.make_hero("Snaugh") 
 status = ""
 
 

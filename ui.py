@@ -133,11 +133,29 @@ class UI:
         right = hero_x + self.hero_x_offset
         top = hero_y - self.hero_y_offset
         bottom = hero_y + self.hero_y_offset
-	return (left, right, top, bottom)
+        return (left, right, top, bottom)
+
+    def create_meter(self, value, maximum):
+        """Create a string representing a proprtion of a value.
+
+        A `value` number of asterisks fill a `maximum` number of empty spaces,
+        bookended by square brackets.
+
+        For example a strgeth of 2 out of 3 is represented as [** ]
+        """
+        log.debug("Creating a meter of %r out of %r." % (value, maximum))
+        meter = "["
+        for x in range(0, value):
+            meter += "*"
+        for y in range(0, maximum - value):
+            meter += " "
+        meter += "]"
+        log.debug("Returning the meter as %r" % meter)
+        return meter        
 
     def draw_area(self, world):
         """Draws an area of the world onto the renderer's area window."""
-	(left, right, top, bottom) = self.map_bounds(world)
+        (left, right, top, bottom) = self.map_bounds(world)
 
         # If the area is an odd height and/or width we want to add one to the
         # bottom and/or right to prevent a gutter of undrawn map.
@@ -172,12 +190,18 @@ class UI:
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
         self.hero_window.addstr(0, 0, hero.name)
-        self.hero_window.addstr(1, 1, "Low strength")
-        self.hero_window.addstr(2, 1, "High dexterity")
-        self.hero_window.addstr(4, 0, "Equipped:")
-        self.hero_window.addstr(5, 1, "9mm pistol (6)")
-        self.hero_window.addstr(7, 0, "Inventory:")
-        self.hero_window.addstr(8, 1, "2 pistol clips")
+        strength_meter = self.create_meter(hero.str, 3)
+        dexterity_meter = self.create_meter(hero.dex, 3)
+        constitution_meter = self.create_meter(hero.con, 3)
+        self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
+        self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter) 
+        self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
+        app_meter = self.create_meter(hero.ap, hero.ap_max)
+        self.hero_window.addstr(5, 2, "AP %s" % app_meter)
+        self.hero_window.addstr(9, 0, "Equipped:")
+        self.hero_window.addstr(10, 1, "9mm pistol (6)")
+        self.hero_window.addstr(11, 0, "Inventory:")
+        self.hero_window.addstr(12, 1, "2 pistol clips")
         self.hero_window.refresh()
 
     def draw_messages(self, messages):
@@ -212,15 +236,15 @@ class UI:
         around the map area with the cursor-movement keys. While looking, the
         status line updates with information about whatever is under the cursor
         at the time."""
-	self.draw_status("Looking around (using the movement keys).")
+        self.draw_status("Looking around (using the movement keys).")
         max_y, max_x = self.area_window.getmaxyx()
         y = self.hero_y_offset
         x = self.hero_x_offset
         curses.curs_set(1)
-	self.area_window.move(y, x)
-	self.area_window.refresh()
+        self.area_window.move(y, x)
+        self.area_window.refresh()
 
-	(left, right, top, bottom) = self.map_bounds(world)
+        (left, right, top, bottom) = self.map_bounds(world)
 
         command = chr(self.input())
         while command in movements:
@@ -231,18 +255,18 @@ class UI:
                 log.info("Highlighting %r, %r.", y, x)
                 description = world.description_at(y + top,
                                                    x + left)
-		self.draw_status("You see here %s." % description)
+                self.draw_status("You see here %s." % description)
                 self.area_window.move(y, x)
                 self.area_window.refresh()
-	    else:
-		y -= delta_y
-		x -= delta_x
-		self.draw_status("You cannot see further.")
+            else:
+                y -= delta_y
+                x -= delta_x
+                self.draw_status("You cannot see further.")
                 self.area_window.move(y, x)
                 self.area_window.refresh()
             command = chr(self.input())
         curses.curs_set(0)
-	self.draw_status("Done looking around.")
+        self.draw_status("Done looking around.")
 
     def refresh(self):
         pass
