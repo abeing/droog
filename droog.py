@@ -48,6 +48,8 @@ with _ui.UI() as ui:
 
     messages.put("Welcome to Droog.")
 
+    turn.add_actor(hero)
+
     command = ' '
     while command != 'q':
         refresh(ui)

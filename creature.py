@@ -9,6 +9,8 @@ class Creature:
         self.ap_max = 2 + self.dex
         self.ap = self.ap_max
 
+    def __repr__(self):
+        return "creature named " + self.name
 
 def make_hero(name):
     return Creature('@', name, 2, 3, 2)
