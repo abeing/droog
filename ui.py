@@ -1,4 +1,5 @@
 import curses
+import math
 import logging
 import sys
 
@@ -133,8 +134,7 @@ class UI:
         right = hero_x + self.hero_x_offset
         top = hero_y - self.hero_y_offset
         bottom = hero_y + self.hero_y_offset
-        return (left, right, top, bottom)
-
+        return (left, right, top, bottom) 
     def create_meter(self, value, maximum):
         """Create a string representing a proprtion of a value.
 
@@ -144,10 +144,11 @@ class UI:
         For example a strgeth of 2 out of 3 is represented as [** ]
         """
         log.debug("Creating a meter of %r out of %r." % (value, maximum))
+        ivalue = int(value)
         meter = "["
-        for x in range(0, value):
+        for x in range(0, ivalue):
             meter += "*"
-        for y in range(0, maximum - value):
+        for y in range(0, maximum - ivalue):
             meter += " "
         meter += "]"
         log.debug("Returning the meter as %r" % meter)

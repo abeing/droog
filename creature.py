@@ -1,4 +1,6 @@
-class Creature:
+import actor
+
+class Creature(actor.Actor):
     def __init__(self, glyph, name, str, dex, con):
         """Creates a creature."""
         self.glyph = glyph
@@ -6,8 +8,8 @@ class Creature:
         self.str = str 
         self.dex = dex 
         self.con = con
-        self.ap_max = 2 + self.dex
-        self.ap = self.ap_max
+        ap_max = 2 * self.dex
+        super(Creature, self).__init__(ap_max, ap_max)
 
     def __repr__(self):
         return "creature named " + self.name
