@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 class World:
     """Representation of the game world."""
 
-    def __init__(self, height, width, road_count=0, beta=0.5):
+    def __init__(self, height, width, turn, road_count=0, beta=0.5):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
 
@@ -36,7 +36,7 @@ class World:
         self._generate(road_count, beta)
         self._add_shield_generator()
         self._add_shield()
-        self._add_zombie()
+        self._add_monster(turn)
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -203,7 +203,7 @@ class World:
             self.tiles[0][x] = tile.make_shield()
             self.tiles[self.height - 1][x] = tile.make_shield()
 
-    def _add_zombie(self):
+    def _add_monster(self, turn):
         """Creates and adds a zombie monster to the map at a reasonable, random
         location."""
 
@@ -213,8 +213,10 @@ class World:
         y = int(random.uniform(0, self.height))
         x = int(random.uniform(0, self.width))
 
+        monster = creature.make_zombie()
+        turn.add_actor(monster)
         while attempts > 0:
             if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
-                self.tiles[y][x].creature = creature.make_zombie()
-                log.info('Zombie placed at (%r, %r)', y, x)
+                self.tiles[y][x].creature = monster 
+                log.info('%r placed at (%r, %r)', monster, y, x)
             attempts -= 1

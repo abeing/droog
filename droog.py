@@ -11,10 +11,10 @@ log = logging.getLogger(__name__)
 
 
 messages = Queue.Queue()
-world = _world.World(200, 200)
+turn = turn.Turn()
+world = _world.World(200, 200, turn)
 hero = creature.make_hero("Snaugh")
 status = ""
-turn = turn.Turn()
 
 
 def move_hero(delta_y, delta_x):

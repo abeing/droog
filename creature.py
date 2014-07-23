@@ -10,6 +10,7 @@ class Creature(actor.Actor):
         self.con = con
         ap_max = 2 * self.dex
         super(Creature, self).__init__(ap_max, ap_max)
+        self.act_func = default_ai
 
     def __repr__(self):
         return "creature named " + self.name
@@ -28,3 +29,8 @@ def make_dog():
 
 def make_cop():
     return Creature('C', "a COP", 4, 1, 2)
+
+
+def default_ai():
+    """Does nothing."""
+    return 8 
