@@ -1,5 +1,4 @@
 import curses
-import math
 import logging
 import sys
 
