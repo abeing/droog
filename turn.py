@@ -27,6 +27,8 @@ class Clock(actor.Actor):
         """When it is the clock's turn, it advances the time."""
         self.current_turn += 1
         self._current_time += datetime.timedelta(0, self.SECONDS_PER_TURN)
+        log.info("Turn %r start. Time is %r", self.current_turn,
+                 self.current_time())
         return 0
 
 class Turn:

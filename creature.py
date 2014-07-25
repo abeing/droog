@@ -8,16 +8,20 @@ class Creature(actor.Actor):
         self.str = str 
         self.dex = dex 
         self.con = con
+        self._is_hero = False
         ap_max = 2 * self.dex
         super(Creature, self).__init__(ap_max, ap_max)
         self.act_func = default_ai
 
     def __repr__(self):
+        if self._is_hero:
+            return "the Hero " + self.name
         return "creature named " + self.name
 
 def make_hero(name):
-    return Creature('@', name, 2, 3, 2)
-
+    hero = Creature('@', name, 2, 3, 2)
+    hero._is_hero = True
+    return hero
 
 def make_zombie():
     return Creature('Z', "a zombie", 2, 2, 2)
