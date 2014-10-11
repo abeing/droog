@@ -133,7 +133,8 @@ class UI:
         right = hero_x + self.hero_x_offset
         top = hero_y - self.hero_y_offset
         bottom = hero_y + self.hero_y_offset
-        return (left, right, top, bottom) 
+        return (left, right, top, bottom)
+
     def create_meter(self, value, maximum):
         """Create a string representing a proprtion of a value.
 
@@ -151,7 +152,7 @@ class UI:
             meter += " "
         meter += "]"
         log.debug("Returning the meter as %r" % meter)
-        return meter        
+        return meter
 
     def draw_area(self, world):
         """Draws an area of the world onto the renderer's area window."""
@@ -194,7 +195,7 @@ class UI:
         dexterity_meter = self.create_meter(hero.dex, 3)
         constitution_meter = self.create_meter(hero.con, 3)
         self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
-        self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter) 
+        self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter)
         self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
         app_meter = self.create_meter(hero.ap, hero.ap_max)
         self.hero_window.addstr(5, 2, "AP %s" % app_meter)

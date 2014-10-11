@@ -42,10 +42,12 @@ movements = {'h': (0, -1),   # West
              'n': (1, 1),    # Southeast
              }
 
+
 def movement_cost(delta_y, delta_x):
     if delta_y * delta_x == 0:
         return 1
     return 1.5
+
 
 def refresh(ui):
     ui.draw_area(world)
