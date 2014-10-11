@@ -17,20 +17,20 @@ hero = creature.make_hero("Snaugh")
 status = ""
 
 
-def move_hero(delta_y, delta_x):
+def move_creature(creature_loc, delta_y, delta_x):
     """Move the hero in the specified direction.
 
-    Returns True if the movement was successful, false otherwise.
+    Returns a tuple of the new location if the movement was successful or an
+    empty tuple if the movement failed for any reason.
     """
-    (old_hero_y, old_hero_x) = world.hero_location
-    new_hero_y = old_hero_y + delta_y
-    new_hero_x = old_hero_x + delta_x
-    if world.is_walkable(new_hero_y, new_hero_x):
-        world.hero_location = (new_hero_y, new_hero_x)
-        log.info('Moved hero from %r to %r', (old_hero_y, old_hero_x),
-                 (new_hero_y, new_hero_x))
-        return True
-    return False
+    (old_y, old_x) = creature_loc
+    new_y = old_y + delta_y
+    new_x = old_x + delta_x
+    if world.is_walkable(new_y, new_x):
+        log.info('Moved creature from %r to %r', (old_y, old_x),
+                 (new_y, new_x))
+        return (new_y, new_x)
+    return ()
 
 movements = {'h': (0, -1),   # West
              'l': (0, 1),    # East
@@ -60,7 +60,9 @@ def hero_goes():
     command = chr(ui.input())
     if command in movements:
         delta_y, delta_x = movements[command]
-        if move_hero(delta_y, delta_x):
+        new_loc = move_creature(world.hero_location, delta_y, delta_x)
+        if len(new_loc) == 2:
+            world.hero_location = new_loc
             return movement_cost(delta_y, delta_x)
     if command == '/':
         ui.look(world)
