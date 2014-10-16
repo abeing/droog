@@ -4,7 +4,7 @@ import logging
 import math
 import tile
 import creature
-
+import ai
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +21,7 @@ class World:
         self.width = width
         self.height = height
         self.tiles = []
+        self.ais = []
 
         if road_count == 0:
             if height > width:
@@ -85,7 +86,7 @@ class World:
             else:
                 return self.tiles[y][x].description
         return ""
- 
+
     def _position_hero(self):
         """Calculates the location for the hero.
 
@@ -214,9 +215,11 @@ class World:
         x = int(random.uniform(0, self.width))
 
         monster = creature.make_zombie()
+        monster_ai = ai.Ai(monster, self)
+        self.ais.append(monster_ai)
         turn.add_actor(monster)
         while attempts > 0:
             if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
-                self.tiles[y][x].creature = monster 
+                self.tiles[y][x].creature = monster
                 log.info('%r placed at (%r, %r)', monster, y, x)
             attempts -= 1
