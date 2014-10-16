@@ -1,3 +1,7 @@
+import world
+import random
+
+
 class Ai:
     def __init__(self, creature, world):
         """Constructs an AI for a given creature in a given world.
@@ -11,9 +15,17 @@ class Ai:
         self.creature.act_func = self.act_func
 
     def act_func(self):
-        """Always moves northwest."""
+        """If within 15 steps of the hero, moves towards them, otherwise moves
+        randomly."""
         if self.creature.loc:
             (old_y, old_x) = self.creature.loc
-            if self.world.move_creature(old_y, old_x, -1, -1):
+            (hero_y, hero_x) = self.world.hero_location
+            if world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
+                delta_y = 1 if (hero_y - old_y > 0) else -1
+                delta_x = 1 if (hero_x - old_x > 0) else -1
+            else:
+                delta_y = random.choice([-1, 0, 1])
+                delta_x = random.choice([-1, 0, 1])
+            if self.world.move_creature(old_y, old_x, delta_y, delta_x):
                 return 1
         return 8

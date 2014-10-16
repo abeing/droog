@@ -250,3 +250,10 @@ class World:
                 monster.loc = (y, x)
                 log.info('%r placed at (%r, %r)', monster, y, x)
             attempts -= 1
+
+
+def distance_between(y1, x1, y2, x2):
+    """Computes the distance between two coordinates."""
+    delta_y = abs(y2 - y1)
+    delta_x = abs(x2 - x1)
+    return math.sqrt(delta_y + delta_x)
