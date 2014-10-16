@@ -87,6 +87,32 @@ class World:
                 return self.tiles[y][x].description
         return ""
 
+    def move_creature(self, y, x, delta_y, delta_x):
+        """Move a creature or hero at (y, x) by (delta_y, delta_x)."""
+        new_y = y + delta_y
+        new_x = x + delta_x
+        if self.is_walkable(new_y, new_x):
+            moved_creature = self.creature_at(y, x)
+            log.info('Moved creature %r from %r to %r', moved_creature.name,
+                     (y, x), (new_y, new_x))
+            moved_creature.loc = (new_y, new_x)
+            self.tiles[y][x].creature = None
+            self.tiles[new_y][new_x].creature = moved_creature
+            return True
+        return False
+
+    def move_hero(self, delta_y, delta_x):
+        """Move the hero by (delta_y, delta_x)."""
+        (old_y, old_x) = self.hero_location
+        new_y = old_y + delta_y
+        new_x = old_x + delta_x
+        if self.is_walkable(new_y, new_x):
+            log.info('Moved hero from %r to %r', (old_y, old_x),
+                     (new_y, new_x))
+            self.hero_location = (new_y, new_x)
+            return True
+        return False
+
     def _position_hero(self):
         """Calculates the location for the hero.
 
@@ -221,5 +247,6 @@ class World:
         while attempts > 0:
             if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
                 self.tiles[y][x].creature = monster
+                monster.loc = (y, x)
                 log.info('%r placed at (%r, %r)', monster, y, x)
             attempts -= 1

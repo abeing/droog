@@ -1,14 +1,16 @@
 import actor
 
+
 class Creature(actor.Actor):
     def __init__(self, glyph, name, str, dex, con):
         """Creates a creature."""
         self.glyph = glyph
         self.name = name
-        self.str = str 
-        self.dex = dex 
+        self.str = str
+        self.dex = dex
         self.con = con
         self._is_hero = False
+        self.loc = None
         ap_max = 2 * self.dex
         super(Creature, self).__init__(ap_max, ap_max)
         self.act_func = default_ai
@@ -18,10 +20,12 @@ class Creature(actor.Actor):
             return "the Hero " + self.name
         return "creature named " + self.name
 
+
 def make_hero(name):
     hero = Creature('@', name, 2, 3, 2)
     hero._is_hero = True
     return hero
+
 
 def make_zombie():
     return Creature('Z', "a zombie", 2, 2, 2)
@@ -37,4 +41,4 @@ def make_cop():
 
 def default_ai():
     """Does nothing."""
-    return 8 
+    return 8

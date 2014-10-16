@@ -11,5 +11,9 @@ class Ai:
         self.creature.act_func = self.act_func
 
     def act_func(self):
-        """Does nothing."""
+        """Always moves northwest."""
+        if self.creature.loc:
+            (old_y, old_x) = self.creature.loc
+            if self.world.move_creature(old_y, old_x, -1, -1):
+                return 1
         return 8
