@@ -200,9 +200,10 @@ class UI:
         app_meter = self.create_meter(hero.ap, hero.ap_max)
         self.hero_window.addstr(5, 2, "AP %s" % app_meter)
         self.hero_window.addstr(9, 0, "Equipped:")
-        self.hero_window.addstr(10, 1, "9mm pistol (6)")
+        self.hero_window.addstr(10, 1, "Knife")
         self.hero_window.addstr(11, 0, "Inventory:")
-        self.hero_window.addstr(12, 1, "2 pistol clips")
+        self.hero_window.addstr(12, 1, "9mm pistol (6)")
+        self.hero_window.addstr(13, 1, "2 pistol clips")
         self.hero_window.refresh()
 
     def draw_messages(self, messages):
