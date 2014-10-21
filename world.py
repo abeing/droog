@@ -46,8 +46,13 @@ class World:
     def is_walkable(self, y, x):
         """Returns True if the location can be traversed by walking."""
         if self.is_valid_location(y, x):
-            return self.tiles[y][x].walkable \
-                and self.tiles[y][x].creature is None
+            if not self.tiles[y][x].walkable:
+                return False
+            if not self.tiles[y][x].creature is None:
+                return False
+            if self.hero_location == (y, x):
+                return False
+            return True
         return False
 
     def is_valid_location(self, y, x):
