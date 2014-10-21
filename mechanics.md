@@ -112,20 +112,16 @@ Melee Attacks
 Time System
 ============
 
-**Action Points** measure how much a creature may do ever time its turn comes
-up. All units have a AP amount to spend per turn. The number of AP a unit has
-is determined by adding modifiers based on their *Dexterity* and *Size* to 2.
+**Action Points** measure how much time an action that a creature may perform
+takes. Each action point essentially amounts to one second. Highly dextrous
+creatures recieve a reduction in AP cost of actions. Slow creatures recieve a
+penalty (increase in AP cost).
 
-| Size   | Dexterity | AP |
-|--------|-----------|----|
-| Large  | Low       | +1 |
-| Medium | Medium    | +2 |
-| Small  | High      | +3 |
-
-Some examples:
-- a large slow COP has 2 + 1 (Dexterity) + 1 (Size) = 4 AP
-- a medium creature has 2 + 2 (Dexterity) + 2 (Size) = 6 AP
-- a small, fast zombie dog has 2 + 3 (Dexterity) + 3 (Size) = 8 AP
+| Dexterity | AP Modifier |
+|-----------|-------------|
+| Low       | -1          |
+| Medium    | None        |
+| High      | +1          |
 
 Actions
 -------

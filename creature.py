@@ -11,8 +11,7 @@ class Creature(actor.Actor):
         self.con = con
         self._is_hero = False
         self.loc = None
-        ap_max = 2 * self.dex
-        super(Creature, self).__init__(ap_max, ap_max)
+        super(Creature, self).__init__()
         self.act_func = default_ai
 
     def __repr__(self):

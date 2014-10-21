@@ -52,7 +52,7 @@ def hero_goes():
         return 0
     if command == 'q':
         sys.exit(0)
-    return 0
+    return 1
 
 with _ui.UI() as ui:
 

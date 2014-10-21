@@ -197,8 +197,6 @@ class UI:
         self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
         self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter)
         self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
-        app_meter = self.create_meter(hero.ap, hero.ap_max)
-        self.hero_window.addstr(5, 2, "AP %s" % app_meter)
         self.hero_window.addstr(9, 0, "Equipped:")
         self.hero_window.addstr(10, 1, "Knife")
         self.hero_window.addstr(11, 0, "Inventory:")

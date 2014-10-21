@@ -12,7 +12,7 @@ class Clock(actor.Actor):
 
     def __init__(self):
         self.current_turn = 0
-        self.SECONDS_PER_TURN = 6
+        self.SECONDS_PER_TURN = 1
         self._current_time = datetime.datetime(100, 1, 1, 7, 0, 0)
         self.ap = 0
         self.ap_max = 0
@@ -32,6 +32,10 @@ class Clock(actor.Actor):
                  self.current_time())
         return 0
 
+    def __repr__(self):
+        """The clock's string representation is useful for logging purposes."""
+        return "the clock reading " + self.current_time()
+
 
 class Turn:
     """Tracks the current turn and in-game time."""
@@ -47,7 +51,7 @@ class Turn:
         """
         self._queue = collections.deque()
         self._clock = Clock()
-        self._queue.append(self._clock)
+        self.add_actor(self._clock)
 
     def next(self):
         """Advances to the turn."""
@@ -56,11 +60,8 @@ class Turn:
             sys.exit(1)
         actor = self._queue.popleft()
         log.info("It is time for %r to act." % actor)
-        if actor.act() < 1:
-            self._queue.append(actor)
-            actor.refill()
-        else:
-            self._queue.appendleft(actor)
+        actor.act()
+        self._queue.append(actor)
         return True
 
     def current_time(self):
