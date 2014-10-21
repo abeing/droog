@@ -124,8 +124,8 @@ class World:
             log.info('Moved hero from %r to %r', (old_y, old_x),
                      (new_y, new_x))
             self.hero_location = (new_y, new_x)
-            return True
-        return False
+            return engine.movement_cost(delta_y, delta_x)
+        return 0
 
     def _position_hero(self):
         """Calculates the location for the hero.

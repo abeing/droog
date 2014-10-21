@@ -30,7 +30,7 @@ class Clock(actor.Actor):
         self._current_time += datetime.timedelta(0, self.SECONDS_PER_TURN)
         log.info("Turn %r start. Time is %r", self.current_turn,
                  self.current_time())
-        return 0
+        return 0.9  # This is so the clock always go last on a given tick.
 
     def __repr__(self):
         """The clock's string representation is useful for logging purposes."""

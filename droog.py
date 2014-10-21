@@ -28,12 +28,6 @@ movements = {'h': (0, -1),   # West
              }
 
 
-def movement_cost(delta_y, delta_x):
-    if delta_y * delta_x == 0:
-        return 1
-    return 1.5
-
-
 def refresh(ui):
     ui.draw_area(world)
     ui.draw_status(turn.current_time())
@@ -45,14 +39,13 @@ def hero_goes():
     command = chr(ui.input())
     if command in movements:
         delta_y, delta_x = movements[command]
-        if world.move_hero(delta_y, delta_x):
-            return movement_cost(delta_y, delta_x)
+        return world.move_hero(delta_y, delta_x)
     if command == '/':
         ui.look(world)
         return 0
     if command == 'q':
         sys.exit(0)
-    return 1
+    return 0
 
 with _ui.UI() as ui:
 
