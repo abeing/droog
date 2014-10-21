@@ -1,8 +1,8 @@
 import datetime
 import logging
-import collections
 import sys
 import actor
+import Queue
 
 log = logging.getLogger(__name__)
 
@@ -49,19 +49,21 @@ class Turn:
         desired game start-time, or implement a no-op tick for the first tick,
         but for now we'll delibrately leave it as is.
         """
-        self._queue = collections.deque()
+        self._queue = Queue.PriorityQueue()
         self._clock = Clock()
         self.add_actor(self._clock)
 
     def next(self):
         """Advances to the turn."""
-        if len(self._queue) == 0:
+        if self._queue.qsize() == 0:
             log.error("Turn queue should never be empty!")
             sys.exit(1)
-        actor = self._queue.popleft()
+        (priority, actor) = self._queue.get()
         log.info("It is time for %r to act." % actor)
         actor.act()
-        self._queue.append(actor)
+        log.info("Requeueing actor %r at turn %r" % (actor,
+                 self._clock.current_turn))
+        self._queue.put((self._clock.current_turn, actor))
         return True
 
     def current_time(self):
@@ -70,5 +72,5 @@ class Turn:
 
     def add_actor(self, actor):
         """Add a new actor to the end of the turn queue."""
-        self._queue.append(actor)
+        self._queue.put((self._clock.current_turn, actor))
         log.info("New actor in the turn queue: %r" % actor)
