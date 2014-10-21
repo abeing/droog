@@ -60,10 +60,11 @@ class Turn:
             sys.exit(1)
         (priority, actor) = self._queue.get()
         log.info("It is time for %r to act." % actor)
-        actor.act()
+        action_cost = actor.act()
+        next_tick = action_cost + self._clock.current_turn
         log.info("Requeueing actor %r at turn %r" % (actor,
-                 self._clock.current_turn))
-        self._queue.put((self._clock.current_turn, actor))
+                 next_tick))
+        self._queue.put((next_tick, actor))
         return True
 
     def current_time(self):

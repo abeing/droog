@@ -5,6 +5,7 @@ import math
 import tile
 import creature
 import ai
+import engine
 
 log = logging.getLogger(__name__)
 
@@ -93,7 +94,15 @@ class World:
         return ""
 
     def move_creature(self, y, x, delta_y, delta_x):
-        """Move a creature or hero at (y, x) by (delta_y, delta_x)."""
+        """Move a creature or hero at (y, x) by (delta_y, delta_x) and return
+        the action point costs of the movement or zero if the movement was not
+        possible.
+
+        At the moment, only single-step movement is permitted as we do not have
+        pathfinding implemented."""
+
+        assert delta_y < 2
+        assert delta_x < 2
         new_y = y + delta_y
         new_x = x + delta_x
         if self.is_walkable(new_y, new_x):
@@ -103,8 +112,8 @@ class World:
             moved_creature.loc = (new_y, new_x)
             self.tiles[y][x].creature = None
             self.tiles[new_y][new_x].creature = moved_creature
-            return True
-        return False
+            return engine.movement_cost(delta_y, delta_x)
+        return 0
 
     def move_hero(self, delta_y, delta_x):
         """Move the hero by (delta_y, delta_x)."""

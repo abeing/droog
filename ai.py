@@ -26,6 +26,7 @@ class Ai:
             else:
                 delta_y = random.choice([-1, 0, 1])
                 delta_x = random.choice([-1, 0, 1])
-            if self.world.move_creature(old_y, old_x, delta_y, delta_x):
-                return 1
-        return 8
+            cost = self.world.move_creature(old_y, old_x, delta_y, delta_x)
+            if not cost == 0:
+                return cost
+        return 6  # If the creature fails to move, it stands around a while
