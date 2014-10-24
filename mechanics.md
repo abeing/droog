@@ -6,12 +6,12 @@ Story and Environment
 - Buildings are ruins, most will not have insides. There will be no multi-story
   buildings.
 
-Creature Statistics
+Creature Attributes
 ===================
 
-Each creature has three base statistics: Strength, Dexterity and Constitution.
+Each creature has three base attributes: Strength, Dexterity and Constitution.
 
-Statistics range in value:
+Attributes range in value:
   - None (0)
   - Low (+1)
   - Average (+2)
@@ -19,16 +19,17 @@ Statistics range in value:
   - Superhuman (+4)
 
 Strength
-  - Melee chance to hit
-  - Melee damage
-  - Encumbrance limit
+  - Melee offense
+  - Melee defense
+  - Encumbrance limit :question:
 
 Dexterity
-  - Ranged chance to hit
-  - Melee dodge
+  - Ranged offense
+  - Melee defense
+  - Action point efficiency
 
 Constitution
-  - Resistance to wounds
+  - Resistance to wounds :question:
   - Wounds to die
 
 Items
@@ -36,11 +37,21 @@ Items
 
 Weapons
 -------
-- Fist : Melee, +1 Damage
-- Knife : Melee, +2 Damage
-- Pistol : Ranged, +1 Attack, +4 Damage
-- Rifle : Ranged, +2 Attack, +4 Damage
-- Lazer : Ranged, +1 Attack, +3 Damage, Ignores Armor
+
+Weapons add to the offense role of an attack. All weapons do one wound of
+damage on a successful attack. Wounds effect one of the core attributes. A
+wound to strength inflicts the weakened condition. A wound to dexterity
+inflicts the hobbled condition. A wound to constitution inflicts a condition
+depending on the weapon.
+
+| Weapon | Type   | Offense | Special Damage |
+|--------|--------|---------|----------------|
+| Fist   | Melee  |    0    | Daze           |
+| Bite   | Melee  |   +1    | Disease        |
+| Knife  | Melee  |   +2    | Bleed          |
+| Pistol | Ranged |   +3    | Bleed          |
+| Rifle  | Ranged |   +4    | Bleed          |
+| Laser  | Ranged |   +5    | Burning        |
 
 Armor
 -----
@@ -67,9 +78,10 @@ Consumables
   - Rifle ammo : Needs research into a name, fewer rounds to start and less
     common to find.
 - Batteries
-- Medicine
-  - First aid (balm | injection | potion | kit) : Cures wounds. Probably over
-    time.
+- Medicine Kit
+  - Bandages remove the bleeding condition
+  - Splints remove the hobbled condition
+  - Serum delays the diseased condition
 
 Enemies
 =======
@@ -91,30 +103,24 @@ Combat Mechanics
 
 Ranged Attacks
 --------------
-- To hit: 1d6 + Dexterity Bonus + Aiming Bonus - Range Penalty vs Size
-  - Aiming Bonus : from weapon, doubled if using aimed shot action
+- Attacker rolls 1d6 + weapon offense + dexterity - range penalty :question: - defense 
   - Range Penalty : something like -1 per 5 or 10 squares as per weapon
-  - Size : 4 to hit a human-sized creature, 2 to hit a COP, 6 to hit a dog
-- Damage: 1d6 + Weapon Damage - Damage Reduction vs 2 * Con
-  - Weapon damage : from the weapon
-  - Damage reduction : from the armor or COP
-  - If exceeds 2 * Con then target takes a wound
-  - If exceeds 4 * Con then target dies
 
 Melee Attacks
 -------------
-- To hit: 1d6 + Melee Stat - Target Melee Stat vs Size
-  - Melee stat is the higher of strength or dexterity
-- Damage: 1d6 + Strength + Weapon Damage - Damage Reduction vs Con * 2
-  - If exceeds 2 * Con then target takes a wound
-  - If exceeds 4 * Con then target dies
+- Attacker rolls 1d6 + weapon offense + max(str, dex)
+
+Damage
+------
+
+If attack rolled 6 or more, 1 wound to a random stat.
 
 Time System
 ============
 
 **Action Points** measure how much time an action that a creature may perform
-takes. Each action point essentially amounts to one second. Highly dextrous
-creatures recieve a reduction in AP cost of actions. Slow creatures recieve a
+takes. Each action point essentially amounts to one second. Highly dexterous
+creatures receive a reduction in AP cost of actions. Slow creatures receive a
 penalty (increase in AP cost).
 
 | Dexterity | AP Modifier |
