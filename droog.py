@@ -2,7 +2,7 @@ import ui as _ui
 import world as _world
 import logging
 import creature
-import Queue
+import message
 import turn
 import sys
 
@@ -10,7 +10,6 @@ logging.basicConfig(filename="droog.log", level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-messages = Queue.Queue()
 turn = turn.Turn()
 world = _world.World(200, 200, turn)
 hero = creature.make_hero("Snaugh")
@@ -32,7 +31,7 @@ def refresh(ui):
     ui.draw_area(world)
     ui.draw_status(turn.current_time())
     ui.draw_hero(hero)
-    ui.draw_messages(messages)
+    ui.draw_messages()
 
 
 def hero_goes():
@@ -49,7 +48,7 @@ def hero_goes():
 
 with _ui.UI() as ui:
 
-    messages.put("Welcome to Droog.")
+    message.add("Welcome to Droog.")
 
     hero.act_func = hero_goes
     turn.add_actor(hero)

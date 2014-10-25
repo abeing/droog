@@ -1,6 +1,7 @@
 import curses
 import logging
 import sys
+import message
 
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
@@ -204,14 +205,14 @@ class UI:
         self.hero_window.addstr(13, 1, "2 pistol clips")
         self.hero_window.refresh()
 
-    def draw_messages(self, messages):
+    def draw_messages(self):
         """Draws the most recent messages in the message log."""
 
         height, width = self.message_window.getmaxyx()
 
-        while not messages.empty():
-            message = messages.get()
-            words = message.split()
+        while not message.messages.empty():
+            a_message = message.messages.get()
+            words = a_message.split()
             for word in words:
                 log.info("line %r col %r", self.message_row,
                          self.message_column)

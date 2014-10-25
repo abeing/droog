@@ -40,3 +40,8 @@ def ap_mod(ap, dex):
     if modified_ap < 1:
         modified_ap = 1
     return modified_ap
+
+
+def attack_bite(attacker, defender):
+    """Performs a bite attack by the attacker onto the defender."""
+    return

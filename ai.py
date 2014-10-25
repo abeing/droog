@@ -1,5 +1,6 @@
 import world
 import random
+import engine
 
 
 class Ai:
@@ -15,14 +16,25 @@ class Ai:
         self.creature.act_func = self.act_func
 
     def act_func(self):
-        """If within 15 steps of the hero, moves towards them, otherwise moves
-        randomly."""
+        """Zombies use the following decision tree:
+
+        1) If adjacent to the hero, bite her.
+        2) If within 15 steps of the hero, move towards her.
+        3) Otherwise, move randomly."""
         if self.creature.loc:
             (old_y, old_x) = self.creature.loc
             (hero_y, hero_x) = self.world.hero_location
-            if world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
+
+            # 1) If adjacent to the hero, bite her.
+            if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
+                engine.bite(self.creature, self.creature)
+
+            # 2) If within 15 steps of the hero, move towards her.
+            elif world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
                 delta_y = 1 if (hero_y - old_y > 0) else -1
                 delta_x = 1 if (hero_x - old_x > 0) else -1
+
+            # 3) Otherwise, move randomly.
             else:
                 delta_y = random.choice([-1, 0, 1])
                 delta_x = random.choice([-1, 0, 1])
