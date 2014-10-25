@@ -1,17 +1,19 @@
 import ui as _ui
 import world as _world
 import logging
-import creature
 import message
 import turn
 import sys
+import hero
 
 logging.basicConfig(filename="droog.log", level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
 turn = turn.Turn()
-hero = creature.make_hero("Snaugh")
+
+hero.initialize("Snaugh")
+hero = hero.get_hero()
 world = _world.World(200, 200, turn, hero)
 status = ""
 

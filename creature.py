@@ -20,12 +20,6 @@ class Creature(actor.Actor):
         return "creature named " + self.name
 
 
-def make_hero(name):
-    hero = Creature('@', name, 2, 3, 2)
-    hero._is_hero = True
-    return hero
-
-
 def make_zombie():
     return Creature('Z', "a zombie", 2, 2, 2)
 
