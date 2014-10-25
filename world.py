@@ -6,6 +6,7 @@ import tile
 import creature
 import ai
 import engine
+import turn
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ class World:
         self._generate(road_count, beta)
         self._add_shield_generator()
         self._add_shield()
-        self._add_monster(turn)
+        self._add_monster()
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -248,7 +249,7 @@ class World:
             self.tiles[0][x] = tile.make_shield()
             self.tiles[self.height - 1][x] = tile.make_shield()
 
-    def _add_monster(self, turn):
+    def _add_monster(self):
         """Creates and adds a zombie monster to the map at a reasonable, random
         location."""
 
