@@ -13,7 +13,7 @@ class Ai:
         """
         self.creature = creature
         self.world = world
-        self.creature.act_func = self.act_func
+        # TODO self.creature.act_func = self.act_func
 
     def act_func(self):
         """Zombies use the following decision tree:
