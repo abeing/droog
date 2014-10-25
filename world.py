@@ -24,6 +24,7 @@ class World:
         self.tiles = []
         self.ais = []
         self.hero = hero
+        self.turn = turn
 
         if road_count == 0:
             if height > width:
@@ -267,6 +268,45 @@ class World:
                 monster.loc = (y, x)
                 log.info('%r placed at (%r, %r)', monster, y, x)
             attempts -= 1
+
+    def random_empty_location(self, near=None, attempts=5, radius=10):
+        """Creates a random location on the map, or a random location on the
+        map near a specified location."""
+
+        while attempts > 0:
+            if near is None:
+                y = int(random.uniform(0, self.height))
+                x = int(random.uniform(0, self.width))
+            else:
+                (near_y, near_x) = near
+                y = int(random.triangular(low=near_y - radius,
+                                          high=near_y + radius))
+                x = int(random.triangular(low=near_x - radius,
+                                          high=near_x + radius))
+            if self.is_valid_location(y, x) and \
+               self.tiles[y][x].creature is None and self.tiles[y][x].walkable:
+                return (y, x)
+            attempts -= 1
+        return None
+
+    def spawn_monster(self, monster_class='z', near=None):
+        """Spawns a monster on the map."""
+        monster = None
+        if monster_class == 'z':
+            monster = creature.make_zombie()
+            monster_ai = ai.Ai(monster, self)
+
+        location = self.random_empty_location(near)
+        if location is None:
+            return False
+        if monster is not None:
+            self.ais.append(monster_ai)
+            self.turn.add_actor(monster)
+            (y, x) = location
+            monster.loc = location
+            self.tiles[y][x].creature = monster
+            log.info('%r placed at (%r, %r)', monster, y, x)
+            return True
 
 
 def distance_between(y1, x1, y2, x2):

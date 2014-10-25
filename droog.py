@@ -35,13 +35,15 @@ def refresh(ui):
 
 
 def hero_goes():
-    command = chr(ui.input())
+    command = ui.input()
     if command in movements:
         delta_y, delta_x = movements[command]
         return world.move_hero(delta_y, delta_x)
     if command == '/':
         ui.look(world)
         return 0
+    if command == '~':
+        ui.wizard(world)
     if command == 'q':
         sys.exit(0)
     return 0

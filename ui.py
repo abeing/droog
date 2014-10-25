@@ -247,7 +247,7 @@ class UI:
 
         (left, right, top, bottom) = self.map_bounds(world)
 
-        command = chr(self.input())
+        command = self.input()
         while command in movements:
             delta_y, delta_x = movements[command]
             y += delta_y
@@ -265,7 +265,7 @@ class UI:
                 self.draw_status("You cannot see further.")
                 self.area_window.move(y, x)
                 self.area_window.refresh()
-            command = chr(self.input())
+            command = self.input()
         curses.curs_set(0)
         self.draw_status("Done looking around.")
 
@@ -274,4 +274,14 @@ class UI:
 
     def input(self):
         """Returns when the user types a character on the keyboard."""
-        return self.main_window.getch()
+        return chr(self.main_window.getch())
+
+    def wizard(self, world):
+        """Parses a wizard command."""
+        self.draw_status("What doest thou want, wizard?")
+        command = self.input()
+        if command == 's':
+            self.draw_status("Summon what?")
+            monster = self.input()
+            if monster == 'z':
+                world.spawn_monster('z', near=world.hero_location)
