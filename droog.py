@@ -11,8 +11,8 @@ log = logging.getLogger(__name__)
 
 
 turn = turn.Turn()
-world = _world.World(200, 200, turn)
 hero = creature.make_hero("Snaugh")
+world = _world.World(200, 200, turn, hero)
 status = ""
 
 

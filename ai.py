@@ -27,7 +27,7 @@ class Ai:
 
             # 1) If adjacent to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                engine.bite(self.creature, self.creature)
+                return engine.attack_bite(self.creature, self.world.hero)
 
             # 2) If within 15 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 15:

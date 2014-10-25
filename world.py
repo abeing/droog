@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 class World:
     """Representation of the game world."""
 
-    def __init__(self, height, width, turn, road_count=0, beta=0.5):
+    def __init__(self, height, width, turn, hero, road_count=0, beta=0.5):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
 
@@ -23,6 +23,7 @@ class World:
         self.height = height
         self.tiles = []
         self.ais = []
+        self.hero = hero
 
         if road_count == 0:
             if height > width:
@@ -71,6 +72,8 @@ class World:
         """Returns the creature at the specified location or None if there is
         no creature at that location or if the location coordinates are out of
         bounds."""
+        if self.hero_location == (y, x):
+            return self.hero
         if self.is_valid_location(y, x):
             return self.tiles[y][x].creature
         else:

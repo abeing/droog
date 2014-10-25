@@ -1,4 +1,5 @@
 import logging
+import message
 
 log = logging.getLogger(__name__)
 
@@ -44,4 +45,4 @@ def ap_mod(ap, dex):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    return
+    message.add("The zombie bites you.")
