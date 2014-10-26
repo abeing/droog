@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import ui as _ui
 import world as _world
 import logging
