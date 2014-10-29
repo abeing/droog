@@ -11,6 +11,21 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         envisioned, probably.
     [X] Make the creatures notice each other -- bump, attack, etc. Gradually
         improve their AIS, so that they can chase the player.
+    [ ] Create unit tests and comment:
+        [X] actor.py
+        [ ] ai.py
+        [ ] creature.py
+        [ ] droog.py
+        [ ] engine.py
+        [ ] message.py
+        [ ] tile.py
+        [ ] turn.py
+        [ ] ui.py
+        [ ] world.py
+    [ ] Refactor some things:
+        [ ] Actor.act() should not care about dexterity
+        [ ] Creature.act() should care about dexterity uniformly
+        [ ] Actors should call their parent act functions. No need for act_func.
     [ ] Implement and test the combat system -- without equipment for now, just
         hardcode the values.
         [ ] Add a bite attack to the zombie.

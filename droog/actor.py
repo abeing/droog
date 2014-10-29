@@ -2,7 +2,8 @@ import engine
 
 
 class Actor(object):
-    """The Actor class manages action points and acting in turn order."""
+    """The Actor class provides an act() interface the engine uses to have each
+    actor act when their turn comes up."""
 
     def __init__(self, dex):
         """Creates and actor with specified dexterity.

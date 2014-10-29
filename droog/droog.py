@@ -6,6 +6,7 @@ import creature
 import message
 import turn
 import sys
+import functools
 
 logging.basicConfig(filename="droog.log", level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ def refresh(ui):
     ui.draw_messages()
 
 
-def hero_goes():
+def hero_goes(ui):
     command = ui.input()
     if command in movements:
         delta_y, delta_x = movements[command]
@@ -49,13 +50,19 @@ def hero_goes():
         sys.exit(0)
     return 0
 
-with _ui.UI() as ui:
 
-    message.add("Welcome to Droog.")
+def main():
+    with _ui.UI() as ui:
 
-    hero.act_func = hero_goes
-    turn.add_actor(hero)
+        message.add("Welcome to Droog.")
 
-    refresh(ui)
-    while turn.next():
+        hero.act_func = functools.partial(hero_goes, ui)
+        turn.add_actor(hero)
+
         refresh(ui)
+        while turn.next():
+            refresh(ui)
+
+
+if __name__ == "__main__":
+    main()
