@@ -5,19 +5,16 @@ import logging
 import message
 import turn
 import sys
+import hero
 
 logging.basicConfig(filename="droog.log", level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-turn.init()
+turn = turn.Turn()
 
-hero = {"name": "Snaugh",
-        "str": 2,
-        "dex": 2,
-        "con": 2,
-        "glyph": '@'}
-
+hero.initialize("Snaugh")
+hero = hero.get_hero()
 world = _world.World(200, 200, turn, hero)
 status = ""
 
@@ -58,7 +55,7 @@ with _ui.UI() as ui:
 
     message.add("Welcome to Droog.")
 
-    hero["act_func"] = hero_goes
+    hero.act_func = hero_goes
     turn.add_actor(hero)
 
     refresh(ui)

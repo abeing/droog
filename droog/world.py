@@ -73,8 +73,8 @@ class World:
         """Returns the creature at the specified location or None if there is
         no creature at that location or if the location coordinates are out of
         bounds."""
-        # TODO: remove if self.hero_location == (y, x):
-        #    return self.hero
+        if self.hero_location == (y, x):
+            return self.hero
         if self.is_valid_location(y, x):
             return self.tiles[y][x].creature
         else:
@@ -265,7 +265,7 @@ class World:
         while attempts > 0:
             if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
                 self.tiles[y][x].creature = monster
-                monster["loc"] = (y, x)
+                monster.loc = (y, x)
                 log.info('%r placed at (%r, %r)', monster, y, x)
             attempts -= 1
 
@@ -303,7 +303,7 @@ class World:
             self.ais.append(monster_ai)
             self.turn.add_actor(monster)
             (y, x) = location
-            monster["loc"] = location
+            monster.loc = location
             self.tiles[y][x].creature = monster
             log.info('%r placed at (%r, %r)', monster, y, x)
             return True

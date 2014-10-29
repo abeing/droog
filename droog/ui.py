@@ -173,7 +173,7 @@ class UI:
                 creature = world.creature_at(y, x)
                 if creature is not None:
                     self.area_window.addstr(y - top, x - left,
-                                            creature["glyph"])
+                                            creature.glyph)
 
         # The hero is drawn in the center last so we can always see him or
         # her. The curses is then placed on top of the hero for visual
@@ -191,10 +191,10 @@ class UI:
     def draw_hero(self, hero):
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
-        self.hero_window.addstr(0, 0, hero["name"])
-        strength_meter = self.create_meter(hero["str"], 3)
-        dexterity_meter = self.create_meter(hero["dex"], 3)
-        constitution_meter = self.create_meter(hero["con"], 3)
+        self.hero_window.addstr(0, 0, hero.name)
+        strength_meter = self.create_meter(hero.str, 3)
+        dexterity_meter = self.create_meter(hero.dex, 3)
+        constitution_meter = self.create_meter(hero.con, 3)
         self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
         self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter)
         self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
