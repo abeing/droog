@@ -13,18 +13,19 @@ STATUS_COLUMNS = 47
 
 log = logging.getLogger(__name__)
 
-movements = {'h': (0, -1),   # West
-             'l': (0, 1),    # East
-             'j': (1, 0),    # South
-             'k': (-1, 0),   # North
-             'y': (-1, -1),  # Northwest
-             'u': (-1, 1),   # Northeast
-             'b': (1, -1),   # Southwest
-             'n': (1, 1),    # Southeast
-             }
-
 
 class UI:
+
+    movements = {'h': (0, -1),   # West
+                 'l': (0, 1),    # East
+                 'j': (1, 0),    # South
+                 'k': (-1, 0),   # North
+                 'y': (-1, -1),  # Northwest
+                 'u': (-1, 1),   # Northeast
+                 'b': (1, -1),   # Southwest
+                 'n': (1, 1),    # Southeast
+                 }
+
     def __init__(self):
         """Initializes the rendering environment.
 
@@ -248,8 +249,8 @@ class UI:
         (left, right, top, bottom) = self.map_bounds(world)
 
         command = self.input()
-        while command in movements:
-            delta_y, delta_x = movements[command]
+        while command in self.movements:
+            delta_y, delta_x = self.movements[command]
             y += delta_y
             x += delta_x
             if y >= 0 and y < max_y and x >= 0 and x < max_x - 1:

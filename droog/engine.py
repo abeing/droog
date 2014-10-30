@@ -46,6 +46,7 @@ def ap_mod(ap, dex):
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
     message.add("The zombie bites you.")
+    return 8
 
 # Attributes should be between 1 and 4, inclusive.
 ATTRIBUTE_MAX = 4

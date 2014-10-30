@@ -6,6 +6,8 @@ import tile
 import creature
 import ai
 import engine
+import the
+
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +15,7 @@ log = logging.getLogger(__name__)
 class World:
     """Representation of the game world."""
 
-    def __init__(self, height, width, turn, hero, road_count=0, beta=0.5):
+    def __init__(self, height, width, turn, road_count=0, beta=0.5):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
 
@@ -23,7 +25,6 @@ class World:
         self.height = height
         self.tiles = []
         self.ais = []
-        self.hero = hero
         self.turn = turn
 
         if road_count == 0:
@@ -74,7 +75,7 @@ class World:
         no creature at that location or if the location coordinates are out of
         bounds."""
         if self.hero_location == (y, x):
-            return self.hero
+            return the.hero
         if self.is_valid_location(y, x):
             return self.tiles[y][x].creature
         else:
@@ -258,10 +259,10 @@ class World:
         y = int(random.uniform(0, self.height))
         x = int(random.uniform(0, self.width))
 
-        monster = creature.make_zombie()
+        monster = creature.Zombie()
         monster_ai = ai.Ai(monster, self)
         self.ais.append(monster_ai)
-        turn.add_actor(monster)
+        the.turn.add_actor(monster)
         while attempts > 0:
             if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
                 self.tiles[y][x].creature = monster
@@ -293,7 +294,7 @@ class World:
         """Spawns a monster on the map."""
         monster = None
         if monster_class == 'z':
-            monster = creature.make_zombie()
+            monster = creature.Zombie()
             monster_ai = ai.Ai(monster, self)
 
         location = self.random_empty_location(near)
@@ -301,16 +302,15 @@ class World:
             return False
         if monster is not None:
             self.ais.append(monster_ai)
-            self.turn.add_actor(monster)
+            the.turn.add_actor(monster)
             (y, x) = location
             monster.loc = location
             self.tiles[y][x].creature = monster
             log.info('%r placed at (%r, %r)', monster, y, x)
             return True
 
-
-def distance_between(y1, x1, y2, x2):
-    """Computes the distance between two coordinates."""
-    delta_y = abs(y2 - y1)
-    delta_x = abs(x2 - x1)
-    return math.sqrt(delta_y + delta_x)
+    def distance_between(self, y1, x1, y2, x2):
+        """Computes the distance between two coordinates."""
+        delta_y = abs(y2 - y1)
+        delta_x = abs(x2 - x1)
+        return math.sqrt(delta_y + delta_x)
