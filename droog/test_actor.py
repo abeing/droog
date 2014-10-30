@@ -3,11 +3,11 @@ import unittest
 
 
 class ActCheck(unittest.TestCase):
-    def testActReturns(self):
-        """Actor.act() should return a nonnegative integer."""
+    def testActRaises(self):
+        """Actor.act() should raise a NotImplementedError."""
         a = actor.Actor()
-        result = a.act()
-        self.assertGreaterEqual(result, 0)
+        self.assertRaises(NotImplementedError, a.act)
+
 
 if __name__ == "__main__":
     unittest.main()

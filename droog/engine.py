@@ -46,3 +46,12 @@ def ap_mod(ap, dex):
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
     message.add("The zombie bites you.")
+
+# Attributes should be between 1 and 4, inclusive.
+ATTRIBUTE_MAX = 4
+ATTRIBUTE_MIN = 1
+
+
+def is_valid_attribute(attribute):
+    """Verifies if an attribute is in a valid range."""
+    return (ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX)
