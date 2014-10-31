@@ -11,9 +11,9 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         envisioned, probably.
     [X] Make the creatures notice each other -- bump, attack, etc. Gradually
         improve their AIS, so that they can chase the player.
-    [ ] Create unit tests and comment:
+    [ ] Create unit tests, globalize and comment:
         [X] actor.py
-        [ ] ai.py
+        [X] ai.py -- removed
         [ ] creature.py
         [ ] droog.py
         [ ] engine.py

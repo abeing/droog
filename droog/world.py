@@ -4,7 +4,6 @@ import logging
 import math
 import tile
 import creature
-import ai
 import engine
 import the
 
@@ -24,7 +23,6 @@ class World:
         self.width = width
         self.height = height
         self.tiles = []
-        self.ais = []
         self.turn = turn
 
         if road_count == 0:
@@ -260,8 +258,6 @@ class World:
         x = int(random.uniform(0, self.width))
 
         monster = creature.Zombie()
-        monster_ai = ai.Ai(monster, self)
-        self.ais.append(monster_ai)
         the.turn.add_actor(monster)
         while attempts > 0:
             if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
@@ -295,13 +291,11 @@ class World:
         monster = None
         if monster_class == 'z':
             monster = creature.Zombie()
-            monster_ai = ai.Ai(monster, self)
 
         location = self.random_empty_location(near)
         if location is None:
             return False
         if monster is not None:
-            self.ais.append(monster_ai)
             the.turn.add_actor(monster)
             (y, x) = location
             monster.loc = location
