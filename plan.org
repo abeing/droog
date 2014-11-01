@@ -15,12 +15,12 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         [X] actor.py
         [X] ai.py -- removed
         [X] creature.py
-        [ ] droog.py
-        [ ] engine.py
+        [X] droog.py
+        [X] engine.py
         [ ] message.py
         [ ] tile.py
         [ ] turn.py
-        [ ] ui.py
+        [X] ui.py
         [ ] world.py
     [ ] Refactor some things:
         [ ] Actor.act() should not care about dexterity
