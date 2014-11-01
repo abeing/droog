@@ -14,7 +14,7 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
     [ ] Create unit tests, globalize and comment:
         [X] actor.py
         [X] ai.py -- removed
-        [ ] creature.py
+        [X] creature.py
         [ ] droog.py
         [ ] engine.py
         [ ] message.py

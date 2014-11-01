@@ -1,3 +1,6 @@
+"""The creature module defines the general Creature class as well as individual
+creature types."""
+
 import actor
 import engine
 import random
@@ -5,18 +8,16 @@ import the
 
 
 class Creature(actor.Actor):
-    def __init__(self, glyph, name, str, dex, con):
+    """The Creature class manages a creature's statistics and actions."""
+    def __init__(self, glyph, name):
         """Creates a creature."""
-        assert(len(glyph) == 1)
+        assert len(glyph) == 1
         self.glyph = glyph
         self.name = name
-        assert(engine.is_valid_attribute(str))
-        self.str = str
-        assert(engine.is_valid_attribute(dex))
-        self.dex = dex
-        assert(engine.is_valid_attribute(con))
-        self.con = con
-        self.loc = None
+        self._strength = 2
+        self._dexterity = 2
+        self._constitution = 2
+        self.loc = (None, None)
         super(Creature, self).__init__()
 
     def act(self):
@@ -28,10 +29,47 @@ class Creature(actor.Actor):
         """A string representation of the creature."""
         return self.name
 
+    @property
+    def strength(self):
+        """Creature's strength."""
+        return self._strength
+
+    @strength.setter
+    def strength(self, value):
+        """Sets the creature's strength. If the value is invalid this will
+        raise an AssertionError"""
+        assert engine.is_valid_attribute(value)
+        self._strength = value
+
+    @property
+    def dexterity(self):
+        """Creature's dexterity."""
+        return self._dexterity
+
+    @dexterity.setter
+    def dexterity(self, value):
+        """Sets the creature's dexterity. If the value is invalid this will
+        raise an AssertionError"""
+        assert engine.is_valid_attribute(value)
+        self._dexterity = value
+
+    @property
+    def constitution(self):
+        """Creature's constitution."""
+        return self._constitution
+
+    @constitution.setter
+    def constitution(self, value):
+        """Sets the creature's dexterity. If the value is invalid this will
+        raise an AssertionError"""
+        assert engine.is_valid_attribute(value)
+        self._constitution = value
+
 
 class Zombie(Creature):
+    """Zombie creature."""
     def __init__(self):
-        super(Zombie, self).__init__('Z', 'zombie', 2, 2, 2)
+        super(Zombie, self).__init__('Z', 'zombie')
 
     def act(self):
         """Zombies use the following decision tree:
@@ -60,13 +98,3 @@ class Zombie(Creature):
             if not cost == 0:
                 return cost
         return 6  # If the creature fails to move, it stands around a while
-
-
-class ZombieDog(Creature):
-    def __init__(self):
-        super(ZombieDog, self).__init__('d', 'zombie dog', 2, 3, 1)
-
-
-class COP(Creature):
-    def __init__(self):
-        super(COP, self).__init__('C', 'COP', 4, 1, 2)
