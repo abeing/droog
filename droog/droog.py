@@ -1,5 +1,5 @@
-"""Droog - a present-perfect post-apocalyptic roguelike"""
 #!/usr/bin/python
+"""Droog - a present-perfect post-apocalyptic roguelike"""
 import ui as _ui
 import world as _world
 import logging
@@ -33,7 +33,7 @@ def refresh(ui_object):
 
 def main():
     """Bootstraps a new game and cleans up after the game."""
-    with _ui.UI() as ui_object:
+    with _ui.Curses() as ui_object:
         new_game(ui_object)
         message.add("Welcome to Droog.")
         refresh(ui_object)

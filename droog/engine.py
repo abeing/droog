@@ -1,7 +1,13 @@
+"""Droog Engine.
+
+This module contains functions for resolving game-rules that either don't fit
+in other classes or modules or would cause awkward external dependances for
+those classes or modules."""
+
 import logging
 import message
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 # When determining the movement cost, diagonal and orthogonal squares do not
 # cost the same.
@@ -30,14 +36,14 @@ def movement_cost(delta_y, delta_x):
         + diaganol_squares * DIAGONAL_COST
 
 
-def ap_mod(ap, dex):
+def ap_mod(original_ap, dexterity):
     """Applies dexterity modifier to action point cost for one action."""
-    modified_ap = ap
-    if dex < LOWDEX_THRESHHOLD:
-        modified_ap = ap + APMOD_LOWDEX
-    if dex > HIGHDEX_THRESHHOLD:
-        log.info("Applying high-dexterity bonus")
-        modified_ap = ap + APMOD_HIGHDEX
+    modified_ap = original_ap
+    if dexterity < LOWDEX_THRESHHOLD:
+        modified_ap = original_ap + APMOD_LOWDEX
+    if dexterity > HIGHDEX_THRESHHOLD:
+        LOG.info("Applying high-dexterity bonus")
+        modified_ap = original_ap + APMOD_HIGHDEX
     if modified_ap < 1:
         modified_ap = 1
     return modified_ap
@@ -45,7 +51,8 @@ def ap_mod(ap, dex):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    message.add("The zombie bites you.")
+    message.add("%s bites you." % attacker)
+    defender.dexterity -= 1
     return 8
 
 # Attributes should be between 1 and 4, inclusive.
@@ -55,4 +62,4 @@ ATTRIBUTE_MIN = 1
 
 def is_valid_attribute(attribute):
     """Verifies if an attribute is in a valid range."""
-    return (ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX)
+    return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX

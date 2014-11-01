@@ -1,3 +1,4 @@
+"""Droog User Interface."""
 import curses
 import logging
 import sys
@@ -11,10 +12,12 @@ MESSAGE_ROWS = 3
 STATUS_ROWS = 1
 STATUS_COLUMNS = 47
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
-class UI:
+class Curses(object):
+    """The UserInterface class manages the drawing to curses and input from the
+    user."""
 
     movements = {'h': (0, -1),   # West
                  'l': (0, 1),    # East
@@ -24,7 +27,7 @@ class UI:
                  'u': (-1, 1),   # Northeast
                  'b': (1, -1),   # Southwest
                  'n': (1, 1),    # Southeast
-                 }
+                }
 
     def __init__(self):
         """Initializes the rendering environment.
@@ -45,11 +48,11 @@ class UI:
 
         # Our screen size
         height, width = self.main_window.getmaxyx()
-        log.info('Main window has %r width and %r height', width, height)
+        LOG.info('Main window has %r width and %r height', width, height)
 
         # Ensure that our screen size is at least the minimum required
         if width < MINIMUM_WIDTH or height < MINIMUM_HEIGHT:
-            self.shutdown()
+            shutdown()
             print 'ERROR: Terminal window too small.'
             print 'Minimum width: %r' % MINIMUM_WIDTH
             print 'Minimum height: %r' % MINIMUM_HEIGHT
@@ -58,7 +61,7 @@ class UI:
         # Calculate the area window size (it should be the biggest)
         self.area_width = width - HERO_COLUMNS - 1
         self.area_height = height - MESSAGE_ROWS - STATUS_ROWS - 1
-        log.info('Area window has %r width and %r height', self.area_width,
+        LOG.info('Area window has %r width and %r height', self.area_width,
                  self.area_height)
 
         # We make the area_window actually be one column larger than necessary
@@ -107,17 +110,7 @@ class UI:
         return self
 
     def __exit__(self, exception_type, exception_value, traceback):
-        curses.nocbreak()
-        curses.echo()
-        curses.curs_set(1)
-        curses.endwin()
-
-    def shutdown(self):
-        """Ends curses and restores the terminal state."""
-        curses.nocbreak()
-        curses.echo()
-        curses.curs_set(1)
-        curses.endwin()
+        shutdown()
 
     def map_bounds(self, world):
         """Calculate world coordinates visible in the UI area.
@@ -136,25 +129,6 @@ class UI:
         top = hero_y - self.hero_y_offset
         bottom = hero_y + self.hero_y_offset
         return (left, right, top, bottom)
-
-    def create_meter(self, value, maximum):
-        """Create a string representing a proprtion of a value.
-
-        A `value` number of asterisks fill a `maximum` number of empty spaces,
-        bookended by square brackets.
-
-        For example a strgeth of 2 out of 3 is represented as [** ]
-        """
-        log.debug("Creating a meter of %r out of %r." % (value, maximum))
-        ivalue = int(value)
-        meter = "["
-        for x in range(0, ivalue):
-            meter += "*"
-        for y in range(0, maximum - ivalue):
-            meter += " "
-        meter += "]"
-        log.debug("Returning the meter as %r" % meter)
-        return meter
 
     def draw_area(self, world):
         """Draws an area of the world onto the renderer's area window."""
@@ -183,9 +157,9 @@ class UI:
                                 '@', curses.A_REVERSE)
         self.area_window.refresh()
 
-    def draw_status(self, message):
+    def draw_status(self, status_message):
         """Draws the status message, if any."""
-        self.status_line.addstr(0, 0, message)
+        self.status_line.addstr(0, 0, status_message)
         self.status_line.clrtoeol()
         self.status_line.refresh()
 
@@ -193,9 +167,9 @@ class UI:
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
         self.hero_window.addstr(0, 0, hero.name)
-        strength_meter = self.create_meter(hero.str, 3)
-        dexterity_meter = self.create_meter(hero.dex, 3)
-        constitution_meter = self.create_meter(hero.con, 3)
+        strength_meter = create_meter(hero.strength, 3)
+        dexterity_meter = create_meter(hero.dexterity, 3)
+        constitution_meter = create_meter(hero.constitution, 3)
         self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
         self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter)
         self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
@@ -215,9 +189,9 @@ class UI:
             a_message = message.messages.get()
             words = a_message.split()
             for word in words:
-                log.info("line %r col %r", self.message_row,
+                LOG.info("line %r col %r", self.message_row,
                          self.message_column)
-                if (self.message_column + len(word) > width):
+                if self.message_column + len(word) > width:
                     self.message_row += 1
                     self.message_column = 0
                 if self.message_row == height:
@@ -254,7 +228,7 @@ class UI:
             y += delta_y
             x += delta_x
             if y >= 0 and y < max_y and x >= 0 and x < max_x - 1:
-                log.info("Highlighting %r, %r.", y, x)
+                LOG.info("Highlighting %r, %r.", y, x)
                 description = world.description_at(y + top,
                                                    x + left)
                 self.draw_status("You see here %s." % description)
@@ -270,9 +244,6 @@ class UI:
         curses.curs_set(0)
         self.draw_status("Done looking around.")
 
-    def refresh(self):
-        pass
-
     def input(self):
         """Returns when the user types a character on the keyboard."""
         return chr(self.main_window.getch())
@@ -286,3 +257,32 @@ class UI:
             monster = self.input()
             if monster == 'z':
                 world.spawn_monster('z', near=world.hero_location)
+
+
+def create_meter(value, maximum):
+    """Create a string representing a proprtion of a value.
+
+    A `value` number of asterisks fill a `maximum` number of empty spaces,
+    bookended by square brackets.
+
+    For example a strgeth of 2 out of 3 is represented as [** ]
+    """
+    LOG.debug("Creating a meter of %r out of %r.", value, maximum)
+    ivalue = int(value)
+    meter = "["
+    for x in range(0, ivalue):
+        meter += "*"
+    for y in range(0, maximum - ivalue):
+        meter += " "
+    meter += "]"
+    LOG.debug("Returning the meter as %r", meter)
+    return meter
+
+
+def shutdown():
+    """Cleans up the curses environment. This is called if the Curses object
+    ever goes out of scope or if the Curses object fails to initialize."""
+    curses.nocbreak()
+    curses.echo()
+    curses.curs_set(1)
+    curses.endwin()
