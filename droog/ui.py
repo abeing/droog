@@ -185,8 +185,8 @@ class Curses(object):
 
         height, width = self.message_window.getmaxyx()
 
-        while not message.messages.empty():
-            a_message = message.messages.get()
+        while not message.MESSAGES.empty():
+            a_message = message.MESSAGES.get()
             words = a_message.split()
             for word in words:
                 LOG.info("line %r col %r", self.message_row,

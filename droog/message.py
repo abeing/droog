@@ -1,8 +1,11 @@
+"""The messages module provides an interface for other modules to add messages
+to a queue which the user interface will display."""
+
 import Queue
 
-messages = Queue.Queue()
+MESSAGES = Queue.Queue()
 
 
 def add(message):
     """Add a message to the message queue."""
-    messages.put(message)
+    MESSAGES.put(message)
