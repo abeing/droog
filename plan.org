@@ -19,7 +19,7 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         [X] engine.py
         [X] message.py
         [X] tile.py
-        [ ] turn.py
+        [X] turn.py
         [X] ui.py
         [ ] world.py
     [ ] Refactor some things:
