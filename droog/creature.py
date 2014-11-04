@@ -5,6 +5,7 @@ import actor
 import engine
 import random
 import the
+import world
 
 
 class Creature(actor.Actor):
@@ -82,11 +83,11 @@ class Zombie(Creature):
             (hero_y, hero_x) = the.world.hero_location
 
             # 1) If adjacent to the hero, bite her.
-            if the.world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
+            if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
                 return engine.attack_bite(self, the.hero)
 
             # 2) If within 15 steps of the hero, move towards her.
-            elif the.world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
+            elif world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
                 delta_y = 1 if (hero_y - old_y > 0) else -1
                 delta_x = 1 if (hero_x - old_x > 0) else -1
 

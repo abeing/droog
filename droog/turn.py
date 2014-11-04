@@ -1,21 +1,19 @@
+"""Droog - Turn"""
 import datetime
 import logging
 import sys
 import actor
 import Queue
 
-log = logging.getLogger(__name__)
-
+LOG = logging.getLogger(__name__)
+SECONDS_PER_TURN = 1
 
 class Clock(actor.Actor):
     """Tracks the current turn and in-game time."""
 
     def __init__(self):
         self.current_turn = 0
-        self.SECONDS_PER_TURN = 1
         self._current_time = datetime.datetime(100, 1, 1, 7, 0, 0)
-        self.ap = 0
-        self.ap_max = 0
 
     def current_time(self):
         """Return the current in-game clock.
@@ -27,8 +25,8 @@ class Clock(actor.Actor):
     def act(self):
         """When it is the clock's turn, it advances the time."""
         self.current_turn += 1
-        self._current_time += datetime.timedelta(0, self.SECONDS_PER_TURN)
-        log.info("Turn %r start. Time is %r", self.current_turn,
+        self._current_time += datetime.timedelta(0, SECONDS_PER_TURN)
+        LOG.info("Turn %r start. Time is %r", self.current_turn,
                  self.current_time())
         return 0.9  # This is so the clock always go last on a given tick.
 
@@ -37,7 +35,7 @@ class Clock(actor.Actor):
         return "the clock reading " + self.current_time()
 
 
-class Turn:
+class Turn(object):
     """Tracks the current turn and in-game time."""
 
     def __init__(self):
@@ -56,22 +54,22 @@ class Turn:
     def next(self):
         """Advances to the turn."""
         if self._queue.qsize() == 0:
-            log.error("Turn queue should never be empty!")
+            LOG.error("Turn queue should never be empty!")
             sys.exit(1)
-        (priority, actor) = self._queue.get()
-        log.info("It is time for %r to act." % actor)
-        action_cost = actor.act()
+        (_, an_actor) = self._queue.get()  # Ignoring priority
+        LOG.info("It is time for %r to act.", an_actor)
+        action_cost = an_actor.act()
         next_tick = action_cost + self._clock.current_turn
-        log.info("Requeueing actor %r at turn %r" % (actor,
-                 next_tick))
-        self._queue.put((next_tick, actor))
+        LOG.info("Requeueing actor %r at turn %r", an_actor,
+                 next_tick)
+        self._queue.put((next_tick, an_actor))
         return True
 
     def current_time(self):
         """Return the current in-game clock."""
         return self._clock.current_time()
 
-    def add_actor(self, actor):
+    def add_actor(self, an_actor):
         """Add a new actor to the end of the turn queue."""
-        self._queue.put((self._clock.current_turn, actor))
-        log.info("New actor in the turn queue: %r" % actor)
+        self._queue.put((self._clock.current_turn, an_actor))
+        LOG.info("New actor in the turn queue: %r", an_actor)

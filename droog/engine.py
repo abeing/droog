@@ -5,7 +5,7 @@ in other classes or modules or would cause awkward external dependances for
 those classes or modules."""
 
 import logging
-import message
+import the
 
 LOG = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def ap_mod(original_ap, dexterity):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    message.add("%s bites you." % attacker)
+    the.messages.add("%s bites you." % attacker)
     defender.dexterity -= 1
     return 8
 

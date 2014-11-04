@@ -11,10 +11,10 @@ import the
 log = logging.getLogger(__name__)
 
 
-class World:
+class World(object):
     """Representation of the game world."""
 
-    def __init__(self, height, width, turn, road_count=0, beta=0.5):
+    def __init__(self, height, width):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
 
@@ -23,23 +23,13 @@ class World:
         self.width = width
         self.height = height
         self.tiles = []
-        self.turn = turn
-
-        if road_count == 0:
-            if height > width:
-                road_count = height / 10
-            else:
-                road_count = width / 10
 
         self.hero_location = self._position_hero()
         for y in range(height):
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(tile.make_empty())
-        self._generate(road_count, beta)
-        self._add_shield_generator()
-        self._add_shield()
-        self._add_monster(turn)
+        self._add_monster()
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -160,94 +150,15 @@ class World:
                     and self.tiles[y][x].glyph == '#':
                 keep_going = random.uniform(0, 1) < beta
 
-    def _generate(self, road_count=10, beta=0.5):
-        """Generates a city map.
-
-        We first draw a horizontal road somewhere near the equator of the map,
-        choosing the latitude using a triangular distribution with a mode of
-        the equator.
-
-        Then we draw a vertical road somewhere near the prime meridian of the
-        map, choosing the longitude using a triangular distribution with a
-        mode of the prime meridian.
-
-        Then we select an existing road, an existing point along it, and then
-        draw a road in one, the other or both directions from it. We draw until
-        we reach another road or the edge of the world. If we reach a road,
-        we will continue with probability ß."""
-
-        # We'll store the roads we create here.
-        roads = []
-
-        equator = int(random.triangular(low=0, high=self.height,
-                                        mode=self.height / 2))
-        self._add_road(equator, 0, 0, 1, 1.0)
-        roads.append(((equator, 0), (equator, self.width - 1)))
-        log.info('Equator road from %r to %r', (equator, 0),
-                 (equator, self.width))
-
-        meridian = int(random.triangular(low=0, high=self.width,
-                                         mode=self.width / 2))
-        self._add_road(0, meridian, 1, 0, 1.0)
-        roads.append(((0, meridian), (self.height - 1, meridian)))
-        log.info('Meridian road from %r to %r', (0, meridian),
-                 (self.height, meridian))
-
-        for i in range(road_count):
-            ((begin_y, begin_x), (end_y, end_x)) = random.choice(roads)
-            # Choose a direction. Positive is south in the vertical case and
-            # east in the horizontal case. Negative is north in the vertical
-            # case and west in the horizontal case. Zero is both directions in
-            # either case.
-            direction = random.randint(-1, 1)
-            if begin_y == end_y:  # We chose a horizontal road, we will make
-                                  # a vertical road
-                bisect = random.randint(begin_x, end_x)
-                log.info('Creating road %d vertically from %r heading %d', i,
-                         (begin_y, bisect), direction)
-                if direction > -1:  # Going south.
-                    self._add_road(begin_y, bisect, 1, 0, beta)
-                if direction < 1:  # Going north.
-                    self._add_road(begin_y, bisect, -1, 0, beta)
-            elif begin_x == end_x:  # We chose a vertical road, we will make
-                                      # a horizontal road
-                bisect = random.randint(begin_y, end_y)
-                log.info('Creating road %d horizontally from %r heading %d', i,
-                         (bisect, begin_x), direction)
-                if direction > -1:  # Going east.
-                    self._add_road(bisect, begin_x, 0, 1, beta)
-                if direction < 1:  # Going west.
-                    self._add_road(bisect, begin_x, 0, -1, beta)
-            else:
-                log.error('Road is neither horizontal nor vertical')
-        self._log()
-
     def _log(self):
+        """Dumps the world into a file called 'world.dump'"""
         with open("world.dump", "w") as dump_file:
             for y in range(self.height):
                 for x in range(self.width):
                     dump_file.write(self.tiles[y][x].glyph)
                 dump_file.write("\n")
 
-    def _add_shield_generator(self):
-        """Places a shield generator in the center of the map."""
-
-        y = self.height / 2
-        x = self.width / 2
-        self.tiles[y][x] = tile.make_shield_generator()
-
-    def _add_shield(self):
-        """Creates the shield border around the navigable map."""
-
-        for y in range(0, self.height):
-            self.tiles[y][0] = tile.make_shield()
-            self.tiles[y][self.width - 1] = tile.make_shield()
-
-        for x in range(self.width):
-            self.tiles[0][x] = tile.make_shield()
-            self.tiles[self.height - 1][x] = tile.make_shield()
-
-    def _add_monster(self, turn):
+    def _add_monster(self):
         """Creates and adds a zombie monster to the map at a reasonable, random
         location."""
 
@@ -303,8 +214,97 @@ class World:
             log.info('%r placed at (%r, %r)', monster, y, x)
             return True
 
-    def distance_between(self, y1, x1, y2, x2):
-        """Computes the distance between two coordinates."""
-        delta_y = abs(y2 - y1)
-        delta_x = abs(x2 - x1)
-        return math.sqrt(delta_y + delta_x)
+def distance_between(y1, x1, y2, x2):
+    """Computes the distance between two coordinates."""
+    delta_y = abs(y2 - y1)
+    delta_x = abs(x2 - x1)
+    return math.sqrt(delta_y + delta_x)
+
+def _add_shield_generator(a_world):
+    """Places a shield generator in the center of the map."""
+
+    y = a_world.height / 2
+    x = a_world.width / 2
+    a_world.tiles[y][x] = tile.make_shield_generator()
+
+def _add_shield(a_world):
+    """Creates the shield border around the navigable map."""
+
+    for y in range(0, a_world.height):
+        a_world.tiles[y][0] = tile.make_shield()
+        a_world.tiles[y][a_world.width - 1] = tile.make_shield()
+
+    for x in range(a_world.width):
+        a_world.tiles[0][x] = tile.make_shield()
+        a_world.tiles[a_world.height - 1][x] = tile.make_shield()
+
+
+def generate_city(a_world, road_count=10, beta=0.5):
+    """Generates a city map.
+
+    We first draw a horizontal road somewhere near the equator of the map,
+    choosing the latitude using a triangular distribution with a mode of
+    the equator.
+
+    Then we draw a vertical road somewhere near the prime meridian of the
+    map, choosing the longitude using a triangular distribution with a
+    mode of the prime meridian.
+
+    Then we select an existing road, an existing point along it, and then
+    draw a road in one, the other or both directions from it. We draw until
+    we reach another road or the edge of the world. If we reach a road,
+    we will continue with probability ß."""
+
+    # We'll store the roads we create here.
+    roads = []
+
+    if road_count == 0:
+        if a_world.height > a_world.width:
+            road_count = a_world.height / 10
+        else:
+            road_count = a_world.width / 10
+
+    equator = int(random.triangular(low=0, high=a_world.height,
+                                    mode=a_world.height / 2))
+    a_world._add_road(equator, 0, 0, 1, 1.0)
+    roads.append(((equator, 0), (equator, a_world.width - 1)))
+    log.info('Equator road from %r to %r', (equator, 0),
+             (equator, a_world.width))
+
+    meridian = int(random.triangular(low=0, high=a_world.width,
+                                     mode=a_world.width / 2))
+    a_world._add_road(0, meridian, 1, 0, 1.0)
+    roads.append(((0, meridian), (a_world.height - 1, meridian)))
+    log.info('Meridian road from %r to %r', (0, meridian),
+             (a_world.height, meridian))
+
+    for i in range(road_count):
+        ((begin_y, begin_x), (end_y, end_x)) = random.choice(roads)
+        # Choose a direction. Positive is south in the vertical case and
+        # east in the horizontal case. Negative is north in the vertical
+        # case and west in the horizontal case. Zero is both directions in
+        # either case.
+        direction = random.randint(-1, 1)
+        if begin_y == end_y:  # We chose a horizontal road, we will make
+                              # a vertical road
+            bisect = random.randint(begin_x, end_x)
+            log.info('Creating road %d vertically from %r heading %d', i,
+                     (begin_y, bisect), direction)
+            if direction > -1:  # Going south.
+                a_world._add_road(begin_y, bisect, 1, 0, beta)
+            if direction < 1:  # Going north.
+                a_world._add_road(begin_y, bisect, -1, 0, beta)
+        elif begin_x == end_x:  # We chose a vertical road, we will make
+                                  # a horizontal road
+            bisect = random.randint(begin_y, end_y)
+            log.info('Creating road %d horizontally from %r heading %d', i,
+                     (bisect, begin_x), direction)
+            if direction > -1:  # Going east.
+                a_world._add_road(bisect, begin_x, 0, 1, beta)
+            if direction < 1:  # Going west.
+                a_world._add_road(bisect, begin_x, 0, -1, beta)
+        else:
+            log.error('Road is neither horizontal nor vertical')
+
+    _add_shield_generator(a_world)
+    _add_shield(a_world)

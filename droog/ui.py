@@ -180,13 +180,13 @@ class Curses(object):
         self.hero_window.addstr(13, 1, "2 pistol clips")
         self.hero_window.refresh()
 
-    def draw_messages(self):
+    def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
 
         height, width = self.message_window.getmaxyx()
 
-        while not message.MESSAGES.empty():
-            a_message = message.MESSAGES.get()
+        while not messages.empty():
+            a_message = messages.get()
             words = a_message.split()
             for word in words:
                 LOG.info("line %r col %r", self.message_row,
