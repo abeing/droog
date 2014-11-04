@@ -17,7 +17,7 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         [X] creature.py
         [X] droog.py
         [X] engine.py
-        [ ] message.py
+        [X] message.py
         [ ] tile.py
         [ ] turn.py
         [X] ui.py

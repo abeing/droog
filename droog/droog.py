@@ -20,6 +20,7 @@ def new_game(ui_object):
     the.turn = turn.Turn()
     the.hero = _hero.Hero("Snaugh", ui_object)
     the.turn.add_actor(the.hero)
+    the.messages = message.Messages()
     the.world = _world.World(200, 200, turn)
 
 
@@ -28,14 +29,14 @@ def refresh(ui_object):
     ui_object.draw_area(the.world)
     ui_object.draw_status(the.turn.current_time())
     ui_object.draw_hero(the.hero)
-    ui_object.draw_messages()
+    ui_object.draw_messages(the.messages)
 
 
 def main():
     """Bootstraps a new game and cleans up after the game."""
     with _ui.Curses() as ui_object:
         new_game(ui_object)
-        message.add("Welcome to Droog.")
+        the.messages.add("Welcome to Droog.")
         refresh(ui_object)
         while the.turn.next():
             refresh(ui_object)
