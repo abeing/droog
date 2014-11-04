@@ -11,7 +11,7 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         envisioned, probably.
     [X] Make the creatures notice each other -- bump, attack, etc. Gradually
         improve their AIS, so that they can chase the player.
-    [ ] Create unit tests, globalize and comment:
+    [X] Create unit tests, globalize and comment:
         [X] actor.py
         [X] ai.py -- removed
         [X] creature.py
@@ -21,19 +21,24 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         [X] tile.py
         [X] turn.py
         [X] ui.py
-        [ ] world.py
-    [ ] Refactor some things:
-        [ ] Actor.act() should not care about dexterity
-        [ ] Creature.act() should care about dexterity uniformly
-        [ ] Actors should call their parent act functions. No need for act_func.
+        [X] world.py
+    [X] Refactor some things:
+        [X] Actor.act() should not care about dexterity
+        [X] Creature.act() should care about dexterity uniformly
+        [X] Actors should call their parent act functions. No need for act_func.
     [ ] Implement and test the combat system -- without equipment for now, just
         hardcode the values.
         [ ] Add a bite attack to the zombie.
+            [ ] Make the damage system check bounds.
+            [ ] Implement player death
+            [ ] Make damage be random?
         [ ] Add a melee attack to the hero.
 [ ] Step 8 - Data files
     [ ] Move the creature, map features, etc. definitions to data files. Forget
         about scripting for now. If something cannot be moved -- just leave it
         for now.
+    [ ] Move creature spawning to the "engine"?
+    [ ] Move the map generation to a new module?
 [ ] Step 9 - Items
     [ ] Add ites. For start, just objects you can pick up -- no properties.
     [ ] Gradually give them properties, kinds, stats, etc.
