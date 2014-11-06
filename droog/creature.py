@@ -18,6 +18,7 @@ class Creature(actor.Actor):
         self._strength = 2
         self._dexterity = 2
         self._constitution = 2
+        self.is_dead = False
         self.loc = (None, None)
         super(Creature, self).__init__()
 

@@ -41,6 +41,7 @@ def main():
         refresh(ui_object)
         while the.turn.next():
             refresh(ui_object)
+        ui_object.input()
 
 
 if __name__ == "__main__":

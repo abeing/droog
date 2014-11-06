@@ -10,6 +10,7 @@ class Hero(creature.Creature):
     def __init__(self, name, user_interface):
         super(Hero, self).__init__('@', name)
         self.user_interface = user_interface
+        self.is_hero = True
 
     def __repr__(self):
         return "the hero %s" % self.name

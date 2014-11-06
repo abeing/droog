@@ -59,10 +59,19 @@ class Turn(object):
         (_, an_actor) = self._queue.get()  # Ignoring priority
         LOG.info("It is time for %r to act.", an_actor)
         action_cost = an_actor.act()
-        next_tick = action_cost + self._clock.current_turn
-        LOG.info("Requeueing actor %r at turn %r", an_actor,
-                 next_tick)
-        self._queue.put((next_tick, an_actor))
+
+        # check for death
+        is_dead = getattr(an_actor, "is_dead", False)
+        if not is_dead:
+            next_tick = action_cost + self._clock.current_turn
+            LOG.info("Requeueing actor %r at turn %r", an_actor,
+                     next_tick)
+            self._queue.put((next_tick, an_actor))
+        else:
+            LOG.info("Removing dead actor %r from turn queue.", an_actor)
+            if getattr(an_actor, "is_hero", False):
+                LOG.info("Removed hero, the game is over.")
+                return False
         return True
 
     def current_time(self):

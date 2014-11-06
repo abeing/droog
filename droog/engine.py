@@ -5,6 +5,7 @@ in other classes or modules or would cause awkward external dependances for
 those classes or modules."""
 
 import logging
+import random
 import the
 
 LOG = logging.getLogger(__name__)
@@ -52,8 +53,9 @@ def ap_mod(original_ap, dexterity):
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
     the.messages.add("%s bites you." % attacker)
-    defender.dexterity -= 1
+    inflict_damage(defender)
     return 8
+
 
 # Attributes should be between 1 and 4, inclusive.
 ATTRIBUTE_MAX = 4
@@ -63,3 +65,38 @@ ATTRIBUTE_MIN = 1
 def is_valid_attribute(attribute):
     """Verifies if an attribute is in a valid range."""
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
+
+
+def inflict_damage(victim):
+    """Inflicts damage onto a creature."""
+    strength = victim.strength
+    dexterity = victim.dexterity
+    constitution = victim.constitution
+
+    # In the must-die case:
+    if strength == dexterity == constitution == 1:
+        the.messages.add("You die.")
+        victim.is_dead = True
+        return
+
+    damage = []
+
+    assert strength > 0
+    for _ in range(strength - 1):
+        damage.append("strength")
+
+    assert dexterity > 0
+    for _ in range(dexterity - 1):
+        damage.append("dexterity")
+
+    assert constitution > 0
+    for _ in range(constitution - 1):
+        damage.append("constitution")
+
+    damage = random.choice(damage)
+    old_attribute = getattr(victim, damage)
+    setattr(victim, damage, old_attribute - 1)
+    LOG.info("Damaged %s's %s from %d to %d", victim, damage, old_attribute,
+             old_attribute - 1)
+    # TODO: special damage
+    the.messages.add("Your %s is weakened." % damage)
