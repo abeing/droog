@@ -10,15 +10,17 @@ import world
 
 class Creature(actor.Actor):
     """The Creature class manages a creature's statistics and actions."""
-    def __init__(self, glyph, name):
+    def __init__(self, glyph, name, initial_vowel=False):
         """Creates a creature."""
         assert len(glyph) == 1
         self.glyph = glyph
         self.name = name
+        self.initial_vowel = initial_vowel
         self._strength = 2
         self._dexterity = 2
         self._constitution = 2
         self.is_dead = False
+        self.is_hero = False
         self.loc = (None, None)
         super(Creature, self).__init__()
 

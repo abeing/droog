@@ -81,7 +81,7 @@ class World(object):
             if (y, x) == self.hero_location:
                 return "yourself"
             if self.tiles[y][x].creature:
-                return self.tiles[y][x].creature.name
+                return engine.indefinite_creature(self.tiles[y][x].creature)
             else:
                 return self.tiles[y][x].description
         return ""

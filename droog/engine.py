@@ -52,7 +52,8 @@ def ap_mod(original_ap, dexterity):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    the.messages.add("%s bites you." % attacker)
+    the.messages.add("%s bites %s." % (creature_or_you(attacker),
+                                       creature_or_you(defender)))
     inflict_damage(defender)
     return 8
 
@@ -99,7 +100,34 @@ def inflict_damage(victim):
     LOG.info("Damaged %s's %s from %d to %d", victim, damage, old_attribute,
              old_attribute - 1)
     # TODO: special damage
-    the.messages.add("Your %s is weakened." % damage)
+    the.messages.add("%s %s is weakened." % (creatures_or_your(victim),
+                                             damage))
 
 
-def creature_or_you(who)
+def creature_or_you(who):
+    """Returns either a creature's name or "you" if the creature is the hero.
+    """
+    name = "the " + who.name  # TODO: use indefinate article somtimes?
+    if who.is_hero:
+        name = "you"
+    return name
+
+
+def creatures_or_your(who):
+    """Returns a possessive for either a creature by name or "your" if the
+    creature is the hero."""
+    name = who.name + "'s"
+    if who.is_hero:
+        name = "your"
+    return name
+
+
+def indefinite_creature(who):
+    """Returns the indefinate referant to a creature."""
+    name = who.name
+    article = "a"
+    if who.is_hero:
+        name = "you"
+    if who.initial_vowel:
+        article = "an"
+    return article + " " + name
