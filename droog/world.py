@@ -118,6 +118,9 @@ class World(object):
                      (new_y, new_x))
             self.hero_location = (new_y, new_x)
             return engine.movement_cost(delta_y, delta_x)
+        target = self.creature_at(new_y, new_x)
+        if target:
+            return the.hero.melee_attack(target)
         return 0
 
     def _position_hero(self):

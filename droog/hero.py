@@ -1,6 +1,7 @@
 """Droog Hero class"""
 import sys
 import the
+import engine
 import creature
 
 
@@ -28,3 +29,7 @@ class Hero(creature.Creature):
         if command == 'q':
             sys.exit(0)
         return 0
+
+    def melee_attack(self, target):
+        """Performs a melee attack against the target."""
+        return engine.attack_punch(self, target)

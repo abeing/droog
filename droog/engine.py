@@ -52,8 +52,16 @@ def ap_mod(original_ap, dexterity):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    the.messages.add("%s bites %s." % (creature_or_you(attacker),
-                                       creature_or_you(defender)))
+    the.messages.add("%s bites %s." % (definite_creature(attacker),
+                                       definite_creature(defender)))
+    inflict_damage(defender)
+    return 8
+
+
+def attack_punch(attacker, defender):
+    """Performs a punch attack by the attacker onto the defener."""
+    the.messages.add("%s punch %s." % (definite_creature(attacker),
+                                       definite_creature(defender)))
     inflict_damage(defender)
     return 8
 
@@ -100,20 +108,20 @@ def inflict_damage(victim):
     LOG.info("Damaged %s's %s from %d to %d", victim, damage, old_attribute,
              old_attribute - 1)
     # TODO: special damage
-    the.messages.add("%s %s is weakened." % (creatures_or_your(victim),
+    the.messages.add("%s %s is weakened." % (possessive(victim),
                                              damage))
 
 
-def creature_or_you(who):
+def definite_creature(who):
     """Returns either a creature's name or "you" if the creature is the hero.
     """
-    name = "the " + who.name  # TODO: use indefinate article somtimes?
+    name = "the " + who.name
     if who.is_hero:
         name = "you"
     return name
 
 
-def creatures_or_your(who):
+def possessive(who):
     """Returns a possessive for either a creature by name or "your" if the
     creature is the hero."""
     name = who.name + "'s"
