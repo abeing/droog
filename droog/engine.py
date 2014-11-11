@@ -100,3 +100,6 @@ def inflict_damage(victim):
              old_attribute - 1)
     # TODO: special damage
     the.messages.add("Your %s is weakened." % damage)
+
+
+def creature_or_you(who)
