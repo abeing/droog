@@ -4,6 +4,7 @@ import logging
 import sys
 import actor
 import Queue
+import the
 
 LOG = logging.getLogger(__name__)
 SECONDS_PER_TURN = 1
@@ -69,6 +70,7 @@ class Turn(object):
             self._queue.put((next_tick, an_actor))
         else:
             LOG.info("Removing dead actor %r from turn queue.", an_actor)
+            the.world.remove_monster(an_actor)
             if getattr(an_actor, "is_hero", False):
                 LOG.info("Removed hero, the game is over.")
                 return False

@@ -217,6 +217,12 @@ class World(object):
             log.info('%r placed at (%r, %r)', monster, y, x)
             return True
 
+    def remove_monster(self, monster):
+        """Removes a monster from the map, for example when it dies."""
+        (monster_y, monster_x) = monster.loc
+        self.tiles[monster_y][monster_x].creature = None
+
+
 def distance_between(y1, x1, y2, x2):
     """Computes the distance between two coordinates."""
     delta_y = abs(y2 - y1)
