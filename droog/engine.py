@@ -84,7 +84,10 @@ def inflict_damage(victim):
 
     # In the must-die case:
     if strength == dexterity == constitution == 1:
-        the.messages.add("You die.")
+        if victim.is_hero:
+            the.messages.add("You die.")
+        else:
+            the.messages.add("%s dies." % definite_creature(victim))
         victim.is_dead = True
         return
 
@@ -124,7 +127,7 @@ def definite_creature(who):
 def possessive(who):
     """Returns a possessive for either a creature by name or "your" if the
     creature is the hero."""
-    name = who.name + "'s"
+    name = "the %s's" % who.name
     if who.is_hero:
         name = "your"
     return name
