@@ -28,6 +28,8 @@ class Hero(creature.Creature):
             self.user_interface.wizard(the.world)
         if command == 'q':
             sys.exit(0)
+        if command == '?':
+            self.user_interface.help()
         return 0
 
     def melee_attack(self, target):

@@ -258,6 +258,39 @@ class Curses(object):
             if monster == 'z':
                 world.spawn_monster('z', near=world.hero_location)
 
+    def help(self):
+        """Display the help screen."""
+        # height, width = self.main_window.getmaxyx()
+        LOG.info("creating help window width=%d, height=%d", self.area_width,
+                 self.area_height)
+        help_screen = curses.newwin(self.area_height, self.area_width, 4, 0)
+        row = self.hero_y_offset
+        col = self.hero_x_offset
+        LOG.info("Drawing movement at (%d, %d)", row, col)
+        help_screen.addstr(row - 4, col - 4, "Movement")
+        help_screen.addstr(row - 3, col - 4, "--------")
+        help_screen.addstr(row - 2, col - 4, " y  k  u")
+        help_screen.addstr(row - 1, col - 4, "  \\ | /")
+        help_screen.addstr(row, col - 4, " h--@--l ")
+        help_screen.addstr(row + 1, col - 4, "  / | \\")
+        help_screen.addstr(row + 2, col - 4, " b  j  n ")
+        help_screen.addstr(row - 4, col - 15, "Commands")
+        help_screen.addstr(row - 3, col - 15, "--------")
+        help_screen.addstr(row - 2, col - 15, "q quit")
+        help_screen.addstr(row - 1, col - 15, "? help")
+        help_screen.addstr(row, col - 15, "/ look")
+        help_screen.addstr(row - 2, col + 6, "Bump into enemies with")
+        help_screen.addstr(row - 1, col + 6, "the movement keys to")
+        help_screen.addstr(row + 0, col + 6, "perform a melee attack.")
+        help_screen.refresh()
+        command = self.input()
+        del help_screen
+        self.redraw()
+
+    def redraw(self):
+        """Redraw the windows."""
+        self.main_window.redrawwin()
+
 
 def create_meter(value, maximum):
     """Create a string representing a proprtion of a value.

@@ -38,6 +38,7 @@ def main():
     with _ui.Curses() as ui_object:
         new_game(ui_object)
         the.messages.add("Welcome to Droog.")
+        the.messages.add("Press ? for help.")
         refresh(ui_object)
         while the.turn.next():
             refresh(ui_object)
