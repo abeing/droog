@@ -20,7 +20,7 @@ def make_street():
 
 def make_empty():
     """Factory function to create an empty tile."""
-    return Tile(' ', "open space", True)
+    return Tile('.', "open space", True)
 
 
 def make_shield():

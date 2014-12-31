@@ -51,8 +51,9 @@ class World(object):
         return 0 <= y < self.height and 0 <= x < self.width
 
     def glyph_at(self, y, x):
-        """Returns the world glyph at the specified location.  If the location
-        coordinates are out of bounds, returns a shield character."""
+        """Returns the world glyph and its color at the specified location.  If
+        the location coordinates are out of bounds, returns a shield character.
+        """
         if self.is_valid_location(y, x):
             return self.tiles[y][x].glyph
         else:

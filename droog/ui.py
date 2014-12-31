@@ -46,6 +46,11 @@ class Curses(object):
         curses.cbreak()
         curses.curs_set(0)
 
+        # Our palette
+        curses.start_color()
+        LOG.info('Curses color support: %r', curses.has_colors())
+        self.build_palette()
+
         # Our screen size
         height, width = self.main_window.getmaxyx()
         LOG.info('Main window has %r width and %r height', width, height)
@@ -112,6 +117,30 @@ class Curses(object):
     def __exit__(self, exception_type, exception_value, traceback):
         shutdown()
 
+    def build_palette(self):
+        """Builds the color palette for the user interface."""
+        curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
+        curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+        curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
+
+    def glyph_color(self, glyph):
+        """Looks up the color for a glyph and sets the specified color pair to
+        be that color."""
+        if glyph == 'Z':
+            return curses.color_pair(3)
+        if glyph == '.':
+            return curses.color_pair(2)
+        if glyph == '#':
+            return curses.color_pair(3)
+        if glyph == '~':
+            return curses.color_pair(4)
+        if glyph == 'G':
+            return curses.color_pair(6)
+        return curses.color_pair(0)
+
     def map_bounds(self, world):
         """Calculate world coordinates visible in the UI area.
 
@@ -143,12 +172,14 @@ class Curses(object):
 
         for y in range(top, bottom):
             for x in range(left, right):
+                glyph = world.glyph_at(y, x)
                 self.area_window.addstr(y - top, x - left,
-                                        world.glyph_at(y, x))
+                                        glyph, self.glyph_color(glyph))
                 creature = world.creature_at(y, x)
                 if creature is not None:
                     self.area_window.addstr(y - top, x - left,
-                                            creature.glyph)
+                                            creature.glyph,
+                                            self.glyph_color(creature.glyph))
 
         # The hero is drawn in the center last so we can always see him or
         # her. The curses is then placed on top of the hero for visual
