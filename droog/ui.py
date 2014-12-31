@@ -288,6 +288,11 @@ class Curses(object):
             monster = self.input()
             if monster == 'z':
                 world.spawn_monster('z', near=world.hero_location)
+        if command == 't':
+            self.draw_status("Teleport where?")
+            location = self.input()
+            if location == 'g':
+                world.teleport_hero(world.generator_location)
 
     def help(self):
         """Display the help screen."""

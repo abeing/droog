@@ -42,6 +42,7 @@ def main():
         refresh(ui_object)
         while the.turn.next():
             refresh(ui_object)
+        refresh(ui_object)
         ui_object.input()
 
 

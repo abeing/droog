@@ -24,7 +24,7 @@ class Messages(object):
         sentence will end with a period (if not already)."""
         if len(message) is not 0:
             message = message.capitalize()
-            if message[-1] is not ".":
+            if message[-1] is not "." and message[-1] is not '!':
                 message = message + "."
                 LOG.info("Appending period to non-period-terminated message")
             LOG.info("Adding %s to the message queue.", message)

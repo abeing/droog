@@ -122,6 +122,10 @@ class World(object):
         target = self.creature_at(new_y, new_x)
         if target:
             return the.hero.melee_attack(target)
+
+        # If we have a shield generator, we begin to jurry rig it.
+        if self.glyph_at(new_y, new_x) == 'G':
+            return engine.deactivate_generator()
         return 0
 
     def _position_hero(self):
@@ -201,6 +205,11 @@ class World(object):
             attempts -= 1
         return None
 
+    def teleport_hero(self, near):
+        """Teleports the hero to a valid location near a specified location."""
+        location = self.random_empty_location(near)
+        self.hero_location = location
+
     def spawn_monster(self, monster_class='z', near=None):
         """Spawns a monster on the map."""
         monster = None
@@ -232,10 +241,10 @@ def distance_between(y1, x1, y2, x2):
 
 def _add_shield_generator(a_world):
     """Places a shield generator in the center of the map."""
-
     y = a_world.height / 2
     x = a_world.width / 2
     a_world.tiles[y][x] = tile.make_shield_generator()
+    a_world.generator_location = (y, x)
 
 def _add_shield(a_world):
     """Creates the shield border around the navigable map."""

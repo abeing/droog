@@ -70,10 +70,10 @@ class Turn(object):
             self._queue.put((next_tick, an_actor))
         else:
             LOG.info("Removing dead actor %r from turn queue.", an_actor)
-            the.world.remove_monster(an_actor)
             if getattr(an_actor, "is_hero", False):
                 LOG.info("Removed hero, the game is over.")
                 return False
+            the.world.remove_monster(an_actor)
         return True
 
     def current_time(self):
