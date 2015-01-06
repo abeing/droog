@@ -144,6 +144,7 @@ def indefinite_creature(who):
     return article + " " + name
 
 
+# Shield generator stats
 generator_health = 3
 generator_full = 3
 
@@ -151,12 +152,12 @@ generator_full = 3
 def deactivate_generator():
     """Performs one turn worth of deactivation of the generator."""
     verb = "continue"
+    global generator_health
     if generator_health == generator_full:
         verb = "begin"
         the.messages.add("A defender materializes nearby.")
         the.world.spawn_monster('z', near=the.world.hero_location)
     the.messages.add("You %s deactivating the shield generator." % verb)
-    global generator_health
     generator_health -= 1
     if generator_health == 0:
         the.messages.add("You win!")
