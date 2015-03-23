@@ -34,11 +34,8 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
             [X] Make damage be random?
         [X] Add a melee attack to the hero.
 [ ] Step 8 - Data files
-    [ ] Move the creature, map features, etc. definitions to data files. Forget
-        about scripting for now. If something cannot be moved -- just leave it
-        for now.
-    [ ] Move creature spawning to the "engine"?
-    [ ] Move the map generation to a new module?
+    [X] Add zombie dogs.
+    [ ] Add cyborgs.
 [ ] Step 9 - Items
     [ ] Add ites. For start, just objects you can pick up -- no properties.
     [ ] Gradually give them properties, kinds, stats, etc.
