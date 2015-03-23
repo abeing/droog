@@ -29,7 +29,9 @@ class World(object):
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(tile.make_empty())
-        self._add_monster()
+        self.spawn_monster('z')
+        self.spawn_monster('z')
+        self.spawn_monster('z', self.hero_location)
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -165,25 +167,6 @@ class World(object):
                 for x in range(self.width):
                     dump_file.write(self.tiles[y][x].glyph)
                 dump_file.write("\n")
-
-    def _add_monster(self):
-        """Creates and adds a zombie monster to the map at a reasonable, random
-        location."""
-
-        attempts = 5  # We will attempt to place a zombie this number of times.
-                      # If they all fail we stop attempting to place a zombie.
-
-        y = int(random.uniform(0, self.height))
-        x = int(random.uniform(0, self.width))
-
-        monster = creature.Zombie()
-        the.turn.add_actor(monster)
-        while attempts > 0:
-            if self.tiles[y][x].walkable and self.tiles[y][x].creature is None:
-                self.tiles[y][x].creature = monster
-                monster.loc = (y, x)
-                log.info('%r placed at (%r, %r)', monster, y, x)
-            attempts -= 1
 
     def random_empty_location(self, near=None, attempts=5, radius=10):
         """Creates a random location on the map, or a random location on the
