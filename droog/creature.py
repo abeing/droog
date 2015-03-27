@@ -10,15 +10,23 @@ import world
 
 class Creature(actor.Actor):
     """The Creature class manages a creature's statistics and actions."""
-    def __init__(self, glyph, name, initial_vowel=False):
-        """Creates a creature."""
+    def __init__(self, glyph, name, initial_vowel=False, str=2, dex=2, con=2):
+        """Create a creature.
+
+        glyph -- a single single character representation, for the map
+        name -- a string representation, for elsewhere
+        initial_vowel -- when true, use 'an', not 'a' in sentences
+        str -- strength
+        dex -- dexterity
+        con -- constitution
+        """
         assert len(glyph) == 1
         self.glyph = glyph
         self.name = name
         self.initial_vowel = initial_vowel
-        self._strength = 2
-        self._dexterity = 2
-        self._constitution = 2
+        self._strength = str
+        self._dexterity = dex
+        self._constitution = con
         self.is_dead = False
         self.is_hero = False
         self.loc = (None, None)
@@ -73,7 +81,24 @@ class Creature(actor.Actor):
 class Zombie(Creature):
     """Zombie creature."""
     def __init__(self):
-        super(Zombie, self).__init__('Z', 'zombie')
+        """Create a zombie.
+
+        A zombie uses the average stat array and then raises one stat to three.
+        """
+        str = 2
+        dex = 2
+        con = 2
+        improvement = random.choice(['str', 'dex', 'con'])
+        if improvement == 'str':
+            str = 3
+            name = "strong zombie"
+        if improvement == 'dex':
+            dex = 3
+            name = "fast zombie"
+        if improvement == 'con':
+            con = 3
+            name = "hardy zombie"
+        super(Zombie, self).__init__('Z', name, str=str, dex=dex, con=con)
 
     def act(self):
         """Zombies use the following decision tree:
@@ -107,7 +132,7 @@ class Zombie(Creature):
 class ZombieDog(Creature):
     """Zombie dog."""
     def __init__(self):
-        super(ZombieDog, self).__init__('d', 'zombie dog')
+        super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
 
     def act(self):
         """Zombie dogs use the following decision tree:
@@ -141,7 +166,7 @@ class ZombieDog(Creature):
 class Cop(Creature):
     """Cop."""
     def __init__(self):
-        super(Cop, self).__init__('C', 'cop')
+        super(Cop, self).__init__('C', 'cop', str=3, dex=1, con=3)
 
     def act(self):
         """Cops use the following decision tree:
