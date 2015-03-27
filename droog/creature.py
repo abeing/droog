@@ -136,3 +136,37 @@ class ZombieDog(Creature):
             if not cost == 0:
                 return cost
         return 6  # If the creature fails to move, it stands areound a while.
+
+
+class Cop(Creature):
+    """Cop."""
+    def __init__(self):
+        super(Cop, self).__init__('C', 'cop')
+
+    def act(self):
+        """Cops use the following decision tree:
+
+        1) If adjacent to the hero, punch her.
+        2) If within 30 steps of the hero, move towards her.
+        3) Otherwise, move randomly."""
+        if self.loc:
+            (old_y, old_x) = self.loc
+            (hero_y, hero_x) = the.world.hero_location
+
+            # 1) If adjacant to the hero, bite her.
+            if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
+                return engine.attack_punch(self, the.hero)
+
+            # 2) If within 30 steps of the hero, move towards her.
+            elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:
+                delta_y = 1 if (hero_y - old_y > 0) else -1
+                delta_x = 1 if (hero_x - old_x > 0) else -1
+
+            # 3) Otherwise, move randomly.
+            else:
+                delta_y = random.choice([-1, 0, 1])
+                delta_x = random.choice([-1, 0, 1])
+            cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
+            if not cost == 0:
+                return cost
+        return 6  # If the creature fails to move, it stands areound a while.

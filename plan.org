@@ -35,7 +35,9 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
         [X] Add a melee attack to the hero.
 [ ] Step 8 - Data files
     [X] Add zombie dogs.
-    [ ] Add cyborgs.
+    [X] Add cyborgs.
+    [ ] Extend wizard command to spawn zombie dogs and cops. 
+    [ ] Modify zombie dog and cop initial stats.
 [ ] Step 9 - Items
     [ ] Add ites. For start, just objects you can pick up -- no properties.
     [ ] Gradually give them properties, kinds, stats, etc.

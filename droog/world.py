@@ -29,10 +29,12 @@ class World(object):
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(tile.make_empty())
-        self.spawn_monster('z')
-        self.spawn_monster('z')
+        self.spawn_monster('Z')
+        self.spawn_monster('Z')
         self.spawn_monster('d')
         self.spawn_monster('d')
+        self.spawn_monster('C')
+        self.spawn_monster('C')
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -194,13 +196,15 @@ class World(object):
         location = self.random_empty_location(near)
         self.hero_location = location
 
-    def spawn_monster(self, monster_class='z', near=None):
+    def spawn_monster(self, monster_class='Z', near=None):
         """Spawns a monster on the map."""
         monster = None
-        if monster_class == 'z':
+        if monster_class == 'Z':
             monster = creature.Zombie()
         if monster_class == 'd':
             monster = creature.ZombieDog()
+        if monster_class == 'C':
+            monster = creature.Cop()
 
         location = self.random_empty_location(near)
         if location is None:

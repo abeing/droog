@@ -52,16 +52,18 @@ def ap_mod(original_ap, dexterity):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    the.messages.add("%s bites %s." % (definite_creature(attacker),
-                                       definite_creature(defender)))
+    the.messages.add("%s %s %s." % (definite_creature(attacker),
+                                    conjugate_verb(attacker, 'bite'),
+                                    definite_creature(defender)))
     inflict_damage(defender)
     return 8
 
 
 def attack_punch(attacker, defender):
     """Performs a punch attack by the attacker onto the defener."""
-    the.messages.add("%s punch %s." % (definite_creature(attacker),
-                                       definite_creature(defender)))
+    the.messages.add("%s %s %s." % (definite_creature(attacker),
+                                    conjugate_verb(attacker, 'punch'),
+                                    definite_creature(defender)))
     inflict_damage(defender)
     return 8
 
@@ -142,6 +144,23 @@ def indefinite_creature(who):
     if who.initial_vowel:
         article = "an"
     return article + " " + name
+
+CONJUGATIONS = {'bite': ("bite", "bites"),
+                'punch': ("punch", "punches")}
+
+
+def conjugate_verb(subject, verb):
+    """Returns the conjugation of the verb for a given subject.
+
+    The verb should be provided in the infinitive.
+    """
+    global CONJUGATIONS
+    if verb not in CONJUGATIONS:
+        return verb
+    if subject.is_hero:
+        return CONJUGATIONS[verb][0]
+    else:
+        return CONJUGATIONS[verb][1]
 
 
 # Shield generator stats
