@@ -14,6 +14,16 @@ STATUS_COLUMNS = 47
 
 LOG = logging.getLogger(__name__)
 
+"""Maps glyphs to color pair indicies."""
+COLOR_MAP = {'Z': 3,
+             'd': 3,
+             'C': 6,
+             '.': 2,
+             '#': 3,
+             '~': 4,
+             'G': 6
+             }
+
 
 class Curses(object):
     """The UserInterface class manages the drawing to curses and input from the
@@ -129,16 +139,9 @@ class Curses(object):
     def glyph_color(self, glyph):
         """Looks up the color for a glyph and sets the specified color pair to
         be that color."""
-        if glyph == 'Z':
-            return curses.color_pair(3)
-        if glyph == '.':
-            return curses.color_pair(2)
-        if glyph == '#':
-            return curses.color_pair(3)
-        if glyph == '~':
-            return curses.color_pair(4)
-        if glyph == 'G':
-            return curses.color_pair(6)
+        global COLOR_MAP
+        if glyph in COLOR_MAP:
+            return curses.color_pair(COLOR_MAP[glyph])
         return curses.color_pair(0)
 
     def map_bounds(self, world):
