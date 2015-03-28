@@ -206,6 +206,11 @@ class World(object):
         if monster_class == 'C':
             monster = creature.Cop()
 
+        if not monster:
+            log.error("Unknown monster class %r. Could not spawn.",
+                      monster_class)
+            return False
+
         location = self.random_empty_location(near)
         if location is None:
             return False

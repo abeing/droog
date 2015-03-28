@@ -112,6 +112,7 @@ class Curses(object):
                                                    width,
                                                    self.area_height + 1
                                                    + MESSAGE_ROWS, 0)
+        self._status_persist = False
 
         # The hero will always be present in the center.
         self.hero_x_offset = self.area_width / 2
@@ -191,11 +192,28 @@ class Curses(object):
                                 '@', curses.A_REVERSE)
         self.area_window.refresh()
 
-    def draw_status(self, status_message):
-        """Draws the status message, if any."""
+    def draw_status(self, status_message, persist=False):
+        """Draw a status message.
+
+        Generally this will be the time. Occasionally, we want to override the
+        typical status message with a more persistant one, but we don't want to
+        pause for user input. For that, we can persist a message over two
+        updates instead.
+
+        status_message -- a status message string
+        persist -- ignore the next message
+
+        """
+        if self._status_persist:
+            self._status_persist = False
+            LOG.info("Ignoring new status message due to previous, persistant"
+                     " message.")
+            LOG.info("Ignored status message: %s", status_message)
+            return
         self.status_line.addstr(0, 0, status_message)
         self.status_line.clrtoeol()
         self.status_line.refresh()
+        self._status_persist = persist
 
     def draw_hero(self, hero):
         """Draws the hero information window. Does not draw the actual @
@@ -276,7 +294,7 @@ class Curses(object):
                 self.area_window.refresh()
             command = self.input()
         curses.curs_set(0)
-        self.draw_status("Done looking around.")
+        self.draw_status("Done looking around.", persist=True)
 
     def input(self):
         """Returns when the user types a character on the keyboard."""
@@ -289,8 +307,10 @@ class Curses(object):
         if command == 's':
             self.draw_status("Summon what?")
             monster = self.input()
-            if monster == 'z':
-                world.spawn_monster('z', near=world.hero_location)
+            LOG.info("Spawning a %r near the hero.", monster)
+            if not world.spawn_monster(monster, near=world.hero_location):
+                self.draw_status("I know not how to spawn a %s, wizard." %
+                                 monster, persist=True)
         if command == 't':
             self.draw_status("Teleport where?")
             location = self.input()
