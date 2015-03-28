@@ -9,6 +9,7 @@ import the
 LOG = logging.getLogger(__name__)
 SECONDS_PER_TURN = 1
 
+
 class Clock(actor.Actor):
     """Tracks the current turn and in-game time."""
 

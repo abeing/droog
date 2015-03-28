@@ -1,11 +1,14 @@
 """The creature module defines the general Creature class as well as individual
 creature types."""
 
+import logging
 import actor
 import engine
 import random
 import the
 import world
+
+log = logging.getLogger(__name__)
 
 
 class Creature(actor.Actor):
@@ -129,6 +132,9 @@ class Zombie(Creature):
             else:
                 delta_y = random.choice([-1, 0, 1])
                 delta_x = random.choice([-1, 0, 1])
+
+            log.info("%r wants to move from (%r, %r) by (%r, %r).",
+                     self.name, old_y, old_x, delta_y, delta_x)
             cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
             if not cost == 0:
                 return cost
@@ -148,6 +154,7 @@ class ZombieDog(Creature):
         3) Otherwise, move randomly."""
         if self.loc:
             (old_y, old_x) = self.loc
+            log
             (hero_y, hero_x) = the.world.hero_location
 
             # 1) If adjacant to the hero, bite her.
@@ -163,6 +170,9 @@ class ZombieDog(Creature):
             else:
                 delta_y = random.choice([-1, 0, 1])
                 delta_x = random.choice([-1, 0, 1])
+
+            log.info("%r wants to move from (%r, %r) by (%r, %r).",
+                     self.name, old_y, old_x, delta_y, delta_x)
             cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
             if not cost == 0:
                 return cost
@@ -197,6 +207,9 @@ class Cop(Creature):
             else:
                 delta_y = random.choice([-1, 0, 1])
                 delta_x = random.choice([-1, 0, 1])
+
+            log.info("%r wants to move from (%r, %r) by (%r, %r).",
+                     self.name, old_y, old_x, delta_y, delta_x)
             cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
             if not cost == 0:
                 return cost

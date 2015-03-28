@@ -241,8 +241,6 @@ class Curses(object):
             a_message = messages.get()
             words = a_message.split()
             for word in words:
-                LOG.info("line %r col %r", self.message_row,
-                         self.message_column)
                 if self.message_column + len(word) > width:
                     self.message_row += 1
                     self.message_column = 0

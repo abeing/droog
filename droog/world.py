@@ -29,12 +29,6 @@ class World(object):
             self.tiles.append(list())
             for x in range(width):
                 self.tiles[y].append(tile.make_empty())
-        self.spawn_monster('Z')
-        self.spawn_monster('Z')
-        self.spawn_monster('d')
-        self.spawn_monster('d')
-        self.spawn_monster('C')
-        self.spawn_monster('C')
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
@@ -73,6 +67,7 @@ class World(object):
         if self.is_valid_location(y, x):
             return self.tiles[y][x].creature
         else:
+            log.warning("No creature found at (%r, %r)", y, x)
             return None
 
     def description_at(self, y, x):
@@ -234,12 +229,14 @@ def distance_between(y1, x1, y2, x2):
     delta_x = abs(x2 - x1)
     return math.sqrt(delta_y + delta_x)
 
+
 def _add_shield_generator(a_world):
     """Places a shield generator in the center of the map."""
     y = a_world.height / 2
     x = a_world.width / 2
     a_world.tiles[y][x] = tile.make_shield_generator()
     a_world.generator_location = (y, x)
+
 
 def _add_shield(a_world):
     """Creates the shield border around the navigable map."""
