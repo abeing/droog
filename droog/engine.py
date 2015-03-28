@@ -52,20 +52,14 @@ def ap_mod(original_ap, dexterity):
 
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
-    the.messages.add("%s %s %s." % (definite_creature(attacker),
-                                    conjugate_verb(attacker, 'bite'),
-                                    definite_creature(defender)))
-    inflict_damage(defender)
-    return 8
+    melee_attack(attacker, defender, 'bite')
+    return 2
 
 
 def attack_punch(attacker, defender):
     """Performs a punch attack by the attacker onto the defener."""
-    the.messages.add("%s %s %s." % (definite_creature(attacker),
-                                    conjugate_verb(attacker, 'punch'),
-                                    definite_creature(defender)))
-    melee_attack(attacker, defender, None)
-    return 8
+    melee_attack(attacker, defender, 'punch')
+    return 2
 
 
 # Attributes should be between 1 and 4, inclusive.
@@ -78,16 +72,16 @@ def is_valid_attribute(attribute):
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
 
 
-def melee_attack(attacker, victim, weapon=None):
+def melee_attack(attacker, defender, weapon='punch'):
     """Perform a melee attack.
 
     Attacker rolls 1d6 + weapon offense + max(str, dex)
 
     attacker -- the higher of their strength and dexterity is used
-    victim -- at the moment, this is ignored
-    weapon -- at the moment, we support None only
+    defender -- at the moment, this is ignored
+    weapon -- at the moment, this is a string describing the attack
     """
-    LOG.info("Melee attack from %r to %r using %r", attacker, victim, 'fists')
+    LOG.info("Melee attack from %r to %r using %r", attacker, defender, weapon)
     attacker_bonus = max(attacker.strength, attacker.dexterity)
     LOG.info("Melee attacker strength=%r and dexterity=%r gives attack bonus"
              " of %r", attacker.strength, attacker.dexterity, attacker_bonus)
@@ -97,10 +91,17 @@ def melee_attack(attacker, victim, weapon=None):
     LOG.info("Melee attack %r (%r die roll + %r attacker bonus + %r weapon"
              " bonus)", attack_magnitude, attack_roll, attacker_bonus,
              weapon_bonus)
-    if attack_roll >= 6:
+    if attack_magnitude >= 6:
         LOG.info("Melee attack hit with %r.", attack_magnitude)
-        inflict_damage(victim)
+        the.messages.add("%s %s %s." % (definite_creature(attacker),
+                         conjugate_verb(attacker, weapon),
+                         definite_creature(defender)))
+        inflict_damage(defender)
+        return True
     LOG.info("Melee attack MISSED with %r", attack_magnitude)
+    the.messages.add("%s %s missed %s" % (possessive(attacker), weapon,
+                     definite_creature(defender)))
+    return False
 
 
 def inflict_damage(victim):
