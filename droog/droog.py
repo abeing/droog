@@ -41,7 +41,8 @@ def main():
         the.messages.add("Press ? for help.")
         refresh(ui_object)
         while the.turn.next():
-            refresh(ui_object)
+            if the.turn.hero_just_moved:
+                refresh(ui_object)
         refresh(ui_object)
         ui_object.input()
 
