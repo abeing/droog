@@ -30,6 +30,12 @@ class Creature(actor.Actor):
         self.is_dead = False
         self.is_hero = False
         self.loc = (None, None)
+        self.is_weakened = False
+        self.is_hobbled = False
+        self.is_bleeding = False
+        self.is_dazed = False
+        self.is_diseased = False
+        self.is_burning = False
         super(Creature, self).__init__()
 
     def act(self):

@@ -64,7 +64,7 @@ def attack_punch(attacker, defender):
     the.messages.add("%s %s %s." % (definite_creature(attacker),
                                     conjugate_verb(attacker, 'punch'),
                                     definite_creature(defender)))
-    inflict_damage(defender)
+    melee_attack(attacker, defender, None)
     return 8
 
 
@@ -76,6 +76,31 @@ ATTRIBUTE_MIN = 1
 def is_valid_attribute(attribute):
     """Verifies if an attribute is in a valid range."""
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
+
+
+def melee_attack(attacker, victim, weapon=None):
+    """Perform a melee attack.
+
+    Attacker rolls 1d6 + weapon offense + max(str, dex)
+
+    attacker -- the higher of their strength and dexterity is used
+    victim -- at the moment, this is ignored
+    weapon -- at the moment, we support None only
+    """
+    LOG.info("Melee attack from %r to %r using %r", attacker, victim, 'fists')
+    attacker_bonus = max(attacker.strength, attacker.dexterity)
+    LOG.info("Melee attacker strength=%r and dexterity=%r gives attack bonus"
+             " of %r", attacker.strength, attacker.dexterity, attacker_bonus)
+    weapon_bonus = 0  # Fists only
+    attack_roll = random.randint(1, 6)
+    attack_magnitude = attack_roll + attacker_bonus + weapon_bonus
+    LOG.info("Melee attack %r (%r die roll + %r attacker bonus + %r weapon"
+             " bonus)", attack_magnitude, attack_roll, attacker_bonus,
+             weapon_bonus)
+    if attack_roll >= 6:
+        LOG.info("Melee attack hit with %r.", attack_magnitude)
+        inflict_damage(victim)
+    LOG.info("Melee attack MISSED with %r", attack_magnitude)
 
 
 def inflict_damage(victim):
