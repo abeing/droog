@@ -112,7 +112,7 @@ class Curses(object):
                                                    width,
                                                    self.area_height + 1
                                                    + MESSAGE_ROWS, 0)
-        self._status_persist = False
+        self.status = ""
 
         # The hero will always be present in the center.
         self.hero_x_offset = self.area_width / 2
@@ -192,7 +192,7 @@ class Curses(object):
                                 '@', curses.A_REVERSE)
         self.area_window.refresh()
 
-    def draw_status(self, status_message, persist=False):
+    def draw_status(self, message=None, time=None):
         """Draw a status message.
 
         Generally this will be the time. Occasionally, we want to override the
@@ -204,16 +204,13 @@ class Curses(object):
         persist -- ignore the next message
 
         """
-        if self._status_persist:
-            self._status_persist = False
-            LOG.info("Ignoring new status message due to previous, persistant"
-                     " message.")
-            LOG.info("Ignored status message: %s", status_message)
-            return
-        self.status_line.addstr(0, 0, status_message)
+        if time:
+            self.status_line.addstr(0, 0, time)
+        if message:
+            self.status = message
+        self.status_line.addstr(0, 10, self.status)
         self.status_line.clrtoeol()
         self.status_line.refresh()
-        self._status_persist = persist
 
     def draw_hero(self, hero):
         """Draws the hero information window. Does not draw the actual @
@@ -262,7 +259,7 @@ class Curses(object):
         around the map area with the cursor-movement keys. While looking, the
         status line updates with information about whatever is under the cursor
         at the time."""
-        self.draw_status("Looking around (using the movement keys).")
+        self.draw_status(message="Looking around (using the movement keys).")
         max_y, max_x = self.area_window.getmaxyx()
         y = self.hero_y_offset
         x = self.hero_x_offset
@@ -292,25 +289,26 @@ class Curses(object):
                 self.area_window.refresh()
             command = self.input()
         curses.curs_set(0)
-        self.draw_status("Done looking around.", persist=True)
+        self.draw_status("Done looking around.")
 
     def input(self):
         """Returns when the user types a character on the keyboard."""
+        self.status = ""
         return chr(self.main_window.getch())
 
     def wizard(self, world):
         """Parses a wizard command."""
-        self.draw_status("What doest thou want, wizard?")
+        self.draw_status(message="What doest thou want, wizard?")
         command = self.input()
         if command == 's':
-            self.draw_status("Summon what?")
+            self.draw_status(message="Summon what?")
             monster = self.input()
             LOG.info("Spawning a %r near the hero.", monster)
             if not world.spawn_monster(monster, near=world.hero_location):
                 self.draw_status("I know not how to spawn a %s, wizard." %
-                                 monster, persist=True)
+                                 monster)
         if command == 't':
-            self.draw_status("Teleport where?")
+            self.draw_status(message="Teleport where?")
             location = self.input()
             if location == 'g':
                 world.teleport_hero(world.generator_location)

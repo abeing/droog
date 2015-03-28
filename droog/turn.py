@@ -52,7 +52,6 @@ class Turn(object):
         self._queue = Queue.PriorityQueue()
         self._clock = Clock()
         self.add_actor(self._clock)
-        self.hero_just_moved = False
 
     def next(self):
         """Advances to the turn."""
@@ -61,7 +60,6 @@ class Turn(object):
             sys.exit(1)
         (_, an_actor) = self._queue.get()  # Ignoring priority
         LOG.info("It is time for %r to act.", an_actor)
-        self.hero_just_moved = getattr(an_actor, "is_hero", False)
         action_cost = an_actor.act()
 
         # check for death
