@@ -200,7 +200,7 @@ class Cop(Creature):
 
             # 1) If adjacant to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return engine.attack(self, the.hero, None)
+                pass  # Cops at the moment don't have an attck.
 
             # 2) If within 30 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:

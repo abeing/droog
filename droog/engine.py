@@ -57,18 +57,6 @@ def attack(attacker, defender, weapon):
     return 2
 
 
-def attack_bite(attacker, defender):
-    """Performs a bite attack by the attacker onto the defender."""
-    melee_attack(attacker, defender, 'bite')
-    return 2
-
-
-def attack_punch(attacker, defender):
-    """Performs a punch attack by the attacker onto the defener."""
-    melee_attack(attacker, defender, 'punch')
-    return 2
-
-
 # Attributes should be between 1 and 4, inclusive.
 ATTRIBUTE_MAX = 4
 ATTRIBUTE_MIN = 1

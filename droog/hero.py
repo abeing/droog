@@ -3,6 +3,7 @@ import sys
 import the
 import engine
 import creature
+import weapon
 
 
 class Hero(creature.Creature):
@@ -12,6 +13,7 @@ class Hero(creature.Creature):
         super(Hero, self).__init__('@', name)
         self.user_interface = user_interface
         self.is_hero = True
+        self.weapon = weapon.make_unarmed()
 
     def __repr__(self):
         return "the hero %s" % self.name
@@ -34,4 +36,4 @@ class Hero(creature.Creature):
 
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
-        return engine.attack_punch(self, target)
+        return engine.attack(self, target, self.weapon)
