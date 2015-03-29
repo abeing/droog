@@ -71,11 +71,25 @@ def is_valid_attribute(attribute):
     """Verifies if an attribute is in a valid range."""
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
 
+# This is the threshold for a melee hit
+MELEE_TOHIT = 4
+
 
 def melee_attack(attacker, defender, weapon='punch'):
     """Perform a melee attack.
 
-    Attacker rolls 1d6 + weapon offense + max(str, dex)
+    - Melee offense is the higher of the attacker's strength and dexterity.
+    - Melee defense is the higher of the defender's strength and dexterity.
+    - Attacker rolls 1d6 + weapon offense + melee offense - melee defense
+    - On a 4 or higher, randomly determine one of the defenders stats, then:
+      - For strength, apply weakened condition
+      - For dexterity, apply hobbled condition
+      - For constitution, apply the weapon's special damage
+    - On a 3 or less, determine a miss reason by adding to a list:
+      - One "dodge" for each dexterity point the defender has.
+      - One "parry" for each strength point the defender has.
+      - Two "miss"
+      - Choosing one of those.
 
     attacker -- the higher of their strength and dexterity is used
     defender -- at the moment, this is ignored
@@ -83,24 +97,28 @@ def melee_attack(attacker, defender, weapon='punch'):
     """
     LOG.info("Melee attack from %r to %r using %r", attacker, defender, weapon)
     attacker_bonus = max(attacker.strength, attacker.dexterity)
-    LOG.info("Melee attacker strength=%r and dexterity=%r gives attack bonus"
-             " of %r", attacker.strength, attacker.dexterity, attacker_bonus)
+    defender_penalty = max(defender.strength, defender.dexterity)
     weapon_bonus = 0  # Fists only
     attack_roll = random.randint(1, 6)
-    attack_magnitude = attack_roll + attacker_bonus + weapon_bonus
+    attack_magnitude = attack_roll + attacker_bonus + weapon_bonus - \
+        defender_penalty
     LOG.info("Melee attack %r (%r die roll + %r attacker bonus + %r weapon"
-             " bonus)", attack_magnitude, attack_roll, attacker_bonus,
-             weapon_bonus)
-    if attack_magnitude >= 6:
-        LOG.info("Melee attack hit with %r.", attack_magnitude)
+             " bonus - %r defender penalty)", attack_magnitude, attack_roll,
+             attacker_bonus, weapon_bonus, defender_penalty)
+    if attack_magnitude >= MELEE_TOHIT:
         the.messages.add("%s %s %s." % (definite_creature(attacker),
                          conjugate_verb(attacker, weapon),
                          definite_creature(defender)))
         inflict_damage(defender)
         return True
-    LOG.info("Melee attack MISSED with %r", attack_magnitude)
-    the.messages.add("%s %s missed %s" % (possessive(attacker), weapon,
-                     definite_creature(defender)))
+
+    # Determine "why" we missed.
+    miss_reason = random.choice(["missed"] * 2 +
+                                ["was dodged by"] * defender.dexterity +
+                                ["was parried by"] * defender.strength)
+    LOG.info("Melee attack %r %r", miss_reason, attack_magnitude)
+    the.messages.add("%s %s %s %s" % (possessive(attacker), weapon,
+                     miss_reason, definite_creature(defender)))
     return False
 
 

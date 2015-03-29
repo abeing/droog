@@ -108,7 +108,18 @@ Ranged Attacks
 
 Melee Attacks
 -------------
-- Attacker rolls 1d6 + weapon offense + max(str, dex)
+- Melee offense is the higher of the attacker's strength and dexterity.
+- Melee defense is the higher of the defender's strength and dexterity.
+- Attacker rolls 1d6 + weapon offense + melee offense - melee defense
+- On a 4 or higher, randomly determine one of the defenders stats, then:
+  - For strength, apply weakened condition
+  - For dexterity, apply hobbled condition
+  - For constitution, apply the weapon's special damage
+- On a 3 or less, determine a miss reason by adding to a list:
+  - One "dodge" for each dexterity point the defender has.
+  - One "parry" for each strength point the defender has.
+  - Two "miss"
+  - Choosing one of those.
 
 Damage
 ------
