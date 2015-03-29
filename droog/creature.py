@@ -7,6 +7,7 @@ import engine
 import random
 import the
 import world
+import weapon
 
 log = logging.getLogger(__name__)
 
@@ -107,6 +108,7 @@ class Zombie(Creature):
         if improvement == 'con':
             con = 3
             name = "hardy zombie"
+        self.weapons = [weapon.make_bite(), weapon.make_unarmed()]
         super(Zombie, self).__init__('Z', name, str=str, dex=dex, con=con)
 
     def act(self):
@@ -121,7 +123,8 @@ class Zombie(Creature):
 
             # 1) If adjacent to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return engine.attack_bite(self, the.hero)
+                return engine.attack(self, the.hero,
+                                     random.choice(self.weapons))
 
             # 2) If within 15 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
@@ -144,6 +147,7 @@ class Zombie(Creature):
 class ZombieDog(Creature):
     """Zombie dog."""
     def __init__(self):
+        self.weapon = weapon.make_bite()
         super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
 
     def act(self):
@@ -159,7 +163,7 @@ class ZombieDog(Creature):
 
             # 1) If adjacant to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return engine.attack_bite(self, the.hero)
+                return engine.attack(self, the.hero, self.weapon)
 
             # 2) If within 30 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:
@@ -196,7 +200,7 @@ class Cop(Creature):
 
             # 1) If adjacant to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return engine.attack_punch(self, the.hero)
+                return engine.attack(self, the.hero, None)
 
             # 2) If within 30 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:

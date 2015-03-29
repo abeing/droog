@@ -4,6 +4,7 @@ This module provides the Tile class representing map tiles and various factory
 functions to create different types of tiles.
 """
 
+
 class Tile(object):
     """Representation of a map tile."""
     def __init__(self, glyph, description, walkable):

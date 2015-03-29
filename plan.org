@@ -42,11 +42,11 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
   - [X] Fix damage to not occur 100% of the time but to be based on stats.
 - [ ] Step 9 - Items
   - [ ] Milestone 9.1 - Damage types
-    - [ ] Strength and dexterity will count for melee defense
-    - [ ] Implement Weapon class
-    - [ ] Add Punch Weapon
+    - [X] Strength and dexterity will count for melee defense
+    - [X] Implement Weapon class
+    - [X] Add Punch Weapon
     - [ ] Add dazed condition
-    - [ ] Add Bite Weapon
+    - [X] Add Bite Weapon
     - [ ] Add diseased condition
     - [ ] Implement Item class
     - [ ] Add Knife item

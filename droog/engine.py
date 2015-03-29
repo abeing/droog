@@ -50,6 +50,13 @@ def ap_mod(original_ap, dexterity):
     return modified_ap
 
 
+def attack(attacker, defender, weapon):
+    """Perform an attack by the attacker onto the defender using weapon."""
+    assert weapon.range == 1  # We only support melee weapons at the moment.
+    melee_attack(attacker, defender, random.choice(weapon.verbs))
+    return 2
+
+
 def attack_bite(attacker, defender):
     """Performs a bite attack by the attacker onto the defender."""
     melee_attack(attacker, defender, 'bite')
@@ -190,7 +197,9 @@ def indefinite_creature(who):
     return article + " " + name
 
 CONJUGATIONS = {'bite': ("bite", "bites"),
-                'punch': ("punch", "punches")}
+                'punch': ("punch", "punches"),
+                'chomp': ("chomp", "chomps"),
+                'kick': ("kick", 'kicks')}
 
 
 def conjugate_verb(subject, verb):
