@@ -187,7 +187,11 @@ def indefinite_creature(who):
 CONJUGATIONS = {'bite': ("bite", "bites"),
                 'punch': ("punch", "punches"),
                 'chomp': ("chomp", "chomps"),
-                'kick': ("kick", 'kicks')}
+                'kick': ("kick", "kicks"),
+                'slash': ("slash", "slashes"),
+                'stab': ("stab", "stabs"),
+                'jab': ("jab", "jabs"),
+                'slice': ("slice", "slices")}
 
 
 def conjugate_verb(subject, verb):

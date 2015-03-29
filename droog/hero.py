@@ -13,7 +13,7 @@ class Hero(creature.Creature):
         super(Hero, self).__init__('@', name)
         self.user_interface = user_interface
         self.is_hero = True
-        self.weapon = weapon.make_unarmed()
+        self.weapon = weapon.make_knife()
 
     def __repr__(self):
         return "the hero %s" % self.name
