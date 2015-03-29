@@ -33,22 +33,30 @@ See: http://www.roguebasin.com/index.php?title=How_to_Write_a_Roguelike_in_15_St
             [X] Implement player death
             [X] Make damage be random?
         [X] Add a melee attack to the hero.
-[ ] Step 8 - Data files
-    - [X] Add zombie dogs.
-    - [X] Add cyborgs.
-    - [X] Have zombie dogs and cops be different colors.
-    - [X] Modify zombie dog and cop initial stats.
-    - [X] Extend wizard command to spawn zombie dogs and cops.
-    - [X] Fix damage to not occur 100% of the time but to be based on stats.
-    - [ ] Add zombie plague.
-[ ] Step 9 - Items
-    [ ] Add ites. For start, just objects you can pick up -- no properties.
-    [ ] Gradually give them properties, kinds, stats, etc.
-    [ ] Implement inventory
-    [ ] Implement picking up and dropping.
-    [ ] Equipping and using (no effects yet)
-    [ ] Also add stacking
-    [ ] Containers (if you want them), etc?
+- [ ] Step 8 - Data files
+  - [X] Add zombie dogs.
+  - [X] Add cyborgs.
+  - [X] Have zombie dogs and cops be different colors.
+  - [X] Modify zombie dog and cop initial stats.
+  - [X] Extend wizard command to spawn zombie dogs and cops.
+  - [X] Fix damage to not occur 100% of the time but to be based on stats.
+- [ ] Step 9 - Items
+  - [ ] Milestone 9.1 - Damage types
+    - [ ] Strength and dexterity will count for melee defense
+    - [ ] Implement Weapon class
+    - [ ] Add Punch Weapon
+    - [ ] Add dazed condition
+    - [ ] Add Bite Weapon
+    - [ ] Add diseased condition
+    - [ ] Implement Item class
+    - [ ] Add Knife item
+    - [ ] Add bleeding condition
+    - [ ] Improve the character sheet and inventory screen
+  - [ ] Milestone 9.2 - Item iteration
+    - [ ] Spawn medical kits in the world
+    - [ ] Implement pick up command
+    - [ ] Implement use command
+    - [ ] Implement medical kit usage
 [ ] Step 10 - Magic
     [ ] Add item effects.
     [ ] Add special monster attacks
