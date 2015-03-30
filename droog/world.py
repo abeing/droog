@@ -70,6 +70,13 @@ class World(object):
             log.warning("No creature found at (%r, %r)", y, x)
             return None
 
+    def item_at(self, y, x):
+        """Return the top item at the specified location."""
+        if self.is_valid_location(y, x):
+            if self.tiles[y][x].items:
+                return self.tiles[y][x].items[0]
+        return None
+
     def description_at(self, y, x):
         """Return a description of the location specified.
 
@@ -223,6 +230,12 @@ class World(object):
         """Removes a monster from the map, for example when it dies."""
         (monster_y, monster_x) = monster.loc
         self.tiles[monster_y][monster_x].creature = None
+
+    def add_item(self, location, item):
+        """Add an item to a location."""
+        (y, x) = location
+        assert self.is_valid_location(y, x)
+        self.tiles[y][x].items.append(item)
 
 
 def distance_between(y1, x1, y2, x2):

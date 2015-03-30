@@ -185,6 +185,11 @@ class Curses(object):
                     self.area_window.addstr(y - top, x - left,
                                             creature.glyph,
                                             self.glyph_color(creature.glyph))
+                item = world.item_at(y, x)
+                if item:
+                    self.area_window.addstr(y - top, x - left,
+                                            item.glyph,
+                                            self.glyph_color(item.glyph))
 
         # The hero is drawn in the center last so we can always see him or
         # her. The curses is then placed on top of the hero for visual
@@ -313,7 +318,8 @@ class Curses(object):
         self.draw_status(message="Drop what?")
         alpha = self.input()
         index = alpha_to_index(alpha)
-        hero.inventory.pop(index)
+        item = hero.inventory.pop(index)
+        world.add_item(world.hero_location, item)
 
     def wizard(self, world):
         """Parses a wizard command."""
