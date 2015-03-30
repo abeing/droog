@@ -14,6 +14,9 @@ class Hero(creature.Creature):
         self.user_interface = user_interface
         self.is_hero = True
         self.weapon = item.make_knife()
+        self.inventory.append(item.make_knife())
+        self.inventory.append(item.make_knife())
+        self.inventory.append(item.make_knife())
 
     def __repr__(self):
         return "the hero %s" % self.name

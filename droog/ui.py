@@ -222,12 +222,17 @@ class Curses(object):
         self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
         self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter)
         self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
-        self.hero_window.addstr(9, 0, "Equipped:")
-        self.hero_window.addstr(10, 1, "Knife")
-        self.hero_window.addstr(11, 0, "Inventory:")
-        self.hero_window.addstr(12, 1, "9mm pistol (6)")
-        self.hero_window.addstr(13, 1, "2 pistol clips")
+        self.draw_inventory(hero.inventory)
         self.hero_window.refresh()
+
+    def draw_inventory(self, inventory):
+        """Draw the hero's inventory in the hero screen."""
+        index = 0
+        for item in inventory:
+            self.hero_window.addstr(9 + index, 0,
+                                    '%s - %s' % (index_to_alpha(index),
+                                                 item.name))
+            index += 1
 
     def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
@@ -345,6 +350,16 @@ class Curses(object):
     def redraw(self):
         """Redraw the windows."""
         self.main_window.redrawwin()
+
+
+def index_to_alpha(index):
+    """Convert a list index into an alphabetic character."""
+    return chr(index + 97)
+
+
+def alpha_to_index(alpha):
+    """Convert an alphabetic character into a list index."""
+    return ord(alpha) - 97
 
 
 def create_meter(value, maximum):
