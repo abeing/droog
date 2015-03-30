@@ -50,10 +50,10 @@ def ap_mod(original_ap, dexterity):
     return modified_ap
 
 
-def attack(attacker, defender, weapon):
-    """Perform an attack by the attacker onto the defender using weapon."""
-    assert weapon.range == 1  # We only support melee weapons at the moment.
-    melee_attack(attacker, defender, random.choice(weapon.verbs))
+def attack(attacker, defender, attack):
+    """Perform an attack by the attacker onto the defender using attack."""
+    assert attack.range == 1  # We only support melee weapons at the moment.
+    melee_attack(attacker, defender, random.choice(attack.verbs))
     return 2
 
 
@@ -70,7 +70,7 @@ def is_valid_attribute(attribute):
 MELEE_TOHIT = 4
 
 
-def melee_attack(attacker, defender, weapon='punch'):
+def melee_attack(attacker, defender, attack):
     """Perform a melee attack.
 
     - Melee offense is the higher of the attacker's strength and dexterity.
@@ -88,21 +88,21 @@ def melee_attack(attacker, defender, weapon='punch'):
 
     attacker -- the higher of their strength and dexterity is used
     defender -- at the moment, this is ignored
-    weapon -- at the moment, this is a string describing the attack
+    attack -- an Attack object describing this attack method
     """
-    LOG.info("Melee attack from %r to %r using %r", attacker, defender, weapon)
+    LOG.info("Melee attack from %r to %r using %r", attacker, defender, attack)
     attacker_bonus = max(attacker.strength, attacker.dexterity)
     defender_penalty = max(defender.strength, defender.dexterity)
     weapon_bonus = 0  # Fists only
     attack_roll = random.randint(1, 6)
     attack_magnitude = attack_roll + attacker_bonus + weapon_bonus - \
         defender_penalty
-    LOG.info("Melee attack %r (%r die roll + %r attacker bonus + %r weapon"
+    LOG.info("Melee attack %r (%r die roll + %r attacker bonus + %r attack"
              " bonus - %r defender penalty)", attack_magnitude, attack_roll,
              attacker_bonus, weapon_bonus, defender_penalty)
     if attack_magnitude >= MELEE_TOHIT:
         the.messages.add("%s %s %s." % (definite_creature(attacker),
-                         conjugate_verb(attacker, weapon),
+                         conjugate_verb(attacker, attack),
                          definite_creature(defender)))
         inflict_damage(defender)
         return True
@@ -112,7 +112,7 @@ def melee_attack(attacker, defender, weapon='punch'):
                                 ["was dodged by"] * defender.dexterity +
                                 ["was parried by"] * defender.strength)
     LOG.info("Melee attack %r %r", miss_reason, attack_magnitude)
-    the.messages.add("%s %s %s %s" % (possessive(attacker), weapon,
+    the.messages.add("%s %s %s %s" % (possessive(attacker), attack,
                      miss_reason, definite_creature(defender)))
     return False
 

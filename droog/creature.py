@@ -7,7 +7,7 @@ import engine
 import random
 import the
 import world
-import weapon
+import attack
 
 log = logging.getLogger(__name__)
 
@@ -108,7 +108,7 @@ class Zombie(Creature):
         if improvement == 'con':
             con = 3
             name = "hardy zombie"
-        self.weapons = [weapon.make_bite(), weapon.make_unarmed()]
+        self.weapons = [attack.make_bite(), attack.make_unarmed()]
         super(Zombie, self).__init__('Z', name, str=str, dex=dex, con=con)
 
     def act(self):
@@ -147,7 +147,7 @@ class Zombie(Creature):
 class ZombieDog(Creature):
     """Zombie dog."""
     def __init__(self):
-        self.weapon = weapon.make_bite()
+        self.weapon = attack.make_bite()
         super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
 
     def act(self):
