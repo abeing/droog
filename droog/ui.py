@@ -21,7 +21,8 @@ COLOR_MAP = {'Z': 3,
              '.': 2,
              '#': 0,
              '~': 4,
-             'G': 6
+             'G': 6,
+             ')': 5
              }
 
 
@@ -232,7 +233,13 @@ class Curses(object):
             self.hero_window.addstr(9 + index, 0,
                                     '%s - %s' % (index_to_alpha(index),
                                                  item.name))
+            self.hero_window.clrtoeol()
             index += 1
+        for row in range(9 + index, HERO_COLUMNS):
+            self.hero_window.move(row, 0)
+            self.hero_window.clrtoeol()
+
+        self.hero_window.refresh()
 
     def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
@@ -300,6 +307,13 @@ class Curses(object):
         """Returns when the user types a character on the keyboard."""
         self.status = ""
         return chr(self.main_window.getch())
+
+    def drop(self, hero, world):
+        """Drop an item."""
+        self.draw_status(message="Drop what?")
+        alpha = self.input()
+        index = alpha_to_index(alpha)
+        hero.inventory.pop(index)
 
     def wizard(self, world):
         """Parses a wizard command."""

@@ -11,7 +11,7 @@ class Hero(creature.Creature):
     user iterface to determine actions."""
     def __init__(self, name, user_interface):
         super(Hero, self).__init__('@', name)
-        self.user_interface = user_interface
+        self.ui = user_interface
         self.is_hero = True
         self.weapon = item.make_knife()
         self.inventory.append(item.make_knife())
@@ -22,19 +22,21 @@ class Hero(creature.Creature):
         return "the hero %s" % self.name
 
     def act(self):
-        command = self.user_interface.input()
-        if command in self.user_interface.movements:
-            delta_y, delta_x = self.user_interface.movements[command]
+        command = self.ui.input()
+        if command in self.ui.movements:
+            delta_y, delta_x = self.ui.movements[command]
             return the.world.move_hero(delta_y, delta_x)
         if command == '/':
-            self.user_interface.look(the.world)
+            self.ui.look(the.world)
             return 0
+        if command == 'd':
+            self.ui.drop(self, the.world)
         if command == '~':
-            self.user_interface.wizard(the.world)
+            self.ui.wizard(the.world)
         if command == 'q':
             sys.exit(0)
         if command == '?':
-            self.user_interface.help()
+            self.ui.help()
         return 0
 
     def melee_attack(self, target):

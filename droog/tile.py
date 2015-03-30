@@ -12,6 +12,7 @@ class Tile(object):
         self.description = description
         self.walkable = walkable
         self.creature = None
+        self.items = []
 
 
 def make_street():
