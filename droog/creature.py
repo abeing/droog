@@ -36,10 +36,7 @@ class Creature(actor.Actor):
         self.loc = (None, None)
         self.is_weakened = False
         self.is_hobbled = False
-        self.is_bleeding = False
-        self.is_dazed = False
-        self.is_diseased = False
-        self.is_burning = False
+        self.is_stunned = 0
         self.inventory = []
         super(Creature, self).__init__()
 
@@ -54,7 +51,9 @@ class Creature(actor.Actor):
 
     @property
     def strength(self):
-        """Creature's strength."""
+        """Return creature's strength, modified by the weakened condition."""
+        if self.is_weakened and self._strength > 1:
+            return self._strength - 1
         return self._strength
 
     @strength.setter
@@ -66,7 +65,9 @@ class Creature(actor.Actor):
 
     @property
     def dexterity(self):
-        """Creature's dexterity."""
+        """Return creature's dexterity, modified by the hobbled consition."""
+        if self.is_hobbled and self._dexterity > 1:
+            return self._dexterity - 1
         return self._dexterity
 
     @dexterity.setter

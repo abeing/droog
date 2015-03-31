@@ -53,7 +53,7 @@ def ap_mod(original_ap, dexterity):
 def attack(attacker, defender, attack):
     """Perform an attack by the attacker onto the defender using attack."""
     assert attack.range == 1  # We only support melee weapons at the moment.
-    melee_attack(attacker, defender, random.choice(attack.verbs))
+    melee_attack(attacker, defender, attack)
     return 2
 
 
@@ -91,6 +91,7 @@ def melee_attack(attacker, defender, attack):
     attack -- an Attack object describing this attack method
     """
     LOG.info("Melee attack from %r to %r using %r", attacker, defender, attack)
+    verb = random.choice(attack.verbs)
     attacker_bonus = max(attacker.strength, attacker.dexterity)
     defender_penalty = max(defender.strength, defender.dexterity)
     weapon_bonus = 0  # Fists only
@@ -102,9 +103,9 @@ def melee_attack(attacker, defender, attack):
              attacker_bonus, weapon_bonus, defender_penalty)
     if attack_magnitude >= MELEE_TOHIT:
         the.messages.add("%s %s %s." % (definite_creature(attacker),
-                         conjugate_verb(attacker, attack),
+                         conjugate_verb(attacker, verb),
                          definite_creature(defender)))
-        inflict_damage(defender)
+        inflict_damage(defender, attack.special_damage)
         return True
 
     # Determine "why" we missed.
@@ -112,48 +113,35 @@ def melee_attack(attacker, defender, attack):
                                 ["was dodged by"] * defender.dexterity +
                                 ["was parried by"] * defender.strength)
     LOG.info("Melee attack %r %r", miss_reason, attack_magnitude)
-    the.messages.add("%s %s %s %s" % (possessive(attacker), attack,
+    the.messages.add("%s %s %s %s" % (possessive(attacker), verb,
                      miss_reason, definite_creature(defender)))
     return False
 
 
-def inflict_damage(victim):
+def inflict_damage(victim, special_damage):
     """Inflicts damage onto a creature."""
-    strength = victim.strength
-    dexterity = victim.dexterity
-    constitution = victim.constitution
+    damage = random.choice(['str', 'dex', 'con'])
 
-    # In the must-die case:
-    if strength == dexterity == constitution == 1:
-        if victim.is_hero:
-            the.messages.add("You die.")
-        else:
-            the.messages.add("%s dies." % definite_creature(victim))
-        victim.is_dead = True
-        return
+    if damage == 'str':
+        if not victim.is_weakened:
+            victim.is_weakened = 1
+            the.messages.add("%s %s weakened." % (definite_creature(victim),
+                                                  conjugate_verb(victim, "be"))
+                             )
 
-    damage = []
+    if damage == 'dex':
+        if not victim.is_hobbled:
+            victim.is_hobbled = 1
+            the.messages.add("%s %s hobbled." % (definite_creature(victim),
+                                                 conjugate_verb(victim, "be"))
+                             )
 
-    assert strength > 0
-    for _ in range(strength - 1):
-        damage.append("strength")
-
-    assert dexterity > 0
-    for _ in range(dexterity - 1):
-        damage.append("dexterity")
-
-    assert constitution > 0
-    for _ in range(constitution - 1):
-        damage.append("constitution")
-
-    damage = random.choice(damage)
-    old_attribute = getattr(victim, damage)
-    setattr(victim, damage, old_attribute - 1)
-    LOG.info("Damaged %s's %s from %d to %d", victim, damage, old_attribute,
-             old_attribute - 1)
-    # TODO: special damage
-    the.messages.add("%s %s is weakened." % (possessive(victim),
-                                             damage))
+    if damage == 'con':
+        if special_damage:
+            status = special_damage(victim)
+            the.messages.add("%s %s %s." % (definite_creature(victim),
+                                            conjugate_verb(victim, "be"),
+                                            status))
 
 
 def definite_creature(who):
@@ -191,7 +179,8 @@ CONJUGATIONS = {'bite': ("bite", "bites"),
                 'slash': ("slash", "slashes"),
                 'stab': ("stab", "stabs"),
                 'jab': ("jab", "jabs"),
-                'slice': ("slice", "slices")}
+                'slice': ("slice", "slices"),
+                'be': ("are", "is")}
 
 
 def conjugate_verb(subject, verb):

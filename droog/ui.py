@@ -221,30 +221,47 @@ class Curses(object):
     def draw_hero(self, hero):
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
+        self.hero_window.clear()
         self.hero_window.addstr(0, 0, hero.name)
         strength_meter = create_meter(hero.strength, 3)
         dexterity_meter = create_meter(hero.dexterity, 3)
         constitution_meter = create_meter(hero.constitution, 3)
-        self.hero_window.addstr(1, 2, "Str %s" % strength_meter)
-        self.hero_window.addstr(2, 2, "Dex %s" % dexterity_meter)
-        self.hero_window.addstr(3, 2, "Con %s" % constitution_meter)
-        self.draw_inventory(hero.inventory)
+        self.hero_window.addstr(1, 0, "    Strength %s" % strength_meter)
+        self.hero_window.addstr(2, 0, "   Dexterity %s" % dexterity_meter)
+        self.hero_window.addstr(3, 0, "Constitution %s" % constitution_meter)
+        index = self.draw_conditions(hero, 5)
+        self.draw_inventory(hero.inventory, index + 1)
         self.hero_window.refresh()
 
-    def draw_inventory(self, inventory):
+    def draw_conditions(self, hero, index):
+        """Draw the hero's conditions."""
+        idx = index
+        if hero.is_stunned:
+            self.hero_window.addstr(idx, 0, " *** Stunned ***",
+                                    curses.color_pair(1))
+            idx += 1
+        if hero.is_weakened:
+            self.hero_window.addstr(idx, 0, " Weakened", curses.color_pair(3))
+            idx += 1
+        if hero.is_hobbled:
+            self.hero_window.addstr(idx, 0, " Hobbled", curses.color_pair(3))
+            idx += 1
+        return idx
+
+    def draw_inventory(self, inventory, index):
         """Draw the hero's inventory in the hero screen."""
-        index = 0
+        item_index = 0
         for item in inventory:
-            self.hero_window.addstr(9 + index, 0,
-                                    '%s - %s' % (index_to_alpha(index),
+            self.hero_window.addstr(index, 0,
+                                    '%s - %s' % (index_to_alpha(item_index),
                                                  item.name))
             self.hero_window.clrtoeol()
             index += 1
+            item_index += 1
         for row in range(9 + index, HERO_COLUMNS):
             self.hero_window.move(row, 0)
             self.hero_window.clrtoeol()
-
-        self.hero_window.refresh()
+        return index
 
     def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
