@@ -72,10 +72,17 @@ class World(object):
 
     def item_at(self, y, x):
         """Return the top item at the specified location."""
+        items = self.items_at(y, x)
+        if items:
+            return items[0]
+        return None
+
+    def items_at(self, y, x):
+        """Return all the items at the specified location."""
         if self.is_valid_location(y, x):
             if self.tiles[y][x].items:
-                return self.tiles[y][x].items[0]
-        return None
+                return self.tiles[y][x].items
+        return []
 
     def description_at(self, y, x):
         """Return a description of the location specified.
@@ -127,6 +134,17 @@ class World(object):
             log.info('Moved hero from %r to %r', (old_y, old_x),
                      (new_y, new_x))
             self.hero_location = (new_y, new_x)
+            # If there are items in the new location, report about them in the
+            # message log.
+            items = self.items_at(new_y, new_x)
+            if len(items) == 1:
+                the.messages.add("You see here %s." % items[0].name)
+            elif len(items) > 1:
+                items_msg = "You see here %s" % items[0].name
+                for item in items[1:]:
+                    items_msg += ", " + item.name
+                items_msg += "."
+                the.messages.add(items_msg)
             return engine.movement_cost(delta_y, delta_x)
         target = self.creature_at(new_y, new_x)
         if target:

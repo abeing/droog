@@ -42,3 +42,4 @@ class Hero(creature.Creature):
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
         return engine.attack(self, target, self.weapon.attack)
+
