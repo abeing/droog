@@ -142,7 +142,9 @@ def inflict_damage(victim, attack):
                                             conjugate_verb(victim, "be"),
                                             "stunned"))
             victim.is_stunned = True
-            the.turn.delay_actor(victim, 100)
+            stun_time = 10 * (random.randint(2, 5) - victim.constitution)
+            LOG.info("%s is stunned for %s ticks.", victim, stun_time)
+            the.turn.delay_actor(victim, stun_time)
 
 
 def definite_creature(who):
