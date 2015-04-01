@@ -49,12 +49,25 @@ class OrderActors(unittest.TestCase):
         self.turn.add_actor(self.even)
 
     def testEven(self):
+        """Add two actors and iterate through 100 turns. Each should act 50
+        times."""
         for _ in range(100):
             self.turn.next()
         self.assertEqual(self.odd.count, 50, "Odd actor should have acted 50"
                          " times.")
         self.assertEqual(self.even.count, 50, "Even actor should have acted"
                          " 50 times.")
+
+    def testOdd(self):
+        """Add two actors and iterate through 99 turns. The first actor should
+        act once more than the second."""
+        for _ in range(99):
+            self.turn.next()
+        self.assertEqual(self.odd.count, 50, "Odd actor should have acted 50"
+                         " times.")
+        self.assertEqual(self.even.count, 49, "Even actor should have acted"
+                         " 50 times.")
+
 
 if __name__ == "__main__":
     unittest.main()
