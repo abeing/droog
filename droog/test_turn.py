@@ -88,5 +88,24 @@ class ActionCostTest(unittest.TestCase):
         self.assertEqual(self.slow_actor.count, 1,
                          "Slow actor should have acted 1 time.")
 
+
+class DelayActorTest(unittest.TestCase):
+
+    def setUp(self):
+        self.turn = turn_.Turn()
+        self.delayed_actor = TestActor("delayed", 10)
+        self.other_actor = TestActor("other", 10)
+
+    def testDelay(self):
+        """Dealying an actor should allow the other actor to act."""
+        self.turn.add_actor(self.delayed_actor)
+        self.turn.add_actor(self.other_actor)
+        self.turn.delay_actor(self.delayed_actor, 20)
+        self.turn.next()
+        self.assertEqual(self.delayed_actor.count, 0,
+                         "Delayed actor should not have acted.")
+        self.assertEqual(self.other_actor.count, 1,
+                         "Other actor should have acted first.")
+
 if __name__ == "__main__":
     unittest.main()

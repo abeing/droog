@@ -2,12 +2,48 @@
 import datetime
 import logging
 import sys
-import actor
-import Queue
 import the
+import heapq
 
 LOG = logging.getLogger(__name__)
 SECONDS_PER_TURN = 1
+
+
+class PriorityQueue(object):
+    """PriorityQueue implementation that can reorder elements."""
+
+    def __init__(self):
+        self._heap = []
+        self._entries = {}
+        self._REMOVED = None
+        self._count = 0
+
+    def get(self):
+        """Get the next actor in the queue."""
+        while self._heap:
+            tick, count, actor = heapq.heappop(self._heap)
+            if actor is not self._REMOVED:
+                del self._entries[actor]
+                return actor
+        raise KeyError('Get from an empty priority queue.')
+
+    def put(self, actor, tick=0):
+        """Add actor to the queue at the specified tick."""
+        if actor in self._entries:
+            self._remove(actor)
+        self._count += 1
+        entry = [tick, self._count, actor]
+        self._entries[actor] = entry
+        heapq.heappush(self._heap, entry)
+
+    def _remove(self, actor):
+        """Mark an entry in the queue as removed."""
+        entry = self._entries.pop(actor)
+        entry[-1] = self._REMOVED
+
+    def when(self, actor):
+        """Return the tick count of an actor, or 0 if not found."""
+        return self._entries[actor][1]
 
 
 class Turn(object):
@@ -22,43 +58,44 @@ class Turn(object):
         desired game start-time, or implement a no-op tick for the first tick,
         but for now we'll delibrately leave it as is.
         """
-        self._queue = Queue.PriorityQueue()
+        self._queue = PriorityQueue()
         self._current_turn = 0
         self._current_time = datetime.datetime(100, 1, 1, 7, 0, 0)  # 07:00:00
 
     def next(self):
         """Advances to the turn."""
-        if self._queue.qsize() == 0:
-            LOG.error("Turn queue should never be empty!")
-            sys.exit(1)
-
         self._current_turn += 1
         self._current_time += datetime.timedelta(seconds=SECONDS_PER_TURN)
 
-        (_, an_actor) = self._queue.get()  # Ignoring priority
-        LOG.info("It is time for %r to act.", an_actor)
-        action_cost = an_actor.act()
+        actor = self._queue.get()  # Ignoring priority
+        LOG.info("It is time for %r to act.", actor)
+        action_cost = actor.act()
 
         # check for death
-        is_dead = getattr(an_actor, "is_dead", False)
+        is_dead = getattr(actor, "is_dead", False)
         if not is_dead:
             next_tick = action_cost + self._current_turn
-            LOG.info("Requeueing actor %r at turn %r", an_actor,
+            LOG.info("Requeueing actor %r at turn %r", actor,
                      next_tick)
-            self._queue.put((next_tick, an_actor))
+            self._queue.put(actor, next_tick)
         else:
-            LOG.info("Removing dead actor %r from turn queue.", an_actor)
-            if getattr(an_actor, "is_hero", False):
+            LOG.info("Removing dead actor %r from turn queue.", actor)
+            if getattr(actor, "is_hero", False):
                 LOG.info("Removed hero, the game is over.")
                 return False
-            the.world.remove_monster(an_actor)
+            the.world.remove_monster(actor)
         return True
 
     def current_time(self):
         """Return the current in-game clock."""
         return self._current_time.time().isoformat()
 
-    def add_actor(self, an_actor):
+    def add_actor(self, actor):
         """Add a new actor to the end of the turn queue."""
-        self._queue.put((self._current_turn, an_actor))
-        LOG.info("New actor in the turn queue: %r", an_actor)
+        self._queue.put(actor, self._current_turn)
+        LOG.info("New actor in the turn queue: %r", actor)
+
+    def delay_actor(self, actor, delta):
+        """Add a delay to an actor."""
+        tick = self._queue.when(actor)
+        self._queue.put(actor, tick + delta)
