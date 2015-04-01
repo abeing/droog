@@ -25,6 +25,9 @@ class Creature(actor.Actor):
         con -- constitution
         """
         assert len(glyph) == 1
+        assert engine.is_valid_attribute(str)
+        assert engine.is_valid_attribute(dex)
+        assert engine.is_valid_attribute(con)
         self.glyph = glyph
         self.name = name
         self.initial_vowel = initial_vowel
