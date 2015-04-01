@@ -39,14 +39,14 @@ class Creature(actor.Actor):
         self.loc = (None, None)
         self.is_weakened = False
         self.is_hobbled = False
-        self.is_stunned = 0
+        self.is_stunned = False
         self.inventory = []
         super(Creature, self).__init__()
 
     def act(self):
-        """The creature acts. This placeholder method raises a
-        NotImplementedError as there is no default creature action."""
-        raise NotImplementedError("Creature.act() should be overridden.")
+        """Clear any conditions that clear at the start of the creature's turn.
+        Currently that is stunned."""
+        self.is_stunned = False
 
     def __repr__(self):
         """A string representation of the creature."""
@@ -122,6 +122,7 @@ class Zombie(Creature):
         1) If adjacent to the hero, bite her.
         2) If within 15 steps of the hero, move towards her.
         3) Otherwise, move randomly."""
+        super(Zombie, self).act()
         if self.loc:
             (old_y, old_x) = self.loc
             (hero_y, hero_x) = the.world.hero_location
@@ -161,6 +162,7 @@ class ZombieDog(Creature):
         1) If adjacent to the hero, bite her.
         2) If within 30 steps of the hero, move towards her.
         3) Otherwise, move randomly."""
+        super(ZombieDog, self).act()
         if self.loc:
             (old_y, old_x) = self.loc
             log
@@ -199,6 +201,7 @@ class Cop(Creature):
         1) If adjacent to the hero, punch her.
         2) If within 30 steps of the hero, move towards her.
         3) Otherwise, move randomly."""
+        super(Cop, self).act()
         if self.loc:
             (old_y, old_x) = self.loc
             (hero_y, hero_x) = the.world.hero_location

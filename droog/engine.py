@@ -105,7 +105,7 @@ def melee_attack(attacker, defender, attack):
         the.messages.add("%s %s %s." % (definite_creature(attacker),
                          conjugate_verb(attacker, verb),
                          definite_creature(defender)))
-        inflict_damage(defender, attack.special_damage)
+        inflict_damage(defender, attack)
         return True
 
     # Determine "why" we missed.
@@ -118,7 +118,7 @@ def melee_attack(attacker, defender, attack):
     return False
 
 
-def inflict_damage(victim, special_damage):
+def inflict_damage(victim, attack):
     """Inflicts damage onto a creature."""
     damage = random.choice(['str', 'dex', 'con'])
 
@@ -137,11 +137,12 @@ def inflict_damage(victim, special_damage):
                              )
 
     if damage == 'con':
-        if special_damage:
-            status = special_damage(victim)
+        if random.random() < attack.stun_chance and not victim.is_stunned:
             the.messages.add("%s %s %s." % (definite_creature(victim),
                                             conjugate_verb(victim, "be"),
-                                            status))
+                                            "stunned"))
+            victim.is_stunned = True
+            the.turn.delay_actor(victim, 100)
 
 
 def definite_creature(who):

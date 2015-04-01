@@ -8,7 +8,7 @@ includes natural weapons such as bites and punches.
 class Attack(object):
     """An Attack manages the combat-related aspects of attacks."""
     def __init__(self, name, verbs, attack_bonus, range=1,
-                 special_damage=None, use_name=False):
+                 stun_chance=0, use_name=False):
         """Create a new Attack.
 
         name -- a string representing the name of the attack
@@ -23,14 +23,13 @@ class Attack(object):
         self.verbs = verbs
         self.attack_bonus = attack_bonus
         self.range = range
-        self.special_damage = special_damage
+        self.stun_chance = stun_chance
         self.use_name = use_name
 
 
 def make_unarmed():
     """Factory function to create a punch natural attack."""
-    return Attack("unarmed", ["punch", "kick"], 0,
-                  special_damage=inflict_stunned)
+    return Attack("unarmed", ["punch", "kick"], 0, stun_chance=50)
 
 
 def make_bite():
@@ -41,9 +40,3 @@ def make_bite():
 def make_knife():
     """Factory function to create a knife attack."""
     return Attack("knife", ["slash", "stab", "jab", "slice"], 2, use_name=True)
-
-
-def inflict_stunned(victim):
-    """Inflict the stunned condition on a victim."""
-    victim.is_stunned = 100
-    return 'stunned'
