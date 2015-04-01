@@ -8,7 +8,9 @@ class ActCheck(unittest.TestCase):
 
     def testActRaises(self):
         """Actor.act() should raise a NotImplementedError."""
-        self.assertRaises(NotImplementedError, self.c.act)
+        self.c.is_stunned = True
+        self.c.act()
+        self.assertFalse(self.c.is_stunned)
 
 
 class NameCheck(unittest.TestCase):
