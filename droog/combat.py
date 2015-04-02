@@ -144,7 +144,7 @@ def inflict_damage(victim, attack):
             the.turn.delay_actor(victim, stun_time)
         if random.random() < attack.disease_chance and not victim.is_diseased:
             disease = DiseaseAction(victim)
-            the.turn.add_actor(disease, 5)
+            the.turn.add_actor(disease, 600)
         if random.random() < attack.bleed_chance and not victim.is_bleeding:
             bleed = BleedAction(victim)
             the.turn.add_actor(bleed)
