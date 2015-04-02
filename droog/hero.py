@@ -1,7 +1,7 @@
 """Droog Hero class"""
 import sys
 import the
-import engine
+import combat
 import creature
 import item
 
@@ -43,4 +43,4 @@ class Hero(creature.Creature):
 
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
-        return engine.attack(self, target, self.weapon.attack)
+        return combat.attack(self, target, self.weapon.attack)

@@ -8,6 +8,7 @@ import random
 import the
 import world
 import attack
+import combat
 
 log = logging.getLogger(__name__)
 
@@ -40,6 +41,8 @@ class Creature(actor.Actor):
         self.is_weakened = False
         self.is_hobbled = False
         self.is_stunned = False
+        self.is_bleeding = False
+        self.blood = 10
         self.inventory = []
         super(Creature, self).__init__()
 
@@ -129,7 +132,7 @@ class Zombie(Creature):
 
             # 1) If adjacent to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return engine.attack(self, the.hero,
+                return combat.attack(self, the.hero,
                                      random.choice(self.attacks))
 
             # 2) If within 15 steps of the hero, move towards her.
@@ -170,7 +173,7 @@ class ZombieDog(Creature):
 
             # 1) If adjacant to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return engine.attack(self, the.hero, self.attack)
+                return combat.attack(self, the.hero, self.attack)
 
             # 2) If within 30 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:

@@ -5,6 +5,7 @@ import math
 import tile
 import creature
 import engine
+import english
 import the
 
 
@@ -96,7 +97,7 @@ class World(object):
             if (y, x) == self.hero_location:
                 return "yourself"
             if self.tiles[y][x].creature:
-                return engine.indefinite_creature(self.tiles[y][x].creature)
+                return english.indefinite_creature(self.tiles[y][x].creature)
             if self.tiles[y][x].items:
                 return self.tiles[y][x].items[0].name
             else:
