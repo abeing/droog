@@ -24,11 +24,11 @@ class BleedAction(actor.Actor):
         the.messages.add("%s %s." % (english.definite_creature(self.victim),
                          english.conjugate_verb(self.victim, "bleed")))
         if self.victim.blood == 0:
-            kill(victim)
+            kill(self.victim)
             return self.DONE
         if random.randint(0, 100) < self.victim.constitution * 20:
             self.victim.is_bleeding = False
-            the.messages.add("%s %s bleeding." % 
+            the.messages.add("%s %s bleeding." %
                              (english.definite_creature(self.victim),
                               english.conjugate_verb(self.victim, "stop")))
             return self.DONE
@@ -128,4 +128,4 @@ def kill(victim):
     """Kill the victim."""
     victim.is_dead = True
     the.messages.add("%s %s" % (english.definite_creature(victim),
-                     english.conjugate_verb("die")))
+                     english.conjugate_verb(victim, "die")))
