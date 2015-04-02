@@ -69,14 +69,13 @@ class Turn(object):
 
         actor = self._queue.get()  # Ignoring priority
         LOG.info("It is time for %r to act.", actor)
-        action_cost = actor.act()
 
         # check for death
         is_dead = getattr(actor, "is_dead", False)
         if not is_dead:
+            action_cost = actor.act()
             next_tick = action_cost + self._current_turn
-            LOG.info("Requeueing actor %r at turn %r", actor,
-                     next_tick)
+            LOG.info("Requeueing actor %r at turn %r", actor, next_tick)
             self._queue.put(actor, next_tick)
         else:
             LOG.info("Removing dead actor %r from turn queue.", actor)

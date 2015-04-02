@@ -124,14 +124,14 @@ def inflict_damage(victim, attack):
 
     if damage == 'str':
         if not victim.is_weakened:
-            victim.is_weakened = 1
+            victim.is_weakened = True
             the.messages.add("%s %s weakened." % (definite_creature(victim),
                                                   conjugate_verb(victim, "be"))
                              )
 
     if damage == 'dex':
         if not victim.is_hobbled:
-            victim.is_hobbled = 1
+            victim.is_hobbled = True
             the.messages.add("%s %s hobbled." % (definite_creature(victim),
                                                  conjugate_verb(victim, "be"))
                              )
