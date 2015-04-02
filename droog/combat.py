@@ -19,15 +19,19 @@ class BleedAction(actor.Actor):
 
     def act(self):
         """Bleed."""
-        if random.randint(0, 100) < self.victim.constitution * 20:
-            self.victim.is_bleeding = False
-            return self.DONE
         self.victim.blood -= 1
         # We don't check the victim is visible!
         the.messages.add("%s %s." % (english.definite_creature(self.victim),
                          english.conjugate_verb(self.victim, "bleed")))
         if self.victim.blood == 0:
             kill(victim)
+            return self.DONE
+        if random.randint(0, 100) < self.victim.constitution * 20:
+            self.victim.is_bleeding = False
+            the.messages.add("%s %s bleeding." % 
+                             (english.definite_creature(self.victim),
+                              english.conjugate_verb(self.victim, "stop")))
+            return self.DONE
         return 60
 
 

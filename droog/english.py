@@ -37,7 +37,8 @@ CONJUGATIONS = {'bite': ("bite", "bites"),
                 'slice': ("slice", "slices"),
                 'be': ("are", "is"),
                 'bleed': ("bleed", "bleeds"),
-                'die': ("die", "dies")}
+                'die': ("die", "dies"),
+                'stop': ("stop", "stops")}
 
 
 def conjugate_verb(subject, verb):
