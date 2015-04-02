@@ -3,11 +3,32 @@ import random
 import the
 import engine
 import english
+import actor
 
 # This is the threshold for a melee hit
 MELEE_TOHIT = 4
 
 log = logging.getLogger(__name__)
+
+
+class BleedAction(actor.Actor):
+    def __init__(self, victim):
+        """Create a new bleed action, causing the victim to bleed."""
+        self.victim = victim
+        self.victim.is_bleeding = True
+
+    def act(self):
+        """Bleed."""
+        if random.randint(0, 100) < self.victim.constitution * 20:
+            self.victim.is_bleeding = False
+            return self.DONE
+        self.victim.blood -= 1
+        # We don't check the victim is visible!
+        the.messages.add("%s %s." % (english.definite_creature(self.victim),
+                         english.conjugate_verb(self.victim, "bleed")))
+        if self.victim.blood == 0:
+            kill(victim)
+        return 60
 
 
 def attack(attacker, defender, attack):
@@ -94,3 +115,13 @@ def inflict_damage(victim, attack):
             stun_time = 10 * (random.randint(2, 5) - victim.constitution)
             log.info("%s is stunned for %s ticks.", victim, stun_time)
             the.turn.delay_actor(victim, stun_time)
+        if random.random() < attack.bleed_chance and not victim.is_bleeding:
+            bleed = BleedAction(victim)
+            the.turn.add_actor(bleed)
+
+
+def kill(victim):
+    """Kill the victim."""
+    victim.is_dead = True
+    the.messages.add("%s %s" % (english.definite_creature(victim),
+                     english.conjugate_verb("die")))

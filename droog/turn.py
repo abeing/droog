@@ -74,6 +74,9 @@ class Turn(object):
         is_dead = getattr(actor, "is_dead", False)
         if not is_dead:
             action_cost = actor.act()
+            if action_cost == actor.DONE:
+                LOG.info("Actor %r is done, not requeueing.", actor)
+                return True
             next_tick = action_cost + self._current_turn
             LOG.info("Requeueing actor %r at turn %r", actor, next_tick)
             self._queue.put(actor, next_tick)
