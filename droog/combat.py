@@ -35,6 +35,29 @@ class BleedAction(actor.Actor):
         return 60
 
 
+class DiseaseAction(actor.Actor):
+    def __init__(self, victim):
+        """Create a new disease action, causing the victim to die
+        eventually."""
+        self.victim = victim
+        self.progress = 2
+
+    PROGRESS = ["near death from illness", "quite ill", "feverish"]
+
+    def act(self):
+        if self.progress == 0:
+            kill(self.victim)
+            return self.DONE
+        self.victim.is_diseased = True
+        the.messages.add("%s %s %s." % (
+                         english.definite_creature(self.victim),
+                         english.conjugate_verb(self.victim, "_disease"),
+                         self.PROGRESS[self.progress]
+                         ))
+        self.progress -= 1
+        return 3600 * self.victim.constitution
+
+
 def attack(attacker, defender, attack):
     """Perform an attack by the attacker onto the defender using attack."""
     assert attack.range == 1  # We only support melee weapons at the moment.
@@ -119,6 +142,9 @@ def inflict_damage(victim, attack):
             stun_time = 10 * (random.randint(2, 5) - victim.constitution)
             log.info("%s is stunned for %s ticks.", victim, stun_time)
             the.turn.delay_actor(victim, stun_time)
+        if random.random() < attack.disease_chance and not victim.is_diseased:
+            disease = DiseaseAction(victim)
+            the.turn.add_actor(disease, 5)
         if random.random() < attack.bleed_chance and not victim.is_bleeding:
             bleed = BleedAction(victim)
             the.turn.add_actor(bleed)

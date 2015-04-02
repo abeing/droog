@@ -92,9 +92,10 @@ class Turn(object):
         """Return the current in-game clock."""
         return self._current_time.time().isoformat()
 
-    def add_actor(self, actor):
+    def add_actor(self, actor, future=0):
         """Add a new actor to the end of the turn queue."""
-        self._queue.put(actor, self._current_turn)
+        assert future >= 0
+        self._queue.put(actor, self._current_turn + future)
         LOG.info("New actor in the turn queue: %r", actor)
 
     def delay_actor(self, actor, delta):

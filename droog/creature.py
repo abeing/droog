@@ -42,6 +42,7 @@ class Creature(actor.Actor):
         self.is_hobbled = False
         self.is_stunned = False
         self.is_bleeding = False
+        self.is_diseased = False
         self.blood = 10
         self.inventory = []
         super(Creature, self).__init__()
