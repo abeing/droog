@@ -10,27 +10,27 @@ Creature Attributes
 ===================
 
 Each creature has three base attributes: Strength, Dexterity and Constitution.
+They range from +1 to +4 with only flavorful names visible in the UI.
 
-Attributes range in value:
-  - None (0)
-  - Low (+1)
-  - Average (+2)
-  - High (+3)
-  - Superhuman (+4)
+| Attribute    | Low (+1) | Normal (+2) | High (+3) | Superhuman (+4)  |
+|--------------|----------|-------------|-----------|------------------|
+| Strength     |     Weak |           - |    Strong |        Herculean |
+| Dexterity    |   Clumsy |           - |    Nimble |        Hermesian |
+| Constitution |   Sickly |           - |      Hale |         Panacean |
 
-Strength
-  - Melee offense
-  - Melee defense
-  - Encumbrance limit :question:
+**Strength** affects:
+- melee offense
+- melee defense
 
-Dexterity
-  - Ranged offense
-  - Melee defense
-  - Action point efficiency
+**Dexterity** affects:
+- ranged offense
+- melee defense
+- action point efficiency
 
-Constitution
-  - Resistance to wounds :question:
-  - Wounds to die
+**Constitution** affects:
+- blood clotting chance
+- disease progress rate
+- stun resistance
 
 Items
 =====
@@ -38,29 +38,48 @@ Items
 Weapons
 -------
 
-Weapons add to the offense role of an attack. All weapons do one wound of
-damage on a successful attack. Wounds effect one of the core attributes. A
-wound to strength inflicts the weakened condition. A wound to dexterity
-inflicts the hobbled condition. A wound to constitution inflicts a condition
-depending on the weapon.
+Weapons add to the offense role of an attack. Weapons inflict various effects
+on their victims.
 
-| Weapon | Type   | Offense | Special Damage |
-|--------|--------|---------|----------------|
-| Fist   | Melee  |    0    | Daze           |
-| Bite   | Melee  |   +1    | Disease        |
-| Knife  | Melee  |   +2    | Bleed          |
-| Pistol | Ranged |   +3    | Bleed          |
-| Rifle  | Ranged |   +4    | Bleed          |
-| Laser  | Ranged |   +5    | Burning        |
+| Weapon            | Type   | Offense | Stun | Bleed | Disease | Burning |
+|-------------------|--------|---------|------|-------|---------|---------|
+| Unaremed          | Melee  |    0    |  30% |   10% |       - |       - |
+| Bite              | Melee  |   +1    |    - |   30% |     35% |       - |
+| Bite (zombie dog) | Melee  |   +1    |    - |   30% |     70% |       - |
+| Knife             | Melee  |   +2    |    - |   50% |       - |       - |
+| Pistol            | Ranged |   +3    |    - |   75% |       - |       - |
+| Rifle             | Ranged |   +4    |    - |   75% |       - |       - |
+| Laser             | Ranged |   +5    |    - |     - |       - |     50% |
+
+A creature that is **stunned** has his or her next turn moved back 20-50 minus
+10 per their constitution score.
+
+A **bleeding** creature losses one tenth of their blood supply every minute.
+When their blood supply runs out, they die. Each minute they have a chance of
+20% per their constitution score to stop bleeding. Their lost blood remains
+lost. **TODO**: We may implement blood regeneration, perhaps at one tenth per
+hour.
+
+A **diseased** creature suffers a penalty to their constitution after a ten
+minute incubation period. Once fully infected, the creature begins slowly
+dying. The disease gets progressively worse, with no effect, three times every
+hour times the victim's constitution.
+
+**TODO**: Decide what burning does. It should be nasty.
 
 Armor
 -----
-- Bionic : Increases strength and dexterity
-- :question: Environmental : ???
-- Battle Armor : Reduces damage roll by 2
 
-Utility Items
--------------
+Armor are wearable items.
+
+| Armor         | Effect                                 |
+|---------------|----------------------------------------|
+| Bionic        | Increases strength and dexterity       |
+| Environmental | **TODO**: Some sort of survival effect |
+| Battleweave   | Reduces damage roll by 2               |
+
+Utility Items (WIP)
+-------------------
 
 **Local porter** allows the creature to teleport some distance at the cost of
 some energy.
@@ -71,8 +90,8 @@ time for some amount of energy.
 :question: **TODO** another item to make three because everything else is in
 threes.
 
-Consumables
------------
+Consumables (WIP)
+-----------------
 - Ammunition
   - Pistol ammo : Needs research into a name.
   - Rifle ammo : Needs research into a name, fewer rounds to start and less
@@ -87,22 +106,23 @@ Enemies
 =======
 
 **Zombies** are zombified humans and start with average stregth, dexterity and
-constitution before recieving a bonus to one score or with some lowish chance
-(which increases over time) an item. *They can bite poorly*. Their bites have a
-low chance of causing plague.
+constitution before recieving a bonus to one score. Their bites have a low (35%)
+chance of causing disease. **TODO**: Give them a chance to spawn with an item.
 
 **Zombie dogs** are zombified dogs and start with high dexterity, average
-strength and low constitution. They can bite well but cannot use items. They
-will also move faster. Bites have a higher chance of causing plague.
+strength and low constitution. They can bite well but cannot use items. Their
+bites have a higher chance (70%) of causing plague. **TODO**: They will also
+move faster. 
 
-**Cops** are robotic patrol officers. They have hardy armor and start with a
-weapon. Other names I've considered: RoboCop, Ropal (Robotic Pal)
+**Cops** are robotic patrol officers. They start with high strength and
+constitution but low dexterity. **TODO**: They have hardy armor and start 
+with a weapon.
 
 Combat Mechanics
 ================
 
-Ranged Attacks
---------------
+Ranged Attacks (NYI)
+--------------------
 - Attacker rolls 1d6 + weapon offense + dexterity - range penalty :question: - defense 
   - Range Penalty : something like -1 per 5 or 10 squares as per weapon
 
@@ -111,20 +131,13 @@ Melee Attacks
 - Melee offense is the higher of the attacker's strength and dexterity.
 - Melee defense is the higher of the defender's strength and dexterity.
 - Attacker rolls 1d6 + weapon offense + melee offense - melee defense
-- On a 4 or higher, randomly determine one of the defenders stats, then:
-  - For strength, apply weakened condition
-  - For dexterity, apply hobbled condition
-  - For constitution, apply the weapon's special damage
+- On a 4 or higher, for each condition:
+  - Roll a percent chance and apply that condition.
 - On a 3 or less, determine a miss reason by adding to a list:
   - One "dodge" for each dexterity point the defender has.
   - One "parry" for each strength point the defender has.
   - Two "miss"
   - Choosing one of those.
-
-Damage
-------
-
-If attack rolled 6 or more, 1 wound to a random stat.
 
 Time System
 ============
@@ -146,12 +159,14 @@ Actions
 - Melee attack : 2 AP
 - Ranged attack : 2 AP
 - Aimed ranged attacks : 3 or 4 AP (undecided)
-- Reload : ? AP
+- Reload : ?? AP
 - Walk one square orthogonally : 1 AP
 - Walk one square diagonally : 1.5 AP (decimal part hidden from the player)
 - Walk one square orhtogonally through rough terrain : 2 AP
 - Walk one square diagonally through rought terrain : 3 AP
 - Activate an item : ? AP
+
+**TODO**: Check these movement costs.
 
 Time Limit
 ----------

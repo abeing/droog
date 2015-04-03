@@ -87,6 +87,8 @@ class Creature(actor.Actor):
     @property
     def constitution(self):
         """Creature's constitution."""
+        if self.is_diseased and self._constitution > 1:
+            return self._constitution - 1
         return self._constitution
 
     @constitution.setter
@@ -157,7 +159,7 @@ class Zombie(Creature):
 class ZombieDog(Creature):
     """Zombie dog."""
     def __init__(self):
-        self.attack = attack.make_bite()
+        self.attack = attack.make_bite(effectivness=70)
         super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
 
     def act(self):
