@@ -159,7 +159,7 @@ class Zombie(Creature):
 class ZombieDog(Creature):
     """Zombie dog."""
     def __init__(self):
-        self.attack = attack.make_bite(effectivness=70)
+        self.attack = attack.make_bite(effectiveness=70)
         super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
 
     def act(self):
@@ -214,7 +214,7 @@ class Cop(Creature):
 
             # 1) If adjacant to the hero, bite her.
             if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                pass  # Cops at the moment don't have an attck.
+                return 6  # Cops at the moment don't have an attck.
 
             # 2) If within 30 steps of the hero, move towards her.
             elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:

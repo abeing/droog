@@ -36,7 +36,7 @@ def make_unarmed():
                   bleed_chance=10)
 
 
-def make_bite(effectivness=35):
+def make_bite(effectiveness=35):
     """Factory function to create a bite natural attack."""
     return Attack("bite", ["bite", "chomp"], 1, bleed_chance=30,
                   disease_chance=effectiveness)
