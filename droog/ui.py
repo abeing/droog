@@ -39,7 +39,7 @@ class Curses(object):
                  'u': (-1, 1),   # Northeast
                  'b': (1, -1),   # Southwest
                  'n': (1, 1),    # Southeast
-                }
+                 }
 
     def __init__(self):
         """Initializes the rendering environment.
@@ -107,13 +107,11 @@ class Curses(object):
                                                       0,
                                                       0)
         self.message_window.scrollok(True)
-        self.message_column = 0
-        self.message_row = 0
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
                                                    width,
-                                                   self.area_height + 1
-                                                   + MESSAGE_ROWS, 0)
+                                                   self.area_height + 1 +
+                                                   MESSAGE_ROWS, 0)
         self.status = ""
 
         # The hero will always be present in the center.
@@ -280,27 +278,36 @@ class Curses(object):
     def draw_messages(self, messages):
         """Draws the most recent messages in the message log."""
 
+        self.message_window.clear()
         height, width = self.message_window.getmaxyx()
 
+        all_messages = ""
         while not messages.empty():
-            a_message = messages.get()
-            words = a_message.split()
-            for word in words:
-                if self.message_column + len(word) > width:
-                    self.message_row += 1
-                    self.message_column = 0
-                if self.message_row == height:
-                    self.main_window.addstr(self.message_row, 75, "MORE",
-                                            curses.A_REVERSE)
-                    self.main_window.refresh()
-                    self.message_window.getch()
-                    self.message_window.scroll(1)
-                    self.main_window.addstr(self.message_row, 75, "----")
-                    self.message_row = height - 1
-                self.message_window.addstr(self.message_row,
-                                           self.message_column, word)
-                self.message_column += len(word) + 1
+            all_messages += messages.get() + " "
+
+        wrapped_messages = english.wrap(all_messages.strip(), width - 1)
+
+        row = 0
+        for line in wrapped_messages:
+            self.message_window.addstr(row, 0, line)
+            row += 1
+            if row == height and line != wrapped_messages[-1]:
+                self.main_window.addstr(row, 75, "MORE", curses.A_REVERSE)
+                self.main_window.refresh()
+                self.message_window.getch()
+                self.message_window.scroll(1)
+                self.main_window.addstr(row, 75, "----")
+                row = height - 1
+
         self.message_window.refresh()
+        # words = a_message.split()
+        # for word in words:
+        #     if self.message_column + len(word) > width:
+        #         self.message_row += 1
+        #         self.message_column = 0
+        #     self.message_window.addstr(self.message_row,
+        #                                self.message_column, word)
+        #     self.message_column += len(word) + 1
 
     def look(self, world):
         """Enters look mode. Look mode allows the player to move the cursor

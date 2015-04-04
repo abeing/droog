@@ -24,6 +24,7 @@ class Hero(creature.Creature):
     def act(self):
         super(Hero, self).act()
         self.ui.draw_hero(self)
+        self.ui.draw_messages(the.messages)
         command = self.ui.input()
         if command in self.ui.movements:
             delta_y, delta_x = self.ui.movements[command]

@@ -35,8 +35,6 @@ def refresh(ui_object):
     """Redraw the entire screen."""
     ui_object.draw_area(the.world)
     ui_object.draw_status(time=the.turn.current_time())
-    ui_object.draw_hero(the.hero)
-    ui_object.draw_messages(the.messages)
 
 
 def main():
