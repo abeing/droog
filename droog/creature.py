@@ -101,24 +101,27 @@ class Creature(actor.Actor):
 
 class Zombie(Creature):
     """Zombie creature."""
-    def __init__(self):
+    def __init__(self, improvement=None):
         """Create a zombie.
 
         A zombie uses the average stat array and then raises one stat to three.
+        improvement -- one of 'str', 'dex', or 'con' to improve
         """
         str = 2
         dex = 2
         con = 2
-        improvement = random.choice(['str', 'dex', 'con'])
+        if not improvement:
+            improvement = random.choice(['str', 'dex', 'con'])
+        name = "zombie"
         if improvement == 'str':
             str = 3
             name = "strong zombie"
         if improvement == 'dex':
             dex = 3
-            name = "fast zombie"
+            name = "nimble zombie"
         if improvement == 'con':
             con = 3
-            name = "hardy zombie"
+            name = "hale zombie"
         self.attacks = [attack.make_bite(), attack.make_unarmed()]
         super(Zombie, self).__init__('Z', name, str=str, dex=dex, con=con)
 

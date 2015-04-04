@@ -19,10 +19,10 @@ def possessive(who):
 
 def indefinite_creature(who):
     """Returns the indefinate referant to a creature."""
+    if who.is_hero:
+        return "you"
     name = who.name
     article = "a"
-    if who.is_hero:
-        name = "you"
     if who.initial_vowel:
         article = "an"
     return article + " " + name
@@ -48,9 +48,13 @@ def conjugate_verb(subject, verb):
     The verb should be provided in the infinitive.
     """
     global CONJUGATIONS
-    if verb not in CONJUGATIONS:
-        return verb
-    if subject.is_hero:
-        return CONJUGATIONS[verb][0]
+    if getattr(subject, 'is_hero', False):
+        if verb not in CONJUGATIONS:
+            return verb
+        else:
+            return CONJUGATIONS[verb][0]
     else:
-        return CONJUGATIONS[verb][1]
+        if verb not in CONJUGATIONS:
+            return verb + 's'
+        else:
+            return CONJUGATIONS[verb][1]
