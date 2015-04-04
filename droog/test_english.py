@@ -108,5 +108,77 @@ class AttributeTest(unittest.TestCase):
         self.assertEqual("nimble", english.dexterity(3))
         self.assertEqual("Panacean", english.constitution(4))
 
+
+class EpithetTest(unittest.TestCase):
+    def test_normals(self):
+        """Test all twos."""
+        self.assertEqual("", english.epithet(2, 2, 2))
+
+    def test_one(self):
+        """Test one good attribute."""
+        self.assertEqual("strong", english.epithet(3, 2, 2))
+        self.assertEqual("nimble", english.epithet(2, 3, 2))
+        self.assertEqual("Panacean", english.epithet(2, 2, 4))
+        self.assertEqual("sickly", english.epithet(2, 2, 1))
+        self.assertEqual("clumsy", english.epithet(2, 1, 2))
+        self.assertEqual("weak", english.epithet(1, 2, 2))
+
+    def test_two_same(self):
+        """Test two good or two bad."""
+        self.assertEqual("strong and nimble", english.epithet(3, 3, 2))
+        self.assertEqual("clumsy and sickly", english.epithet(2, 1, 1))
+
+    def test_three_same(self):
+        """Test three good or three bad."""
+        self.assertEqual("strong, Hermesian, and hale",
+                         english.epithet(3, 4, 3))
+        self.assertEqual("weak, clumsy, and sickly",
+                         english.epithet(1, 1, 1))
+
+    def test_one_each(self):
+        """Test one good and one bad."""
+        self.assertEqual("strong but sickly", english.epithet(3, 2, 1, 'but'))
+        self.assertEqual("Panacean yet weak", english.epithet(1, 2, 4, 'yet'))
+
+    def test_two_and_one(self):
+        """Test two good one bad or one good two bad."""
+        self.assertEqual("strong and nimble but sickly",
+                         english.epithet(3, 3, 1, 'but'))
+        self.assertEqual("nimble and hale yet weak",
+                         english.epithet(1, 3, 3, 'yet'))
+
+
+class WrapTestCase(unittest.TestCase):
+    def test_empty(self):
+        """Test an empty string."""
+        self.assertEqual([""], english.wrap("", 23))
+
+    def test_none(self):
+        """Test a null string."""
+        self.assertEqual([""], english.wrap(None, 23))
+
+    def test_one_short(self):
+        """Test one short word."""
+        self.assertEqual(["short"], english.wrap("short", 23))
+
+    def test_two_short(self):
+        """Test two words shorter than the line."""
+        self.assertEqual(["short again"], english.wrap("short again", 23))
+
+    def test_two_lines(self):
+        """Test two lines."""
+        self.assertEqual(["shorter", "again"],
+                         english.wrap("shorter again", 9))
+
+    def test_word_too_long(self):
+        """Test a word that is longer than the line."""
+        self.assertEqual(["longerword", "second", "line"],
+                         english.wrap("longerword second line", 8))
+
+    def test_hero(self):
+        self.assertEqual(["Snaugh the strong,", "nimble, and hale."],
+                         english.wrap("Snaugh the strong, nimble, and hale.", 
+                                      18))
+
 if __name__ == "__main__":
     unittest.main()

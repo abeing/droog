@@ -3,6 +3,7 @@ import curses
 import logging
 import sys
 import message
+import english
 
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
@@ -222,14 +223,18 @@ class Curses(object):
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
         self.hero_window.clear()
-        self.hero_window.addstr(0, 0, hero.name)
-        strength_meter = create_meter(hero.strength, 3)
-        dexterity_meter = create_meter(hero.dexterity, 3)
-        constitution_meter = create_meter(hero.constitution, 3)
-        self.hero_window.addstr(1, 0, "    Strength %s" % strength_meter)
-        self.hero_window.addstr(2, 0, "   Dexterity %s" % dexterity_meter)
-        self.hero_window.addstr(3, 0, "Constitution %s" % constitution_meter)
-        index = self.draw_conditions(hero, 5)
+        stats = english.epithet(hero.strength, hero.dexterity,
+                                hero.constitution)
+        if stats:
+            hero_line = hero.name + " the " + stats
+        else:
+            hero_line = hero.name
+        hero_lines = english.wrap(hero_line, HERO_COLUMNS)
+        index = 0
+        for line in hero_lines:
+            self.hero_window.addstr(index, 0, line)
+            index += 1
+        index = self.draw_conditions(hero, index)
         self.draw_inventory(hero.inventory, index + 1)
         self.hero_window.refresh()
 
