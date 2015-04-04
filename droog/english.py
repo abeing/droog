@@ -172,7 +172,7 @@ def wrap(string, width):
 
     words = string.split()
     for word in words:
-        if pos + len(word) > width + 1:
+        if pos + len(word) > width:
             if not pos == 0:
                 wrapped.append(line)
                 line = ""
