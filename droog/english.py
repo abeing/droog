@@ -1,3 +1,5 @@
+import engine
+
 
 def definite_creature(who):
     """Returns either a creature's name or "you" if the creature is the hero.
@@ -58,3 +60,35 @@ def conjugate_verb(subject, verb):
             return verb + 's'
         else:
             return CONJUGATIONS[verb][1]
+
+ATTRIBUTE_DESCRIPTION = {
+                         'str': ["", "weak", "", "strong", "Herculean"],
+                         'dex': ["", "clumsy", "", "nimble", "Hermesian"],
+                         'con': ["", "sickly", "", "hale", "Panacean"],
+                        }
+
+
+def _lookup_attribute(attribute, value):
+    """Provide the English description for a particular attribute.
+    attribute -- One of 'str', 'dex', or 'con'.
+    value -- An integer between 1 and 4, inclusive.
+    """
+    if not engine.is_valid_attribute(value):
+        raise ValueError("%s is not in valid range [1-4] for English "
+                         "conversion")
+    return ATTRIBUTE_DESCRIPTION[attribute][value]
+
+
+def strength(str):
+    """Provide English description for a particular stregth score."""
+    return _lookup_attribute('str', str)
+
+
+def dexterity(dex):
+    """Provide English description for a particular dexterity score."""
+    return _lookup_attribute('dex', dex)
+
+
+def constitution(con):
+    """Provide English description for a particular constitution score."""
+    return _lookup_attribute('con', con)

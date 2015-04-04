@@ -78,5 +78,35 @@ class ConjugationTest(unittest.TestCase):
         self.assertEqual("are", english.conjugate_verb(self.second, "be"))
         self.assertEqual("is", english.conjugate_verb(self.third, "be"))
 
+
+class AttributeTest(unittest.TestCase):
+    def test_doc(self):
+        self.assertIsNotNone(english.strength.__doc__)
+
+    def test_zero(self):
+        self.assertRaises(ValueError, english.strength, 0)
+        self.assertRaises(ValueError, english.dexterity, 0)
+        self.assertRaises(ValueError, english.constitution, 0)
+
+    def test_five(self):
+        """Test attributes of five, which is out of range."""
+        self.assertRaises(ValueError, english.strength, 5)
+        self.assertRaises(ValueError, english.dexterity, 5)
+        self.assertRaises(ValueError, english.constitution, 5)
+
+    def test_two(self):
+        """Test attributes of 2, which are 'normal' and should all have empty
+        strings."""
+        self.assertEqual("", english.strength(2))
+        self.assertEqual("", english.dexterity(2))
+        self.assertEqual("", english.constitution(2))
+
+    def test_strings(self):
+        """Test attributes of 1, 3, and 4, all of which should have text
+        descriptions."""
+        self.assertEqual("weak", english.strength(1))
+        self.assertEqual("nimble", english.dexterity(3))
+        self.assertEqual("Panacean", english.constitution(4))
+
 if __name__ == "__main__":
     unittest.main()
