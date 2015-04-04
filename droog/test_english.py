@@ -180,5 +180,37 @@ class WrapTestCase(unittest.TestCase):
                          english.wrap("Snaugh the strong, nimble, and hale.", 
                                       18))
 
+
+class SentenceTestCase(unittest.TestCase):
+    def test_none(self):
+        """Test the None case."""
+        self.assertEqual("", english.make_sentence(None))
+
+    def test_empty(self):
+        """Test the empty string case."""
+        self.assertEqual("", english.make_sentence(""))
+
+    def test_strip(self):
+        """Test that strings are stripped."""
+        self.assertEqual("", english.make_sentence(" "))
+
+    def test_sentence(self):
+        """Test some typical sentences."""
+        self.assertEqual("Adam.", english.make_sentence("adam"))
+        self.assertEqual("This sucks.", english.make_sentence("this sucks"))
+
+    def test_capital(self):
+        """Test some already-capitalized sentences."""
+        self.assertEqual("Audelyn.", english.make_sentence("Audelyn"))
+        self.assertEqual("It's time.", english.make_sentence("It's time"))
+
+    def test_punctuation(self):
+        """Test some already punctuated strings."""
+        self.assertEqual("No way!", english.make_sentence("No way!"))
+        self.assertEqual("Do we?", english.make_sentence("do we?"))
+        self.assertEqual("This sentence is well-formed.",
+                         english.make_sentence("This sentence is well-formed.")
+                         )
+
 if __name__ == "__main__":
     unittest.main()

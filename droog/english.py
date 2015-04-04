@@ -1,6 +1,36 @@
 import engine
 import random
 
+# Attribute descriptions in lookup order from 0 to 4.
+ATTRIBUTE_DESCRIPTION = {
+                         'str': ["", "weak", "", "strong", "Herculean"],
+                         'dex': ["", "clumsy", "", "nimble", "Hermesian"],
+                         'con': ["", "sickly", "", "hale", "Panacean"],
+                        }
+
+# Verb conjugations, in the form:
+#   infinitive: (second_person_singular, third_person_singular)
+# Underscores are used to denote special-purpose verbs, where the second person
+# might use a differnt verb than the third person (e.g. you feel, it looks).
+CONJUGATIONS = {
+                'bite': ("bite", "bites"),
+                'punch': ("punch", "punches"),
+                'chomp': ("chomp", "chomps"),
+                'kick': ("kick", "kicks"),
+                'slash': ("slash", "slashes"),
+                'stab': ("stab", "stabs"),
+                'jab': ("jab", "jabs"),
+                'slice': ("slice", "slices"),
+                'be': ("are", "is"),
+                'bleed': ("bleed", "bleeds"),
+                'die': ("die", "dies"),
+                'stop': ("stop", "stops"),
+                '_disease': ("feel", "looks"),
+               }
+
+# Punctuation that is considered approprate to end a sentence with.
+TERMINAL_PUNCTUATION = ['.', '?', '!']
+
 
 def definite_creature(who):
     """Returns either a creature's name or "you" if the creature is the hero.
@@ -30,20 +60,6 @@ def indefinite_creature(who):
         article = "an"
     return article + " " + name
 
-CONJUGATIONS = {'bite': ("bite", "bites"),
-                'punch': ("punch", "punches"),
-                'chomp': ("chomp", "chomps"),
-                'kick': ("kick", "kicks"),
-                'slash': ("slash", "slashes"),
-                'stab': ("stab", "stabs"),
-                'jab': ("jab", "jabs"),
-                'slice': ("slice", "slices"),
-                'be': ("are", "is"),
-                'bleed': ("bleed", "bleeds"),
-                'die': ("die", "dies"),
-                'stop': ("stop", "stops"),
-                '_disease': ("feel", "looks")}
-
 
 def conjugate_verb(subject, verb):
     """Returns the conjugation of the verb for a given subject.
@@ -61,12 +77,6 @@ def conjugate_verb(subject, verb):
             return verb + 's'
         else:
             return CONJUGATIONS[verb][1]
-
-ATTRIBUTE_DESCRIPTION = {
-                         'str': ["", "weak", "", "strong", "Herculean"],
-                         'dex': ["", "clumsy", "", "nimble", "Hermesian"],
-                         'con': ["", "sickly", "", "hale", "Panacean"],
-                        }
 
 
 def _lookup_attribute(attribute, value):
@@ -185,3 +195,19 @@ def wrap(string, width):
     wrapped.append(line)
 
     return wrapped
+
+
+def make_sentence(string):
+    """Convert a string into a well-formed sentence.
+
+    - The first character will be capitalized (if not already).
+    - If the last character is not punctuation, a period will be added.
+    """
+    if not string:
+        return ""
+    string = string.strip()
+    if len(string) is not 0:
+        string = string.capitalize()
+        if string[-1] not in TERMINAL_PUNCTUATION:
+            string = string + "."
+    return string
