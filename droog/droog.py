@@ -20,7 +20,7 @@ def new_game(ui_object):
     the.turn = turn.Turn()
     the.hero = _hero.Hero("Snaugh", ui_object)
     the.turn.add_actor(the.hero)
-    the.messages = message.Messages()
+    the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(200, 200)
     _world.generate_city(the.world)
     the.world.spawn_monster('Z')

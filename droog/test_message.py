@@ -1,6 +1,7 @@
 import unittest
 import message
 import english
+import turn
 
 
 class QueueTest(unittest.TestCase):
@@ -37,3 +38,40 @@ class QueueTest(unittest.TestCase):
         self.sut.add(message, clean=False)
         got_message = self.sut.get()
         self.assertEquals(got_message, message)
+
+    def test_timestamps(self):
+        """We should be able to provide a Turn for timestamps."""
+        clock = turn.Turn()
+        sut = message.Messages(turn=clock)
+
+
+class HistoryTestCase(unittest.TestCase):
+    """TestCases for the message log."""
+
+    def setUp(self):
+        self.history_size = 10
+        self.sut = message.Messages(history_size=10)
+
+    def test_history_add(self):
+        """Test that messages are added to the history when removed from the
+        queue."""
+        self.sut.add("One")
+        self.assertEquals(0, len(self.sut.history))
+        self.sut.get()
+        self.assertEquals(1, len(self.sut.history))
+
+    def test_history_cap(self):
+        """Test that only the maximum number of messages are stored."""
+        for x in range(self.history_size + 1):
+            self.sut.add("Message %d" % (x))
+            self.sut.get()
+        self.assertEquals(10, len(self.sut.history))
+        self.assertEquals("Message 1.", self.sut.history[0])
+
+    def test_no_history(self):
+        """Test that a history_size of zero provides no history."""
+        sut = message.Messages(history_size=0)
+        sut.add("One")
+        self.assertEquals(0, len(sut.history))
+        sut.get()
+        self.assertEquals(1, len(sut.history))

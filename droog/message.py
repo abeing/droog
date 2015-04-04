@@ -16,8 +16,11 @@ class Messages(object):
     displayed in the user interface. The user interface can then filter and
     format the messages."""
 
-    def __init__(self):
+    def __init__(self, turn=None, history_size=100):
         self._queue = Queue.Queue()
+        self.history = []
+        self._history_size = history_size
+        self._turn = turn
 
     def add(self, message, clean=True):
         """Add a message to the message queue.
@@ -28,7 +31,8 @@ class Messages(object):
             message = english.make_sentence(message)
         if len(message) is not 0:
             LOG.info("Adding '%s' to the message queue.", message)
-            self._queue.put(message)
+            time = self._turn.current_time() if self._turn else ""
+            self._queue.put((message, time))
         else:
             LOG.warning("Zero-length message not added to the message queue.")
 
@@ -38,4 +42,8 @@ class Messages(object):
 
     def get(self):
         """Return the next message in the queue."""
-        return self._queue.get()
+        message, time = self._queue.get()
+        if self._history_size > 0 and len(self.history) >= self._history_size:
+            self.history.pop(0)
+        self.history.append(message)
+        return message
