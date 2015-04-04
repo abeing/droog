@@ -9,7 +9,7 @@ MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
 
 HERO_COLUMNS = 18
-MESSAGE_ROWS = 3
+MESSAGE_ROWS = 1
 STATUS_ROWS = 1
 STATUS_COLUMNS = 47
 
@@ -86,7 +86,7 @@ class Curses(object):
         # bottom-right-most character.
         self.area_window = self.main_window.subwin(self.area_height,
                                                    self.area_width + 1,
-                                                   4, 0)
+                                                   MESSAGE_ROWS + 1, 0)
 
         # Draw the border between the area window and the hero windows.
         for y in range(MESSAGE_ROWS, self.area_height + MESSAGE_ROWS + 1):
@@ -99,8 +99,8 @@ class Curses(object):
 
         # Draw the border between the hero window and the message window,
         for x in range(0, width):
-            self.main_window.addch(3, x, '-')
-        self.main_window.addch(3, self.area_width, '+')
+            self.main_window.addch(MESSAGE_ROWS, x, '-')
+        self.main_window.addch(MESSAGE_ROWS, self.area_width, '+')
 
         self.message_window = self.main_window.subwin(MESSAGE_ROWS,
                                                       width,
