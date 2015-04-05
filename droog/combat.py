@@ -89,7 +89,7 @@ def melee_attack(attacker, defender, attack):
     verb = random.choice(attack.verbs)
     attacker_bonus = max(attacker.strength, attacker.dexterity)
     defender_penalty = max(defender.strength, defender.dexterity)
-    weapon_bonus = 0  # Fists only
+    weapon_bonus = attack.attack_bonus
     attack_roll = random.randint(1, 6)
     attack_magnitude = attack_roll + attacker_bonus + weapon_bonus - \
         defender_penalty
@@ -115,39 +115,37 @@ def melee_attack(attacker, defender, attack):
 
 def inflict_damage(victim, attack):
     """Inflicts damage onto a creature."""
-    damage = random.choice(['str', 'dex', 'con'])
 
-    if damage == 'str':
-        if not victim.is_weakened:
-            victim.is_weakened = True
-            the.messages.add("%s %s weakened." % 
-                             (english.definite_creature(victim),
-                              english.conjugate_verb(victim, "be"))
-                             )
+    if random.random() < attack.weaken_chance and not victim.is_weakened:
+        victim.is_weakened = True
+        the.messages.add("%s %s weakened." %
+                         (english.definite_creature(victim),
+                          english.conjugate_verb(victim, "be"))
+                         )
 
-    if damage == 'dex':
-        if not victim.is_hobbled:
-            victim.is_hobbled = True
-            the.messages.add("%s %s hobbled." % 
-                             (english.definite_creature(victim),
-                              english.conjugate_verb(victim, "be"))
-                             )
+    if random.random() < attack.hobble_chance and not victim.is_hobbled:
+        victim.is_hobbled = True
+        the.messages.add("%s %s hobbled." %
+                         (english.definite_creature(victim),
+                          english.conjugate_verb(victim, "be"))
+                         )
 
-    if damage == 'con':
-        if random.random() < attack.stun_chance and not victim.is_stunned:
-            the.messages.add("%s %s %s." %
-                             (english.definite_creature(victim),
-                              english.conjugate_verb(victim, "be"), "stunned"))
-            victim.is_stunned = True
-            stun_time = 10 * (random.randint(2, 5) - victim.constitution)
-            log.info("%s is stunned for %s ticks.", victim, stun_time)
-            the.turn.delay_actor(victim, stun_time)
-        if random.random() < attack.disease_chance and not victim.is_diseased:
-            disease = DiseaseAction(victim)
-            the.turn.add_actor(disease, 600)
-        if random.random() < attack.bleed_chance and not victim.is_bleeding:
-            bleed = BleedAction(victim)
-            the.turn.add_actor(bleed)
+    if random.random() < attack.stun_chance and not victim.is_stunned:
+        the.messages.add("%s %s %s." %
+                         (english.definite_creature(victim),
+                          english.conjugate_verb(victim, "be"), "stunned"))
+        victim.is_stunned = True
+        stun_time = 10 * (random.randint(2, 5) - victim.constitution)
+        log.info("%s is stunned for %s ticks.", victim, stun_time)
+        the.turn.delay_actor(victim, stun_time)
+
+    if random.random() < attack.disease_chance and not victim.is_diseased:
+        disease = DiseaseAction(victim)
+        the.turn.add_actor(disease, 600)
+
+    if random.random() < attack.bleed_chance and not victim.is_bleeding:
+        bleed = BleedAction(victim)
+        the.turn.add_actor(bleed)
 
 
 def kill(victim):

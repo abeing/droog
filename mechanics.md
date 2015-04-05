@@ -51,6 +51,8 @@ on their victims.
 | Rifle             | Ranged |   +4    |    - |   75% |       - |       - |
 | Laser             | Ranged |   +5    |    - |     - |       - |     50% |
 
+All attacks have a uniform 25% chance to inflict weakened or hobbled.
+
 A creature that is **stunned** has his or her next turn moved back 20-50 minus
 10 per their constitution score.
 
