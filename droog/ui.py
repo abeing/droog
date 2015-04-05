@@ -409,6 +409,59 @@ class Curses(object):
         del help_screen
         self.redraw()
 
+    def history(self, messages):
+        """Display the message history."""
+        history_screen = curses.newwin(self.area_height, self.area_width,
+                                       MESSAGE_ROWS + 1, 0)
+        self.draw_status("Q to quit. J and K to scroll.")
+
+        if not messages.history:
+            while command != 'q':
+                command = self.input()
+            return
+
+        # Construct pages.
+        pages = []
+        current_page = {'start_msg': 0, 'end_msg': -1, 'screen_line_count': 0}
+        for msg_id in range(0, len(messages.history)):
+            full_message = messages.history[msg_id]
+            wrapped_message = english.wrap(full_message, self.area_width)
+            if len(wrapped_message) + current_page['screen_line_count'] < \
+                    self.area_height:
+                current_page['end_msg'] = msg_id
+                current_page['screen_line_count'] += len(wrapped_message)
+            else:
+                pages.append(current_page)
+                assert len(wrapped_message) < self.area_height
+                current_page = {'start_msg': msg_id,
+                                'end_msg': msg_id,
+                                'screen_line_count': len(wrapped_message)}
+        pages.append(current_page)
+
+        # Render pages.
+        current_page_id = 0
+        command = " "
+        while command != 'q':
+            history_screen.clear()
+            screen_index = 0
+            page = pages[current_page_id]
+            for msg_id in range(page['start_msg'], page['end_msg'] + 1):
+                full_message = messages.history[msg_id]
+                wrapped_message = english.wrap(full_message, self.area_width)
+                for line in wrapped_message:
+                    history_screen.addstr(screen_index, 0, line)
+                    screen_index += 1
+            history_screen.refresh()
+            command = self.input()
+            if command == 'j' and current_page_id < len(pages) - 1:
+                current_page_id += 1
+            if command == 'k' and current_page_id != 0:
+                current_page_id -= 1
+
+        # Cleanup.
+        del history_screen
+        self.redraw()
+
     def redraw(self):
         """Redraw the windows."""
         self.main_window.redrawwin()

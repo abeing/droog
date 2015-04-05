@@ -17,6 +17,7 @@ class Hero(creature.Creature):
         self.inventory.append(item.make_knife())
         self.inventory.append(item.make_knife())
         self.inventory.append(item.make_knife())
+        self.msg = 0
 
     def __repr__(self):
         return "the hero %s" % self.name
@@ -36,8 +37,17 @@ class Hero(creature.Creature):
             self.ui.drop(self, the.world)
         if command == '~':
             self.ui.wizard(the.world)
+        if command == 'm':
+            self.ui.history(the.messages)
         if command == 'q':
             sys.exit(0)
+        if command == 'w':
+            the.messages.add("This is a very long message that should wrap "
+                             "onto two lines because we want to test our "
+                             "line-splitting code.123456789012")
+        if command == 'e':
+            the.messages.add("Message %d" % (self.msg))
+            self.msg += 1
         if command == '?':
             self.ui.help()
         return 0
