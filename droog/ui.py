@@ -381,9 +381,11 @@ class Curses(object):
         # height, width = self.main_window.getmaxyx()
         LOG.info("creating help window width=%d, height=%d", self.area_width,
                  self.area_height)
-        help_screen = curses.newwin(self.area_height, self.area_width, 4, 0)
+        help_screen = curses.newwin(self.area_height, self.area_width,
+                                    MESSAGE_ROWS + 1, 0)
         row = self.hero_y_offset
         col = self.hero_x_offset
+        cmd_col = col - 22
         LOG.info("Drawing movement at (%d, %d)", row, col)
         help_screen.addstr(row - 4, col - 4, "Movement")
         help_screen.addstr(row - 3, col - 4, "--------")
@@ -392,11 +394,13 @@ class Curses(object):
         help_screen.addstr(row, col - 4, " h--@--l ")
         help_screen.addstr(row + 1, col - 4, "  / | \\")
         help_screen.addstr(row + 2, col - 4, " b  j  n ")
-        help_screen.addstr(row - 4, col - 15, "Commands")
-        help_screen.addstr(row - 3, col - 15, "--------")
-        help_screen.addstr(row - 2, col - 15, "q quit")
-        help_screen.addstr(row - 1, col - 15, "? help")
-        help_screen.addstr(row, col - 15, "/ look")
+        help_screen.addstr(row - 4, cmd_col, "Commands")
+        help_screen.addstr(row - 3, cmd_col, "--------")
+        help_screen.addstr(row - 2, cmd_col, "q quit")
+        help_screen.addstr(row - 1, cmd_col, "? help")
+        help_screen.addstr(row, cmd_col, "/ look")
+        help_screen.addstr(row + 1, cmd_col, "d drop")
+        help_screen.addstr(row + 2, cmd_col, "m message history")
         help_screen.addstr(row - 2, col + 6, "Bump into enemies with")
         help_screen.addstr(row - 1, col + 6, "the movement keys to")
         help_screen.addstr(row + 0, col + 6, "perform a melee attack.")
