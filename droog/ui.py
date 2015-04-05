@@ -424,7 +424,7 @@ class Curses(object):
         pages = []
         current_page = {'start_msg': 0, 'end_msg': -1, 'screen_line_count': 0}
         for msg_id in range(0, len(messages.history)):
-            full_message = messages.history[msg_id]
+            full_message = messages.get_history(msg_id)
             wrapped_message = english.wrap(full_message, self.area_width)
             if len(wrapped_message) + current_page['screen_line_count'] < \
                     self.area_height:
@@ -446,7 +446,7 @@ class Curses(object):
             screen_index = 0
             page = pages[current_page_id]
             for msg_id in range(page['start_msg'], page['end_msg'] + 1):
-                full_message = messages.history[msg_id]
+                full_message = messages.get_history(msg_id)
                 wrapped_message = english.wrap(full_message, self.area_width)
                 for line in wrapped_message:
                     history_screen.addstr(screen_index, 0, line)

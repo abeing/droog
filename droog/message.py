@@ -45,5 +45,14 @@ class Messages(object):
         message, time = self._queue.get()
         if self._history_size > 0 and len(self.history) >= self._history_size:
             self.history.pop(0)
-        self.history.append(message)
+        self.history.append((message, time))
         return message
+
+    def get_history(self, index, time=True):
+        """Get an (optionally time-stamped) message from the history."""
+        if index > len(self.history):
+            return ""
+        text, time = self.history[index]
+        if time:
+            return "%s %s" % (time, text)
+        return text

@@ -66,7 +66,7 @@ class HistoryTestCase(unittest.TestCase):
             self.sut.add("Message %d" % (x))
             self.sut.get()
         self.assertEquals(10, len(self.sut.history))
-        self.assertEquals("Message 1.", self.sut.history[0])
+        self.assertEquals("Message 1.", self.sut.get_history(0, time=False))
 
     def test_no_history(self):
         """Test that a history_size of zero provides no history."""
@@ -75,3 +75,8 @@ class HistoryTestCase(unittest.TestCase):
         self.assertEquals(0, len(sut.history))
         sut.get()
         self.assertEquals(1, len(sut.history))
+
+    def test_get_history(self):
+        """Test that getting a non-existant history message returns an empty
+        string."""
+        self.assertEquals("", self.sut.get_history(100))
