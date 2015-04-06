@@ -20,12 +20,14 @@ class BleedAction(actor.Actor):
     def act(self):
         """Bleed."""
         self.victim.blood -= 1
+        if self.victim.blood <= 0:
+            the.messages.add("%s bled out." %
+                             (english.definite_creature(self.victim)))
+            kill(self.victim)
+            return self.DONE
         # We don't check the victim is visible!
         the.messages.add("%s %s." % (english.definite_creature(self.victim),
                          english.conjugate_verb(self.victim, "bleed")))
-        if self.victim.blood == 0:
-            kill(self.victim)
-            return self.DONE
         if random.randint(0, 100) < self.victim.constitution * 20:
             self.victim.is_bleeding = False
             the.messages.add("%s %s bleeding." %
@@ -45,6 +47,8 @@ class DiseaseAction(actor.Actor):
     PROGRESS = ["near death from illness", "quite ill", "feverish"]
 
     def act(self):
+        if self.victim.is_diseased:
+            return self.DONE
         if self.progress == 0:
             kill(self.victim)
             return self.DONE
@@ -143,9 +147,12 @@ def inflict_damage(victim, attack):
         disease = DiseaseAction(victim)
         the.turn.add_actor(disease, 600)
 
-    if random.random() < attack.bleed_chance and not victim.is_bleeding:
-        bleed = BleedAction(victim)
-        the.turn.add_actor(bleed)
+    if random.random() < attack.bleed_chance:
+        if victim.is_bleeding:
+            victim.blood -= 1
+        else:
+            bleed = BleedAction(victim)
+            the.turn.add_actor(bleed)
 
 
 def kill(victim):

@@ -487,6 +487,8 @@ def create_meter(value, maximum):
     """
     LOG.debug("Creating a meter of %r out of %r.", value, maximum)
     ivalue = int(value)
+    if ivalue < 0:
+        ivalue = 0
     meter = "["
     for x in range(0, ivalue):
         meter += "*"

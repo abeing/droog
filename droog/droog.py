@@ -47,6 +47,9 @@ def main():
         while the.turn.next():
             refresh(ui_object)
         refresh(ui_object)
+        ui_object.draw_status("Game over.")
+        ui_object.draw_hero(the.hero)
+        ui_object.draw_messages(the.messages)
         ui_object.input()
 
 
