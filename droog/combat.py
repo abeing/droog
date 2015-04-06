@@ -101,19 +101,19 @@ def melee_attack(attacker, defender, attack):
              " bonus - %r defender penalty)", attack_magnitude, attack_roll,
              attacker_bonus, weapon_bonus, defender_penalty)
     if attack_magnitude >= MELEE_TOHIT:
-        the.messages.add("%s %s %s." % (english.definite_creature(attacker),
-                         english.conjugate_verb(attacker, verb),
-                         english.definite_creature(defender)))
+        if defender.is_hero:
+            the.messages.add("%s %s." % (english.definite_creature(attacker),
+                             english.conjugate_verb(attack, verb)))
+        else:
+            the.messages.add("%s %s %s." % (
+                             english.definite_creature(attacker),
+                             english.conjugate_verb(attacker, verb),
+                             english.definite_creature(defender)))
         inflict_damage(defender, attack)
         return True
 
-    # Determine "why" we missed.
-    miss_reason = random.choice(["missed"] * 2 +
-                                ["was dodged by"] * defender.dexterity +
-                                ["was parried by"] * defender.strength)
-    log.info("Melee attack %r %r", miss_reason, attack_magnitude)
-    the.messages.add("%s %s %s %s" % (english.possessive(attacker), verb,
-                     miss_reason, english.definite_creature(defender)))
+    log.info("Melee attack missed with %r", attack_magnitude)
+    the.messages.add("%s missed." % (english.definite_creature(attacker)))
     return False
 
 
