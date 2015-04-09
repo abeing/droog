@@ -1,4 +1,4 @@
-import actor
+from .. import actor
 import unittest
 
 

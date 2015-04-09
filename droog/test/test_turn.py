@@ -1,6 +1,6 @@
-import turn as turn_
+import droog.turn as turn_
 import unittest
-import actor
+from .. import actor
 import logging
 
 logging.basicConfig()

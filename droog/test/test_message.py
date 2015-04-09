@@ -1,7 +1,7 @@
 import unittest
-import message
-import english
-import turn
+from .. import message
+from .. import english
+from .. import turn
 
 
 class QueueTest(unittest.TestCase):

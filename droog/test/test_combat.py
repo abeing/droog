@@ -1,9 +1,9 @@
 import unittest
-import creature
-import combat
+from .. import creature
+from .. import combat
 import mock
-import the
-import attack
+from .. import the
+from .. import attack
 import logging
 
 logging.basicConfig(filename="unittest.log", level=logging.INFO)

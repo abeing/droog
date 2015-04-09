@@ -1,7 +1,7 @@
 import unittest
-import hero
-import english
-import creature
+from .. import hero
+from .. import english
+from .. import creature
 
 
 class EnglishTest(unittest.TestCase):

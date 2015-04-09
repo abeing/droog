@@ -1,5 +1,5 @@
 import unittest
-import creature
+from .. import creature
 
 
 class ActCheck(unittest.TestCase):
