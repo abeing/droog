@@ -37,7 +37,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'droog=droog:main',
+            'droog=droog.main:main',
         ]
     }
 )

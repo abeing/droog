@@ -1,8 +1,7 @@
 *.pyc
-*.pyo
-.ropeproject/
 *.log
 *.dump
 .DS_Store
 venv/
 *.egg-info/
+dist/
