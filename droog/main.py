@@ -24,11 +24,11 @@ def new_game(ui_object):
     the.world = _world.World(200, 200)
     _world.generate_city(the.world)
     the.world.spawn_monster('Z')
-    the.world.spawn_monster('Z')
-    the.world.spawn_monster('d')
-    the.world.spawn_monster('d')
-    the.world.spawn_monster('C')
-    the.world.spawn_monster('C')
+    # the.world.spawn_monster('Z')
+    # the.world.spawn_monster('d')
+    # the.world.spawn_monster('d')
+    # the.world.spawn_monster('C')
+    # the.world.spawn_monster('C')
 
 
 def refresh(ui_object):

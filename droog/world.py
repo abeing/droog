@@ -1,4 +1,33 @@
 # -*- coding: UTF-8 -*-
+
+"""The Droog module for handling the world.
+
+Location -- A class for value objects storing coordinates in the world.
+World -- A class for reference objects of the World itself.
+"""
+
+# The MIT License (MIT)
+#
+# Copyright (c) 2015 Adam Miezianko
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 import random
 import logging
 import math
@@ -12,77 +41,112 @@ import the
 log = logging.getLogger(__name__)
 
 
+class Location(object):
+    """The Location class represents a position on a grid."""
+    def __init__(self, row, col):
+        """Construct a new location."""
+        self.row = row
+        self.col = col
+
+    def offset(self, delta_row, delta_col):
+        """Offset the location by a given number of rows and columns."""
+        return Location(self.row + delta_row, self.col + delta_col)
+
+    def distance_to(self, other_loc):
+        """Return the distance between another location and this one."""
+        delta_row = abs(other_loc.row - self.row)
+        delta_col = abs(other_loc.col - self.col)
+        return math.sqrt(delta_row * delta_row + delta_col * delta_col)
+
+    def delta_to(self, other_loc, steps=1):
+        """Return a delta between the other_loc and this one."""
+        delta_row = steps if (other_loc.row - self.row > 0) else -steps
+        delta_col = steps if (other_loc.col - self.col > 0) else -steps
+        return Location(delta_row, delta_col)
+
+
+def random_delta():
+    """Return a random delta."""
+    return Location(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
+
+
 class World(object):
     """Representation of the game world."""
 
-    def __init__(self, height, width):
+    def __init__(self, rows, cols):
         """Creates a World of the specified width, height, number of roads and
         probability of intersection continuations.
 
         The world is a grid of streets with the hero in the center.
         """
-        self.width = width
-        self.height = height
+        self.cols = cols
+        self.rows = rows
         self.tiles = []
 
         self.hero_location = self._position_hero()
-        for y in range(height):
+        for row in range(rows):
             self.tiles.append(list())
-            for x in range(width):
-                self.tiles[y].append(tile.make_empty())
+            for _ in range(cols):
+                self.tiles[row].append(tile.make_empty())
 
     def is_empty(self, y, x):
         """Returns True if the location is empty."""
         return self.tiles[y][x].walkable
 
-    def is_walkable(self, y, x):
+    def is_walkable(self, loc):
         """Returns True if the location can be traversed by walking."""
-        if self.is_valid_location(y, x):
-            if not self.tiles[y][x].walkable:
+        if self.is_valid_location(loc):
+            if not self.tiles[loc.row][loc.col].walkable:
                 return False
-            if not self.tiles[y][x].creature is None:
+            if not self.tiles[loc.row][loc.col].creature is None:
                 return False
-            if self.hero_location == (y, x):
+            if self.hero_location == loc:
                 return False
             return True
         return False
 
-    def is_valid_location(self, y, x):
-        return 0 <= y < self.height and 0 <= x < self.width
+    def is_valid_location(self, loc):
+        return 0 <= loc.row < self.rows and 0 <= loc.col < self.cols
 
-    def glyph_at(self, y, x):
+    def cell(self, loc):
+        """Return the tile at the location."""
+        if self.is_valid_location(loc):
+            return self.tiles[loc.row][loc.col]
+        return None
+
+    def glyph_at(self, loc):
         """Returns the world glyph and its color at the specified location.  If
         the location coordinates are out of bounds, returns a shield character.
         """
-        if self.is_valid_location(y, x):
-            return self.tiles[y][x].glyph
+        if self.is_valid_location(loc):
+            return self.cell(loc).glyph
         else:
             return '~'
 
-    def creature_at(self, y, x):
+    def creature_at(self, loc):
         """Returns the creature at the specified location or None if there is
         no creature at that location or if the location coordinates are out of
         bounds."""
-        if self.hero_location == (y, x):
+        if self.hero_location == loc:
             return the.hero
-        if self.is_valid_location(y, x):
-            return self.tiles[y][x].creature
+        if self.is_valid_location(loc):
+            return self.cell(loc).creature
         else:
-            log.warning("No creature found at (%r, %r)", y, x)
+            log.warning("No creature found at %r", loc)
             return None
 
-    def item_at(self, y, x):
+    def item_at(self, loc):
         """Return the top item at the specified location."""
-        items = self.items_at(y, x)
+        items = self.items_at(loc)
         if items:
             return items[0]
         return None
 
-    def items_at(self, y, x):
+    def items_at(self, loc):
         """Return all the items at the specified location."""
-        if self.is_valid_location(y, x):
-            if self.tiles[y][x].items:
-                return self.tiles[y][x].items
+        if self.is_valid_location(loc):
+            if self.tiles[loc.row][loc.col].items:
+                return self.tiles[loc.row][loc.col].items
         return []
 
     def description_at(self, y, x):
@@ -104,7 +168,7 @@ class World(object):
                 return self.tiles[y][x].description
         return ""
 
-    def move_creature(self, y, x, delta_y, delta_x):
+    def move_creature(self, from_loc, delta):
         """Move a creature or hero at (y, x) by (delta_y, delta_x) and return
         the action point costs of the movement or zero if the movement was not
         possible.
@@ -112,32 +176,29 @@ class World(object):
         At the moment, only single-step movement is permitted as we do not have
         pathfinding implemented."""
 
-        assert delta_y < 2
-        assert delta_x < 2
-        new_y = y + delta_y
-        new_x = x + delta_x
-        if self.is_walkable(new_y, new_x):
-            moved_creature = self.creature_at(y, x)
+        assert delta.row < 2
+        assert delta.col < 2
+        to_loc = from_loc.offset(delta.row, delta.col)
+        if self.is_walkable(to_loc):
+            moved_creature = self.creature_at(from_loc)
             log.info('Moved creature %r from %r to %r', moved_creature.name,
-                     (y, x), (new_y, new_x))
-            moved_creature.loc = (new_y, new_x)
-            self.tiles[y][x].creature = None
-            self.tiles[new_y][new_x].creature = moved_creature
-            return engine.movement_cost(delta_y, delta_x)
+                     from_loc, to_loc)
+            moved_creature.loc = to_loc
+            self.cell(from_loc).creature = None
+            self.cell(to_loc).creature = moved_creature
+            return engine.movement_cost(delta.row, delta.col)
         return 0
 
     def move_hero(self, delta_y, delta_x):
         """Move the hero by (delta_y, delta_x)."""
-        (old_y, old_x) = self.hero_location
-        new_y = old_y + delta_y
-        new_x = old_x + delta_x
-        if self.is_walkable(new_y, new_x):
-            log.info('Moved hero from %r to %r', (old_y, old_x),
-                     (new_y, new_x))
-            self.hero_location = (new_y, new_x)
+        old_loc = self.hero_location
+        new_loc = self.hero_location.offset(delta_y, delta_x)
+        if self.is_walkable(new_loc):
+            log.info('Moved hero from %r to %r', old_loc, new_loc)
+            self.hero_location = new_loc
             # If there are items in the new location, report about them in the
             # message log.
-            items = self.items_at(new_y, new_x)
+            items = self.items_at(new_loc)
             if len(items) == 1:
                 the.messages.add("You see here %s." % items[0].name)
             elif len(items) > 1:
@@ -147,12 +208,12 @@ class World(object):
                 items_msg += "."
                 the.messages.add(items_msg)
             return engine.movement_cost(delta_y, delta_x)
-        target = self.creature_at(new_y, new_x)
+        target = self.creature_at(new_loc)
         if target:
             return the.hero.melee_attack(target)
 
         # If we have a shield generator, we begin to jurry rig it.
-        if self.glyph_at(new_y, new_x) == 'G':
+        if self.glyph_at(new_loc) == 'G':
             return engine.deactivate_generator()
         return 0
 
@@ -162,11 +223,11 @@ class World(object):
         The hero will start close to half way between the center and edge of
         the map, using a triangular distribution."""
 
-        rand_dist = random.triangular(0, self.width / 2 - 1)
+        rand_dist = random.triangular(0, self.cols / 2 - 1)
         rand_dir = random.uniform(0, 359)
-        y = int(rand_dist * math.sin(rand_dir)) + self.height / 2
-        x = int(rand_dist * math.cos(rand_dir)) + self.width / 2
-        return (y, x)
+        row = int(rand_dist * math.sin(rand_dir)) + self.rows / 2
+        col = int(rand_dist * math.cos(rand_dir)) + self.cols / 2
+        return Location(row, col)
 
     def _add_road(self, start_y, start_x, delta_y, delta_x, beta):
         """Adds a road to the map
@@ -176,21 +237,19 @@ class World(object):
         we run into another road, continue with probability beta, otherwise
         stop."""
         keep_going = True
-        y = start_y
-        x = start_x
-        while self.is_valid_location(y, x) and keep_going:
-            self.tiles[y][x] = tile.make_street()
-            y += delta_y
-            x += delta_x
-            if 0 <= y < self.height and 0 <= x < self.width \
-                    and self.tiles[y][x].glyph == '#':
+        road_loc = Location(start_y, start_x)  # TODO Change paramter to loc.
+        while self.is_valid_location(road_loc) and keep_going:
+            self.tiles[road_loc.row][road_loc.col] = tile.make_street()
+            road_loc = road_loc.offset(delta_y, delta_x)
+            if self.is_valid_location(road_loc) \
+                    and self.cell(road_loc).glyph == '#':
                 keep_going = random.uniform(0, 1) < beta
 
     def _log(self):
         """Dumps the world into a file called 'world.dump'"""
         with open("world.dump", "w") as dump_file:
-            for y in range(self.height):
-                for x in range(self.width):
+            for y in range(self.rows):
+                for x in range(self.cols):
                     dump_file.write(self.tiles[y][x].glyph)
                 dump_file.write("\n")
 
@@ -200,17 +259,17 @@ class World(object):
 
         while attempts > 0:
             if near is None:
-                y = int(random.uniform(0, self.height))
-                x = int(random.uniform(0, self.width))
+                row = int(random.uniform(0, self.rows))
+                col = int(random.uniform(0, self.cols))
             else:
-                (near_y, near_x) = near
-                y = int(random.triangular(low=near_y - radius,
-                                          high=near_y + radius))
-                x = int(random.triangular(low=near_x - radius,
-                                          high=near_x + radius))
-            if self.is_valid_location(y, x) and \
-               self.tiles[y][x].creature is None and self.tiles[y][x].walkable:
-                return (y, x)
+                row = int(random.triangular(low=near.row - radius,
+                                            high=near.row + radius))
+                col = int(random.triangular(low=near.col - radius,
+                                            high=near.col + radius))
+            loc = Location(row, col)
+            if self.is_valid_location(loc) and \
+               self.cell(loc).creature is None and self.cell(loc).walkable:
+                return loc
             attempts -= 1
         return None
 
@@ -239,10 +298,9 @@ class World(object):
             return False
         if monster is not None:
             the.turn.add_actor(monster)
-            (y, x) = location
             monster.loc = location
-            self.tiles[y][x].creature = monster
-            log.info('%r placed at (%r, %r)', monster, y, x)
+            self.cell(location).creature = monster
+            log.info('%r placed at $r', monster, location)
             return True
 
     def remove_monster(self, monster):
@@ -257,17 +315,10 @@ class World(object):
         self.tiles[y][x].items.append(item)
 
 
-def distance_between(y1, x1, y2, x2):
-    """Computes the distance between two coordinates."""
-    delta_y = abs(y2 - y1)
-    delta_x = abs(x2 - x1)
-    return math.sqrt(delta_y + delta_x)
-
-
 def _add_shield_generator(a_world):
     """Places a shield generator in the center of the map."""
-    y = a_world.height / 2
-    x = a_world.width / 2
+    y = a_world.rows / 2
+    x = a_world.cols / 2
     a_world.tiles[y][x] = tile.make_shield_generator()
     a_world.generator_location = (y, x)
 
@@ -275,13 +326,13 @@ def _add_shield_generator(a_world):
 def _add_shield(a_world):
     """Creates the shield border around the navigable map."""
 
-    for y in range(0, a_world.height):
+    for y in range(0, a_world.rows):
         a_world.tiles[y][0] = tile.make_shield()
-        a_world.tiles[y][a_world.width - 1] = tile.make_shield()
+        a_world.tiles[y][a_world.cols - 1] = tile.make_shield()
 
-    for x in range(a_world.width):
+    for x in range(a_world.cols):
         a_world.tiles[0][x] = tile.make_shield()
-        a_world.tiles[a_world.height - 1][x] = tile.make_shield()
+        a_world.tiles[a_world.rows - 1][x] = tile.make_shield()
 
 
 def generate_city(a_world, road_count=10, beta=0.5):
@@ -304,24 +355,24 @@ def generate_city(a_world, road_count=10, beta=0.5):
     roads = []
 
     if road_count == 0:
-        if a_world.height > a_world.width:
-            road_count = a_world.height / 10
+        if a_world.rows > a_world.cols:
+            road_count = a_world.rows / 10
         else:
-            road_count = a_world.width / 10
+            road_count = a_world.cols / 10
 
-    equator = int(random.triangular(low=0, high=a_world.height,
-                                    mode=a_world.height / 2))
+    equator = int(random.triangular(low=0, high=a_world.rows,
+                                    mode=a_world.rows / 2))
     a_world._add_road(equator, 0, 0, 1, 1.0)
-    roads.append(((equator, 0), (equator, a_world.width - 1)))
+    roads.append(((equator, 0), (equator, a_world.cols - 1)))
     log.info('Equator road from %r to %r', (equator, 0),
-             (equator, a_world.width))
+             (equator, a_world.cols))
 
-    meridian = int(random.triangular(low=0, high=a_world.width,
-                                     mode=a_world.width / 2))
+    meridian = int(random.triangular(low=0, high=a_world.cols,
+                                     mode=a_world.cols / 2))
     a_world._add_road(0, meridian, 1, 0, 1.0)
-    roads.append(((0, meridian), (a_world.height - 1, meridian)))
+    roads.append(((0, meridian), (a_world.rows - 1, meridian)))
     log.info('Meridian road from %r to %r', (0, meridian),
-             (a_world.height, meridian))
+             (a_world.rows, meridian))
 
     for i in range(road_count):
         ((begin_y, begin_x), (end_y, end_x)) = random.choice(roads)

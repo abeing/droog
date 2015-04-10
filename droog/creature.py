@@ -123,6 +123,7 @@ class Zombie(Creature):
             con = 3
             name = "hale zombie"
         self.attacks = [attack.make_bite(), attack.make_unarmed()]
+        self.sense_range = 15
         super(Zombie, self).__init__('Z', name, str=str, dex=dex, con=con)
 
     def act(self):
@@ -132,37 +133,14 @@ class Zombie(Creature):
         2) If within 15 steps of the hero, move towards her.
         3) Otherwise, move randomly."""
         super(Zombie, self).act()
-        if self.loc:
-            (old_y, old_x) = self.loc
-            (hero_y, hero_x) = the.world.hero_location
-
-            # 1) If adjacent to the hero, bite her.
-            if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return combat.attack(self, the.hero,
-                                     random.choice(self.attacks))
-
-            # 2) If within 15 steps of the hero, move towards her.
-            elif world.distance_between(hero_y, hero_x, old_y, old_x) < 15:
-                delta_y = 1 if (hero_y - old_y > 0) else -1
-                delta_x = 1 if (hero_x - old_x > 0) else -1
-
-            # 3) Otherwise, move randomly.
-            else:
-                delta_y = random.choice([-1, 0, 1])
-                delta_x = random.choice([-1, 0, 1])
-
-            log.info("%r wants to move from (%r, %r) by (%r, %r).",
-                     self.name, old_y, old_x, delta_y, delta_x)
-            cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
-            if not cost == 0:
-                return cost
-        return 6  # If the creature fails to move, it stands around a while
+        return ai_act(self)
 
 
 class ZombieDog(Creature):
     """Zombie dog."""
     def __init__(self):
-        self.attack = attack.make_bite(effectiveness=70)
+        self.attacks = [attack.make_bite(effectiveness=70)]
+        self.sense_range = 30
         super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
 
     def act(self):
@@ -172,37 +150,15 @@ class ZombieDog(Creature):
         2) If within 30 steps of the hero, move towards her.
         3) Otherwise, move randomly."""
         super(ZombieDog, self).act()
-        if self.loc:
-            (old_y, old_x) = self.loc
-            log
-            (hero_y, hero_x) = the.world.hero_location
-
-            # 1) If adjacant to the hero, bite her.
-            if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return combat.attack(self, the.hero, self.attack)
-
-            # 2) If within 30 steps of the hero, move towards her.
-            elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:
-                delta_y = 1 if (hero_y - old_y > 0) else -1
-                delta_x = 1 if (hero_x - old_x > 0) else -1
-
-            # 3) Otherwise, move randomly.
-            else:
-                delta_y = random.choice([-1, 0, 1])
-                delta_x = random.choice([-1, 0, 1])
-
-            log.info("%r wants to move from (%r, %r) by (%r, %r).",
-                     self.name, old_y, old_x, delta_y, delta_x)
-            cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
-            if not cost == 0:
-                return cost
-        return 6  # If the creature fails to move, it stands areound a while.
+        return ai_act(self)
 
 
 class Cop(Creature):
     """Cop."""
     def __init__(self):
         super(Cop, self).__init__('C', 'cop', str=3, dex=1, con=3)
+        self.attacks = []
+        self.sense_range = 1
 
     def act(self):
         """Cops use the following decision tree:
@@ -211,27 +167,39 @@ class Cop(Creature):
         2) If within 30 steps of the hero, move towards her.
         3) Otherwise, move randomly."""
         super(Cop, self).act()
-        if self.loc:
-            (old_y, old_x) = self.loc
-            (hero_y, hero_x) = the.world.hero_location
+        return 6
 
-            # 1) If adjacant to the hero, bite her.
-            if world.distance_between(hero_y, hero_x, old_y, old_x) == 1:
-                return 6  # Cops at the moment don't have an attck.
 
-            # 2) If within 30 steps of the hero, move towards her.
-            elif world.distance_between(hero_y, hero_x, old_y, old_x) < 30:
-                delta_y = 1 if (hero_y - old_y > 0) else -1
-                delta_x = 1 if (hero_x - old_x > 0) else -1
+def ai_act(creature):
+    """Act as a creature.
 
-            # 3) Otherwise, move randomly.
-            else:
-                delta_y = random.choice([-1, 0, 1])
-                delta_x = random.choice([-1, 0, 1])
+    Creatures use the following decision tree:
 
-            log.info("%r wants to move from (%r, %r) by (%r, %r).",
-                     self.name, old_y, old_x, delta_y, delta_x)
-            cost = the.world.move_creature(old_y, old_x, delta_y, delta_x)
-            if not cost == 0:
-                return cost
-        return 6  # If the creature fails to move, it stands areound a while.
+    1) If adjacent to the hero, bite her.
+    2) If within 15 steps of the hero, move towards her.
+    3) Otherwise, move randomly.
+    """
+    if creature.loc:  # TODO: This should be an assert, probably.
+        dist = creature.loc.distance_to(the.world.hero_location)
+
+        log.info("%r is %r from the hero.", creature.name, dist)
+
+        # 1) If adjacent to the hero, bite her.
+        if dist < 2:
+            return combat.attack(creature, the.hero,
+                                 random.choice(creature.attacks))
+
+        # 2) If within 15 steps of the hero, move towards her.
+        elif dist < creature.sense_range:
+            delta = creature.loc.delta_to(the.world.hero_location, 1)
+
+        # 3) Otherwise, move randomly.
+        else:
+            delta = world.random_delta()
+
+        log.info("%r wants to move from %r by %r.", creature.name,
+                 creature.loc, delta)
+        cost = the.world.move_creature(creature.loc, delta)
+        if not cost == 0:
+            return cost
+    return 6  # If the creature fails to move, it stands around a while

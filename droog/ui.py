@@ -4,6 +4,7 @@ import logging
 import sys
 import message
 import english
+from world import Location
 
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
@@ -156,11 +157,12 @@ class Curses(object):
 
         The calculation is based on the hero's location.
         """
-        (hero_y, hero_x) = world.hero_location
-        left = hero_x - self.hero_x_offset
-        right = hero_x + self.hero_x_offset
-        top = hero_y - self.hero_y_offset
-        bottom = hero_y + self.hero_y_offset
+        hero_col = world.hero_location.col
+        hero_row = world.hero_location.row
+        left = hero_col - self.hero_x_offset
+        right = hero_col + self.hero_x_offset
+        top = hero_row - self.hero_y_offset
+        bottom = hero_row + self.hero_y_offset
         return (left, right, top, bottom)
 
     def draw_area(self, world):
@@ -176,15 +178,15 @@ class Curses(object):
 
         for y in range(top, bottom):
             for x in range(left, right):
-                glyph = world.glyph_at(y, x)
+                glyph = world.glyph_at(Location(y, x))
                 self.area_window.addstr(y - top, x - left,
                                         glyph, self.glyph_color(glyph))
-                creature = world.creature_at(y, x)
+                creature = world.creature_at(Location(y, x))
                 if creature is not None:
                     self.area_window.addstr(y - top, x - left,
                                             creature.glyph,
                                             self.glyph_color(creature.glyph))
-                item = world.item_at(y, x)
+                item = world.item_at(Location(y, x))
                 if item:
                     self.area_window.addstr(y - top, x - left,
                                             item.glyph,
