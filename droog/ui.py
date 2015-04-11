@@ -5,6 +5,7 @@ import sys
 import message
 import english
 from world import Location
+from . import creature
 
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
@@ -367,11 +368,13 @@ class Curses(object):
         command = self.input()
         if command == 's':
             self.draw_status(message="Summon what?")
-            monster = self.input()
-            LOG.info("Spawning a %r near the hero.", monster)
-            if not world.spawn_monster(monster, near=world.hero_location):
+            monster = creature.create_from_glyph(self.input())
+            if not monster:
                 self.draw_status("I know not how to spawn a %s, wizard." %
                                  monster)
+            LOG.info("Spawning a %r near the hero.", monster)
+            if not world.spawn_monster(monster, near=world.hero_location):
+                self.draw_status("There wasn't room.")
         if command == 't':
             self.draw_status(message="Teleport where?")
             location = self.input()

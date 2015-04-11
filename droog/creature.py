@@ -3,11 +3,12 @@ creature types."""
 
 import logging
 import random
-import actor
-import engine
-import attack
-import the
-import world
+from . import actor
+from . import engine
+from . import attack
+from . import the
+from . import world
+from . import combat
 
 log = logging.getLogger(__name__)
 
@@ -202,3 +203,16 @@ def ai_act(creature):
         if not cost == 0:
             return cost
     return 6  # If the creature fails to move, it stands around a while
+
+
+def create_from_glyph(glyph):
+    """Create a creature based on a glyph."""
+    monster = None
+    if glyph == 'Z':
+        monster = Zombie()
+    if glyph == 'd':
+        monster = ZombieDog()
+    if glyph == 'C':
+        monster = Cop()
+    return monster
+

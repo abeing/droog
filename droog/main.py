@@ -5,6 +5,7 @@ import world as _world
 import logging
 import hero as _hero
 import message
+import creature
 import turn
 import the
 
@@ -23,12 +24,12 @@ def new_game(ui_object):
     the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(200, 200)
     _world.generate_city(the.world)
-    the.world.spawn_monster('Z')
-    # the.world.spawn_monster('Z')
-    # the.world.spawn_monster('d')
-    # the.world.spawn_monster('d')
-    # the.world.spawn_monster('C')
-    # the.world.spawn_monster('C')
+    the.world.spawn_monster(creature.Zombie())
+    the.world.spawn_monster(creature.Zombie())
+    the.world.spawn_monster(creature.ZombieDog())
+    the.world.spawn_monster(creature.ZombieDog())
+    the.world.spawn_monster(creature.Cop())
+    the.world.spawn_monster(creature.Cop())
 
 
 def refresh(ui_object):

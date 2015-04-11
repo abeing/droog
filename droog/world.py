@@ -31,8 +31,7 @@ World -- A class for reference objects of the World itself.
 import random
 import logging
 import math
-import tile
-import creature
+from . import tile
 import engine
 import english
 import the
@@ -279,21 +278,9 @@ class World(object):
         location = self.random_empty_location(near)
         self.hero_location = location
 
-    def spawn_monster(self, monster_class='Z', near=None):
+    def spawn_monster(self, monster, near=None):
         """Spawns a monster on the map."""
-        monster = None
-        if monster_class == 'Z':
-            monster = creature.Zombie()
-        if monster_class == 'd':
-            monster = creature.ZombieDog()
-        if monster_class == 'C':
-            monster = creature.Cop()
-
-        if not monster:
-            LOG.error("Unknown monster class %r. Could not spawn.",
-                      monster_class)
-            return False
-
+        assert monster
         location = self.random_empty_location(near)
         if location is None:
             return False
