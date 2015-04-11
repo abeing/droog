@@ -2,13 +2,12 @@
 creature types."""
 
 import logging
+import random
 import actor
 import engine
-import random
+import attack
 import the
 import world
-import attack
-import combat
 
 log = logging.getLogger(__name__)
 

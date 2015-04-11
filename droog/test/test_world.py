@@ -9,7 +9,7 @@ def test_empty_map():
     sut = world.World(10, 10)
     assert sut
     assert sut.cols == sut.rows == 10
-    assert sut.is_empty(9, 9)
+    assert sut.cell(Location(9, 9))
 
 
 def test_valid_locations():

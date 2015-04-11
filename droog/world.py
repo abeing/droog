@@ -37,8 +37,7 @@ import engine
 import english
 import the
 
-
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class Location(object):
@@ -89,10 +88,6 @@ class World(object):
             for _ in range(cols):
                 self.tiles[row].append(tile.make_empty())
 
-    def is_empty(self, y, x):
-        """Returns True if the location is empty."""
-        return self.tiles[y][x].walkable
-
     def is_walkable(self, loc):
         """Returns True if the location can be traversed by walking."""
         if self.is_valid_location(loc):
@@ -105,7 +100,12 @@ class World(object):
             return True
         return False
 
+    def is_empty(self, loc):
+        """Returns True if the location is empty."""
+        return self.cell(loc).walkable
+
     def is_valid_location(self, loc):
+        """Return true if this location is in the world bounds."""
         return 0 <= loc.row < self.rows and 0 <= loc.col < self.cols
 
     def cell(self, loc):
@@ -132,7 +132,7 @@ class World(object):
         if self.is_valid_location(loc):
             return self.cell(loc).creature
         else:
-            log.warning("No creature found at %r", loc)
+            LOG.warning("No creature found at %r", loc)
             return None
 
     def item_at(self, loc):
@@ -149,7 +149,7 @@ class World(object):
                 return self.tiles[loc.row][loc.col].items
         return []
 
-    def description_at(self, y, x):
+    def description_at(self, loc):
         """Return a description of the location specified.
 
         The description of a map location is description of the first of the
@@ -157,15 +157,15 @@ class World(object):
 
         If the location is invalid, the empty string is returned.
         """
-        if self.is_valid_location(y, x):
-            if (y, x) == self.hero_location:
+        if self.is_valid_location(loc):
+            if loc == self.hero_location:
                 return "yourself"
-            if self.tiles[y][x].creature:
-                return english.indefinite_creature(self.tiles[y][x].creature)
-            if self.tiles[y][x].items:
-                return self.tiles[y][x].items[0].name
+            if self.cell(loc).creature:
+                return english.indefinite_creature(self.cell(loc).creature)
+            if self.cell(loc).items:
+                return self.cell(loc).items[0].name
             else:
-                return self.tiles[y][x].description
+                return self.cell(loc).description
         return ""
 
     def move_creature(self, from_loc, delta):
@@ -181,7 +181,7 @@ class World(object):
         to_loc = from_loc.offset(delta.row, delta.col)
         if self.is_walkable(to_loc):
             moved_creature = self.creature_at(from_loc)
-            log.info('Moved creature %r from %r to %r', moved_creature.name,
+            LOG.info('Moved creature %r from %r to %r', moved_creature.name,
                      from_loc, to_loc)
             moved_creature.loc = to_loc
             self.cell(from_loc).creature = None
@@ -194,10 +194,10 @@ class World(object):
         old_loc = self.hero_location
         new_loc = self.hero_location.offset(delta_y, delta_x)
         if self.is_walkable(new_loc):
-            log.info('Moved hero from %r to %r', old_loc, new_loc)
+            LOG.info('Moved hero from %r to %r', old_loc, new_loc)
             self.hero_location = new_loc
             # If there are items in the new location, report about them in the
-            # message log.
+            # message LOG.
             items = self.items_at(new_loc)
             if len(items) == 1:
                 the.messages.add("You see here %s." % items[0].name)
@@ -229,15 +229,16 @@ class World(object):
         col = int(rand_dist * math.cos(rand_dir)) + self.cols / 2
         return Location(row, col)
 
-    def _add_road(self, start_y, start_x, delta_y, delta_x, beta):
+    def add_road(self, start_loc, delta_y, delta_x, beta):
         """Adds a road to the map
 
         Starting at (start_y, start_x) and heading in a direction specified by
         delta_y and delta_x, draw a map until we reach the edge of the map.  If
         we run into another road, continue with probability beta, otherwise
         stop."""
+        assert delta_y * delta_x == 0, 'We only support orthogonal roads.'
         keep_going = True
-        road_loc = Location(start_y, start_x)  # TODO Change paramter to loc.
+        road_loc = start_loc
         while self.is_valid_location(road_loc) and keep_going:
             self.tiles[road_loc.row][road_loc.col] = tile.make_street()
             road_loc = road_loc.offset(delta_y, delta_x)
@@ -248,9 +249,9 @@ class World(object):
     def _log(self):
         """Dumps the world into a file called 'world.dump'"""
         with open("world.dump", "w") as dump_file:
-            for y in range(self.rows):
-                for x in range(self.cols):
-                    dump_file.write(self.tiles[y][x].glyph)
+            for row in range(self.rows):
+                for col in range(self.cols):
+                    dump_file.write(self.cell(Location(row, col)).glyph)
                 dump_file.write("\n")
 
     def random_empty_location(self, near=None, attempts=5, radius=10):
@@ -289,7 +290,7 @@ class World(object):
             monster = creature.Cop()
 
         if not monster:
-            log.error("Unknown monster class %r. Could not spawn.",
+            LOG.error("Unknown monster class %r. Could not spawn.",
                       monster_class)
             return False
 
@@ -300,7 +301,7 @@ class World(object):
             the.turn.add_actor(monster)
             monster.loc = location
             self.cell(location).creature = monster
-            log.info('%r placed at $r', monster, location)
+            LOG.info('%r placed at %r', monster, location)
             return True
 
     def remove_monster(self, monster):
@@ -308,31 +309,30 @@ class World(object):
         (monster_y, monster_x) = monster.loc
         self.tiles[monster_y][monster_x].creature = None
 
-    def add_item(self, location, item):
+    def add_item(self, loc, item):
         """Add an item to a location."""
-        (y, x) = location
-        assert self.is_valid_location(y, x)
-        self.tiles[y][x].items.append(item)
+        assert self.is_valid_location(loc)
+        self.cell(loc).items.append(item)
 
 
 def _add_shield_generator(a_world):
     """Places a shield generator in the center of the map."""
-    y = a_world.rows / 2
-    x = a_world.cols / 2
-    a_world.tiles[y][x] = tile.make_shield_generator()
-    a_world.generator_location = (y, x)
+    row = a_world.rows / 2
+    col = a_world.cols / 2
+    a_world.generator_location = Location(row, col)
+    a_world.tiles[row][col] = tile.make_shield_generator()
 
 
 def _add_shield(a_world):
     """Creates the shield border around the navigable map."""
 
-    for y in range(0, a_world.rows):
-        a_world.tiles[y][0] = tile.make_shield()
-        a_world.tiles[y][a_world.cols - 1] = tile.make_shield()
+    for row in range(0, a_world.rows):
+        a_world.tiles[row][0] = tile.make_shield()
+        a_world.tiles[row][a_world.cols - 1] = tile.make_shield()
 
-    for x in range(a_world.cols):
-        a_world.tiles[0][x] = tile.make_shield()
-        a_world.tiles[a_world.rows - 1][x] = tile.make_shield()
+    for col in range(a_world.cols):
+        a_world.tiles[0][col] = tile.make_shield()
+        a_world.tiles[a_world.rows - 1][col] = tile.make_shield()
 
 
 def generate_city(a_world, road_count=10, beta=0.5):
@@ -362,16 +362,16 @@ def generate_city(a_world, road_count=10, beta=0.5):
 
     equator = int(random.triangular(low=0, high=a_world.rows,
                                     mode=a_world.rows / 2))
-    a_world._add_road(equator, 0, 0, 1, 1.0)
+    a_world.add_road(Location(equator, 0), 0, 1, 1.0)
     roads.append(((equator, 0), (equator, a_world.cols - 1)))
-    log.info('Equator road from %r to %r', (equator, 0),
+    LOG.info('Equator road from %r to %r', (equator, 0),
              (equator, a_world.cols))
 
     meridian = int(random.triangular(low=0, high=a_world.cols,
                                      mode=a_world.cols / 2))
-    a_world._add_road(0, meridian, 1, 0, 1.0)
+    a_world.add_road(Location(0, meridian), 1, 0, 1.0)
     roads.append(((0, meridian), (a_world.rows - 1, meridian)))
-    log.info('Meridian road from %r to %r', (0, meridian),
+    LOG.info('Meridian road from %r to %r', (0, meridian),
              (a_world.rows, meridian))
 
     for i in range(road_count):
@@ -382,25 +382,25 @@ def generate_city(a_world, road_count=10, beta=0.5):
         # either case.
         direction = random.randint(-1, 1)
         if begin_y == end_y:  # We chose a horizontal road, we will make
-                              # a vertical road
+                                # a vertical road
             bisect = random.randint(begin_x, end_x)
-            log.info('Creating road %d vertically from %r heading %d', i,
+            LOG.info('Creating road %d vertically from %r heading %d', i,
                      (begin_y, bisect), direction)
             if direction > -1:  # Going south.
-                a_world._add_road(begin_y, bisect, 1, 0, beta)
+                a_world.add_road(Location(begin_y, bisect), 1, 0, beta)
             if direction < 1:  # Going north.
-                a_world._add_road(begin_y, bisect, -1, 0, beta)
+                a_world.add_road(Location(begin_y, bisect), -1, 0, beta)
         elif begin_x == end_x:  # We chose a vertical road, we will make
-                                  # a horizontal road
+                                    # a horizontal road
             bisect = random.randint(begin_y, end_y)
-            log.info('Creating road %d horizontally from %r heading %d', i,
+            LOG.info('Creating road %d horizontally from %r heading %d', i,
                      (bisect, begin_x), direction)
             if direction > -1:  # Going east.
-                a_world._add_road(bisect, begin_x, 0, 1, beta)
+                a_world.add_road(Location(bisect, begin_x), 0, 1, beta)
             if direction < 1:  # Going west.
-                a_world._add_road(bisect, begin_x, 0, -1, beta)
+                a_world.add_road(Location(bisect, begin_x), 0, -1, beta)
         else:
-            log.error('Road is neither horizontal nor vertical')
+            LOG.error('Road is neither horizontal nor vertical')
 
     _add_shield_generator(a_world)
     _add_shield(a_world)
