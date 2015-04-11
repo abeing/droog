@@ -92,6 +92,7 @@ class World(object):
             for _ in range(cols):
                 self.tiles[row].append(tile.make_empty())
         self.hero_location = self._position_hero()
+        self.do_fov()
 
     def is_walkable(self, loc):
         """Returns True if the location can be traversed by walking."""
@@ -214,7 +215,7 @@ class World(object):
                     items_msg += ", " + item.name
                 items_msg += "."
                 the.messages.add(items_msg)
-            self.do_fov(new_loc.col, new_loc.row, 10)
+            self.do_fov()
             return engine.movement_cost(delta_y, delta_x)
         target = self.creature_at(new_loc)
         if target:
@@ -235,7 +236,6 @@ class World(object):
         rand_dir = random.uniform(0, 359)
         row = int(rand_dist * math.sin(rand_dir)) + self.rows / 2
         col = int(rand_dist * math.cos(rand_dir)) + self.cols / 2
-        self.do_fov(col, row, 10)
         return Location(row, col)
 
     def add_road(self, start_loc, delta_y, delta_x, beta):
@@ -363,11 +363,13 @@ class World(object):
             for col in xrange(self.cols):
                 self.tiles[row][col].seen = False
 
-    def do_fov(self, x, y, radius):
+    def do_fov(self):
         "Calculate lit squares from the given location and radius"
         self.reset_fov()
         for oct in range(8):
-            self._cast_light(x, y, 1, 1.0, 0.0, radius,
+            # TODO: Update the radius.
+            self._cast_light(self.hero_location.col, self.hero_location.row,
+                             1, 1.0, 0.0, 10,
                              mult[0][oct], mult[1][oct],
                              mult[2][oct], mult[3][oct], 0)
 

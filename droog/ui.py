@@ -23,9 +23,10 @@ COLOR_MAP = {'Z': 3,
              'C': 6,
              '.': 2,
              '#': 0,
-             '~': 4,
+             '~': 6,
              'G': 6,
-             ')': 5
+             ')': 5,
+             '*': 0,
              }
 
 
@@ -343,8 +344,7 @@ class Curses(object):
             x += delta_x
             if y >= 0 and y < max_y and x >= 0 and x < max_x - 1:
                 LOG.info("Highlighting %r, %r.", y, x)
-                description = world.description_at(y + top,
-                                                   x + left)
+                description = world.description_at(Location(y + top, x + left))
                 self.draw_status("You see here %s." % description)
                 self.area_window.move(y, x)
                 self.area_window.refresh()

@@ -32,7 +32,7 @@ class Tile(object):
 
 def make_street():
     """Factory function to create a street tile."""
-    return Tile('#', "a street", True)
+    return Tile('*', "a street", True)
 
 
 def make_empty():
