@@ -1,2 +1,2 @@
-__all__ = ['actor', 'attack', 'combat', 'creature', 'engine', 'english', 'hero',
-           'item', 'message', 'the', 'tile', 'ui', 'world']
+__all__ = ['actor', 'attack', 'combat', 'creature', 'engine', 'english',
+           'hero', 'item', 'main', 'message', 'the', 'tile', 'ui', 'world']

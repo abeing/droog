@@ -146,6 +146,7 @@ class Curses(object):
         global COLOR_MAP
         if glyph in COLOR_MAP:
             return curses.color_pair(COLOR_MAP[glyph])
+        LOG.warning("No known color for '%r' glyph.", glyph)
         return curses.color_pair(0)
 
     def map_bounds(self, world):
@@ -183,10 +184,11 @@ class Curses(object):
                 loc = Location(y, x)
                 if world.cell(loc).seen:
                     glyph = world.glyph_at(loc)
+                    LOG.info("Drawing visible %r at location %r", glyph, loc)
                     self.area_window.addstr(y - top, x - left,
                                             glyph, self.glyph_color(glyph))
                     monster = world.creature_at(loc)
-                    if monster is not None:
+                    if monster is not None:  # TODO If monster?
                         self.area_window.addstr(y - top, x - left,
                                                 monster.glyph,
                                                 self.glyph_color(monster.glyph)
@@ -198,9 +200,12 @@ class Curses(object):
                                                 self.glyph_color(item.glyph))
                 elif world.cell(loc).was_seen:
                     glyph = world.glyph_at(loc)
+                    LOG.info("Drawing fogged %r at location %r", glyph, loc)
                     self.area_window.addstr(y - top, x - left,
                                             glyph, curses.color_pair(0))
                 else:
+                    glyph = world.glyph_at(loc)
+                    LOG.info("Drawing empty %r at location %r", glyph, loc)
                     self.area_window.addstr(y - top, x - left, ' ')
 
         # The hero is drawn in the center last so we can always see him or

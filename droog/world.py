@@ -68,6 +68,10 @@ class Location(object):
         delta_col = steps if (other_loc.col - self.col > 0) else -steps
         return Location(delta_row, delta_col)
 
+    def __repr__(self):
+        """Return string representation."""
+        return "(%r, %r)" % (self.row, self.col)
+
 
 def random_delta():
     """Return a random delta."""
@@ -463,3 +467,5 @@ def generate_city(a_world, road_count=10, beta=0.5):
 
     _add_shield_generator(a_world)
     _add_shield(a_world)
+    a_world.do_fov()
+

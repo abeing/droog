@@ -13,7 +13,7 @@ class Tile(object):
         self.walkable = walkable
         self.creature = None
         self.items = []
-        self._seen = 0
+        self._seen = False
         self.was_seen = False
 
     @property
