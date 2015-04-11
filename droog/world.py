@@ -32,12 +32,18 @@ import random
 import logging
 import math
 from . import tile
-import engine
-import english
-import the
+from . import engine
+from . import english
+from . import the
 
 LOG = logging.getLogger(__name__)
 
+mult = [
+                [1,  0,  0, -1, -1,  0,  0,  1],
+                [0,  1, -1,  0,  0, -1,  1,  0],
+                [0,  1,  1,  0,  0, -1, -1,  0],
+                [1,  0,  0,  1, -1,  0,  0, -1]
+            ]
 
 class Location(object):
     """The Location class represents a position on a grid."""
@@ -80,12 +86,13 @@ class World(object):
         self.cols = cols
         self.rows = rows
         self.tiles = []
+        self.flag = 1
 
-        self.hero_location = self._position_hero()
         for row in range(rows):
             self.tiles.append(list())
             for _ in range(cols):
                 self.tiles[row].append(tile.make_empty())
+        self.hero_location = self._position_hero()
 
     def is_walkable(self, loc):
         """Returns True if the location can be traversed by walking."""
@@ -101,7 +108,9 @@ class World(object):
 
     def is_empty(self, loc):
         """Returns True if the location is empty."""
-        return self.cell(loc).walkable
+        if self.is_valid_location(loc):
+            return self.cell(loc).walkable
+        return True
 
     def is_valid_location(self, loc):
         """Return true if this location is in the world bounds."""
@@ -206,6 +215,7 @@ class World(object):
                     items_msg += ", " + item.name
                 items_msg += "."
                 the.messages.add(items_msg)
+            self.do_fov(new_loc.col, new_loc.row, 10)
             return engine.movement_cost(delta_y, delta_x)
         target = self.creature_at(new_loc)
         if target:
@@ -226,6 +236,7 @@ class World(object):
         rand_dir = random.uniform(0, 359)
         row = int(rand_dist * math.sin(rand_dir)) + self.rows / 2
         col = int(rand_dist * math.cos(rand_dir)) + self.cols / 2
+        self.do_fov(col, row, 10)
         return Location(row, col)
 
     def add_road(self, start_loc, delta_y, delta_x, beta):
@@ -300,6 +311,66 @@ class World(object):
         """Add an item to a location."""
         assert self.is_valid_location(loc)
         self.cell(loc).items.append(item)
+
+    def set_lit(self, X, Y):
+        if self.is_valid_location(Location(Y, X)):
+            self.tiles[Y][X].seen = self.flag
+
+    def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy, id):
+        "Recursive lightcasting function"
+        if start < end:
+            return
+        radius_squared = radius*radius
+        for j in range(row, radius+1):
+            dx, dy = -j-1, -j
+            blocked = False
+            while dx <= 0:
+                dx += 1
+                # Translate the dx, dy coordinates into map coordinates:
+                X, Y = cx + dx * xx + dy * xy, cy + dx * yx + dy * yy
+                # l_slope and r_slope store the slopes of the left and right
+                # extremities of the square we're considering:
+                l_slope, r_slope = (dx-0.5)/(dy+0.5), (dx+0.5)/(dy-0.5)
+                if start < r_slope:
+                    continue
+                elif end > l_slope:
+                    break
+                else:
+                    # Our light beam is touching this square; light it:
+                    if dx*dx + dy*dy < radius_squared:
+                        self.set_lit(X, Y)
+                    if blocked:
+                        # we're scanning a row of blocked squares:
+                        if not self.is_empty(Y, X):
+                            new_start = r_slope
+                            continue
+                        else:
+                            blocked = False
+                            start = new_start
+                    else:
+                        if not self.is_empty(Location(Y, X)) and j < radius:
+                            # This is a blocking square, start a child scan:
+                            blocked = True
+                            self._cast_light(cx, cy, j+1, start, l_slope,
+                                             radius, xx, xy, yx, yy, id+1)
+                            new_start = r_slope
+            # Row is scanned; do next row unless last square was blocked:
+            if blocked:
+                break
+
+    def reset_fov(self):
+        """Reset the field of view data for the map."""
+        for row in xrange(self.rows):
+            for col in xrange(self.col):
+                self.tiles[row][col].seen = 0
+
+    def do_fov(self, x, y, radius):
+        "Calculate lit squares from the given location and radius"
+        self.flag += 1
+        for oct in range(8):
+            self._cast_light(x, y, 1, 1.0, 0.0, radius,
+                             mult[0][oct], mult[1][oct],
+                             mult[2][oct], mult[3][oct], 0)
 
 
 def _add_shield_generator(a_world):

@@ -179,19 +179,26 @@ class Curses(object):
 
         for y in range(top, bottom):
             for x in range(left, right):
-                glyph = world.glyph_at(Location(y, x))
-                self.area_window.addstr(y - top, x - left,
-                                        glyph, self.glyph_color(glyph))
-                creature = world.creature_at(Location(y, x))
-                if creature is not None:
+                if world.cell(Location(y, x)).seen:
+                    glyph = world.glyph_at(Location(y, x))
                     self.area_window.addstr(y - top, x - left,
-                                            creature.glyph,
-                                            self.glyph_color(creature.glyph))
-                item = world.item_at(Location(y, x))
-                if item:
+                                            glyph, self.glyph_color(glyph))
+                    creature = world.creature_at(Location(y, x))
+                    if creature is not None:
+                        self.area_window.addstr(y - top, x - left,
+                                                creature.glyph,
+                                                self.glyph_color(creature.glyph))
+                    item = world.item_at(Location(y, x))
+                    if item:
+                        self.area_window.addstr(y - top, x - left,
+                                                item.glyph,
+                                                self.glyph_color(item.glyph))
+                elif world.cell(Location(y, x)).was_seen:
+                    glyph = world.glyph_at(Location(y, x))
                     self.area_window.addstr(y - top, x - left,
-                                            item.glyph,
-                                            self.glyph_color(item.glyph))
+                                            glyph, curses.color_pair(1))
+                else:
+                    pass
 
         # The hero is drawn in the center last so we can always see him or
         # her. The curses is then placed on top of the hero for visual

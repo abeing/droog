@@ -13,6 +13,20 @@ class Tile(object):
         self.walkable = walkable
         self.creature = None
         self.items = []
+        self._seen = 0
+        self.was_seen = False
+
+    @property
+    def seen(self):
+        """Seen property getter, to support setter behavior."""
+        return self._seen
+
+    @seen.setter
+    def seen(self, seen):
+        """Set this tile to currently being seen, which also will set its
+        was_seen for fog of war purposes."""
+        self._seen = seen
+        self.was_seen = True
 
 
 def make_street():
