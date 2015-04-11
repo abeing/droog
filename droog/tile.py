@@ -26,7 +26,8 @@ class Tile(object):
         """Set this tile to currently being seen, which also will set its
         was_seen for fog of war purposes."""
         self._seen = seen
-        self.was_seen = True
+        if seen:
+            self.was_seen = True
 
 
 def make_street():

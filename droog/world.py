@@ -86,7 +86,6 @@ class World(object):
         self.cols = cols
         self.rows = rows
         self.tiles = []
-        self.flag = 1
 
         for row in range(rows):
             self.tiles.append(list())
@@ -314,7 +313,7 @@ class World(object):
 
     def set_lit(self, X, Y):
         if self.is_valid_location(Location(Y, X)):
-            self.tiles[Y][X].seen = self.flag
+            self.tiles[Y][X].seen = True
 
     def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy, id):
         "Recursive lightcasting function"
@@ -341,7 +340,7 @@ class World(object):
                         self.set_lit(X, Y)
                     if blocked:
                         # we're scanning a row of blocked squares:
-                        if not self.is_empty(Y, X):
+                        if not self.is_empty(Location(Y, X)):
                             new_start = r_slope
                             continue
                         else:
@@ -361,12 +360,12 @@ class World(object):
     def reset_fov(self):
         """Reset the field of view data for the map."""
         for row in xrange(self.rows):
-            for col in xrange(self.col):
-                self.tiles[row][col].seen = 0
+            for col in xrange(self.cols):
+                self.tiles[row][col].seen = False
 
     def do_fov(self, x, y, radius):
         "Calculate lit squares from the given location and radius"
-        self.flag += 1
+        self.reset_fov()
         for oct in range(8):
             self._cast_light(x, y, 1, 1.0, 0.0, radius,
                              mult[0][oct], mult[1][oct],
