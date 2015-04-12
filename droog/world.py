@@ -64,13 +64,30 @@ class Location(object):
 
     def delta_to(self, other_loc, steps=1):
         """Return a delta between the other_loc and this one."""
-        delta_row = steps if (other_loc.row - self.row > 0) else -steps
-        delta_col = steps if (other_loc.col - self.col > 0) else -steps
+        if other_loc.row == self.row:
+            delta_row = 0
+        else:
+            delta_row = steps if (other_loc.row - self.row > 0) else -steps
+        if other_loc.col == self.col:
+            delta_col = 0
+        else:
+            delta_col = steps if (other_loc.col - self.col > 0) else -steps
         return Location(delta_row, delta_col)
 
     def __repr__(self):
         """Return string representation."""
         return "(%r, %r)" % (self.row, self.col)
+
+    def __eq__(self, other):
+        """Return True if these have the same value."""
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        else:
+            return False
+
+    def __ne__(self, other):
+        """Return True if these do not have the same value."""
+        return not self.__eq__(other)
 
 
 def random_delta():
