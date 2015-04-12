@@ -24,12 +24,3 @@ def test_glyph_at():
     """Test that a location within the map has a glyph."""
     sut = world.World(7, 5)
     assert sut.glyph_at(Location(4, 4)) == '.'
-
-
-def test_glyph_at_out_of_bounds():
-    """Test that any illegal location is the force field glyph."""
-    sut = world.World(5, 5)
-    assert sut.glyph_at(Location(4, -1)) == '~'  # negative y
-    assert sut.glyph_at(Location(-4, 3)) == '~'  # negative x
-    assert sut.glyph_at(Location(4, 5)) == '~'  # out of range y
-    assert sut.glyph_at(Location(54, 3)) == '~'  # out of range x

@@ -305,8 +305,8 @@ class World(object):
         assert self.is_valid_location(loc)
         self.cell(loc).items.append(item)
 
-    def set_lit(self, X, Y):
-        self.tiles[Y][X].seen = True
+    def set_lit(self, loc):
+        self.cell(loc).seen = True
 
     def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy, id):
         "Recursive lightcasting function"
@@ -323,24 +323,28 @@ class World(object):
                 # l_slope and r_slope store the slopes of the left and right
                 # extremities of the square we're considering:
                 l_slope, r_slope = (dx-0.5)/(dy+0.5), (dx+0.5)/(dy-0.5)
+                loc = Location(Y, X)
+                if not self.is_valid_location(loc):
+                    return
                 if start < r_slope:
                     continue
                 elif end > l_slope:
                     break
                 else:
                     # Our light beam is touching this square; light it:
+                    
                     if dx*dx + dy*dy < radius_squared:
-                        self.set_lit(X, Y)
+                        self.set_lit(loc)
                     if blocked:
                         # we're scanning a row of blocked squares:
-                        if not self.is_empty(Location(Y, X)):
+                        if not self.is_empty(loc):
                             new_start = r_slope
                             continue
                         else:
                             blocked = False
                             start = new_start
                     else:
-                        if not self.is_empty(Location(Y, X)) and j < radius:
+                        if not self.is_empty(loc) and j < radius:
                             # This is a blocking square, start a child scan:
                             blocked = True
                             self._cast_light(cx, cy, j+1, start, l_slope,
