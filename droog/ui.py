@@ -60,6 +60,7 @@ class Curses(object):
         curses.noecho()
         curses.cbreak()
         curses.curs_set(0)
+        # self.main_window.timeout(1)  # Used to profile without blocking input
 
         # Our palette
         curses.start_color()
@@ -182,30 +183,14 @@ class Curses(object):
         for y in range(top, bottom):
             for x in range(left, right):
                 loc = Location(y, x)
+                glyph = world.glyph_at(loc)
                 if world.cell(loc).seen:
-                    glyph = world.glyph_at(loc)
-                    LOG.info("Drawing visible %r at location %r", glyph, loc)
                     self.area_window.addstr(y - top, x - left,
                                             glyph, self.glyph_color(glyph))
-                    monster = world.creature_at(loc)
-                    if monster is not None:  # TODO If monster?
-                        self.area_window.addstr(y - top, x - left,
-                                                monster.glyph,
-                                                self.glyph_color(monster.glyph)
-                                                )
-                    item = world.item_at(loc)
-                    if item:
-                        self.area_window.addstr(y - top, x - left,
-                                                item.glyph,
-                                                self.glyph_color(item.glyph))
                 elif world.cell(loc).was_seen:
-                    glyph = world.glyph_at(loc)
-                    LOG.info("Drawing fogged %r at location %r", glyph, loc)
                     self.area_window.addstr(y - top, x - left,
                                             glyph, curses.color_pair(0))
                 else:
-                    glyph = world.glyph_at(loc)
-                    LOG.info("Drawing empty %r at location %r", glyph, loc)
                     self.area_window.addstr(y - top, x - left, ' ')
 
         # The hero is drawn in the center last so we can always see him or
@@ -366,7 +351,10 @@ class Curses(object):
     def input(self):
         """Returns when the user types a character on the keyboard."""
         self.status = ""
-        return chr(self.main_window.getch())
+        key = self.main_window.getch()
+        if key == -1:
+            return ' '
+        return chr(key)
 
     def drop(self, hero, world):
         """Drop an item."""

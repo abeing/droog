@@ -1,4 +1,5 @@
 *.pyc
+*.pyo
 *.log
 *.dump
 .DS_Store

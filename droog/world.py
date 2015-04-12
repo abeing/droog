@@ -100,21 +100,17 @@ class World(object):
 
     def is_walkable(self, loc):
         """Returns True if the location can be traversed by walking."""
-        if self.is_valid_location(loc):
-            if not self.tiles[loc.row][loc.col].walkable:
-                return False
-            if not self.tiles[loc.row][loc.col].creature is None:
-                return False
-            if self.hero_location == loc:
-                return False
-            return True
-        return False
+        if not self.tiles[loc.row][loc.col].walkable:
+            return False
+        if not self.tiles[loc.row][loc.col].creature is None:
+            return False
+        if self.hero_location == loc:
+            return False
+        return True
 
     def is_empty(self, loc):
         """Returns True if the location is empty."""
-        if self.is_valid_location(loc):
-            return self.cell(loc).walkable
-        return True
+        return self.cell(loc).walkable
 
     def is_valid_location(self, loc):
         """Return true if this location is in the world bounds."""
@@ -122,18 +118,20 @@ class World(object):
 
     def cell(self, loc):
         """Return the tile at the location."""
-        if self.is_valid_location(loc):
-            return self.tiles[loc.row][loc.col]
-        return None
+        return self.tiles[loc.row][loc.col]
 
     def glyph_at(self, loc):
         """Returns the world glyph and its color at the specified location.  If
         the location coordinates are out of bounds, returns a shield character.
         """
-        if self.is_valid_location(loc):
-            return self.cell(loc).glyph
-        else:
-            return '~'
+        if loc == self.hero_location:
+            return '@'
+        cell = self.cell(loc)
+        if cell.creature:
+            return cell.creature.glyph
+        if cell.items:
+            return cell.items[0].glyph
+        return cell.glyph
 
     def creature_at(self, loc):
         """Returns the creature at the specified location or None if there is
@@ -141,11 +139,7 @@ class World(object):
         bounds."""
         if self.hero_location == loc:
             return the.hero
-        if self.is_valid_location(loc):
-            return self.cell(loc).creature
-        else:
-            LOG.warning("No creature found at %r", loc)
-            return None
+        return self.cell(loc).creature
 
     def item_at(self, loc):
         """Return the top item at the specified location."""
@@ -156,10 +150,8 @@ class World(object):
 
     def items_at(self, loc):
         """Return all the items at the specified location."""
-        if self.is_valid_location(loc):
-            if self.tiles[loc.row][loc.col].items:
-                return self.tiles[loc.row][loc.col].items
-        return []
+        if self.tiles[loc.row][loc.col].items:
+            return self.tiles[loc.row][loc.col].items
 
     def description_at(self, loc):
         """Return a description of the location specified.
@@ -169,16 +161,14 @@ class World(object):
 
         If the location is invalid, the empty string is returned.
         """
-        if self.is_valid_location(loc):
-            if loc == self.hero_location:
-                return "yourself"
-            if self.cell(loc).creature:
-                return english.indefinite_creature(self.cell(loc).creature)
-            if self.cell(loc).items:
-                return self.cell(loc).items[0].name
-            else:
-                return self.cell(loc).description
-        return ""
+        if loc == self.hero_location:
+            return "yourself"
+        if self.cell(loc).creature:
+            return english.indefinite_creature(self.cell(loc).creature)
+        if self.cell(loc).items:
+            return self.cell(loc).items[0].name
+        else:
+            return self.cell(loc).description
 
     def move_creature(self, from_loc, delta):
         """Move a creature or hero at (y, x) by (delta_y, delta_x) and return
@@ -211,9 +201,9 @@ class World(object):
             # If there are items in the new location, report about them in the
             # message LOG.
             items = self.items_at(new_loc)
-            if len(items) == 1:
+            if items and len(items) == 1:
                 the.messages.add("You see here %s." % items[0].name)
-            elif len(items) > 1:
+            elif items and len(items) > 1:
                 items_msg = "You see here %s" % items[0].name
                 for item in items[1:]:
                     items_msg += ", " + item.name
@@ -316,8 +306,7 @@ class World(object):
         self.cell(loc).items.append(item)
 
     def set_lit(self, X, Y):
-        if self.is_valid_location(Location(Y, X)):
-            self.tiles[Y][X].seen = True
+        self.tiles[Y][X].seen = True
 
     def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy, id):
         "Recursive lightcasting function"
