@@ -191,7 +191,7 @@ def ai_act(creature):
 
         # 2) If within 15 steps of the hero, move towards her.
         elif dist < creature.sense_range:
-            delta = creature.loc.delta_to(the.world.hero_location, 1)
+            delta = creature.loc.delta_to(the.world.hero_location)
 
         # 3) Otherwise, move randomly.
         else:
