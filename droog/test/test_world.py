@@ -100,7 +100,11 @@ def test_glyph_at_creature():
     """Test that the glyph at a location with the creature returns the
     creature's glyph."""
     sut = world.World(20, 20)
-    assert sut.glyph_at(sut.hero_location) == '@'
+    monster = mock.Mock()
+    monster.glyph = '$'
+    sut.spawn_monster(monster)
+    assert monster.loc
+    assert sut.glyph_at(monster.loc) == '$'
 
 
 def test_glyph_at_item():
