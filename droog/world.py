@@ -132,8 +132,6 @@ class World(object):
         """Returns the world glyph and its color at the specified location.  If
         the location coordinates are out of bounds, returns a shield character.
         """
-        if loc == self.hero_location:
-            return '@'
         cell = self.cell(loc)
         if cell.creature:
             return cell.creature.glyph

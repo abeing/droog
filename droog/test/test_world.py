@@ -1,5 +1,6 @@
 """Unittests for World class."""
 
+import mock
 from .. import world
 from ..world import Location
 
@@ -64,6 +65,15 @@ def test_location_ne():
     assert first != second
 
 
+def test_random_delta():
+    """Test that random_delta() returns a delta in the range [-1..1] for both
+    row and column."""
+    for _ in xrange(100):
+        delta = world.random_delta()
+        assert -1 <= delta.row <= 1
+        assert -1 <= delta.col <= 1
+
+
 def test_empty_map():
     """Test that an emtpy map works."""
     sut = world.World(10, 10)
@@ -84,6 +94,24 @@ def test_glyph_at():
     """Test that a location within the map has a glyph."""
     sut = world.World(7, 5)
     assert sut.glyph_at(Location(4, 4)) == '.'
+
+
+def test_glyph_at_creature():
+    """Test that the glyph at a location with the creature returns the
+    creature's glyph."""
+    sut = world.World(20, 20)
+    assert sut.glyph_at(sut.hero_location) == '@'
+
+
+def test_glyph_at_item():
+    """Test that the glyph at a location with an item returns the item's
+    glyph."""
+    sut = world.World(20, 20)
+    item = mock.Mock()
+    item.glyph = '/'
+    location = Location(4, 3)
+    sut.add_item(location, item)
+    assert sut.glyph_at(location) == item.glyph
 
 
 def test_generation():
