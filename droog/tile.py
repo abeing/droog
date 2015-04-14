@@ -10,7 +10,7 @@ class Tile(object):
     def __init__(self, glyph, description, walkable):
         self.glyph = glyph
         self.description = description
-        self.walkable = walkable
+        self._walkable = walkable
         self.creature = None
         self.items = []
         self._seen = False
@@ -28,6 +28,15 @@ class Tile(object):
         self._seen = seen
         if seen:
             self.was_seen = True
+
+    @property
+    def walkable(self):
+        """Returns True if the tile can be traversed by walking."""
+        return self._walkable and not self.creature
+
+    @property
+    def transparent(self):
+        return self._walkable
 
 
 def make_street():

@@ -62,16 +62,16 @@ class Location(object):
         delta_col = abs(other_loc.col - self.col)
         return math.sqrt(delta_row * delta_row + delta_col * delta_col)
 
-    def delta_to(self, other_loc, steps=1):
+    def delta_to(self, other_loc):
         """Return a delta between the other_loc and this one."""
         if other_loc.row == self.row:
             delta_row = 0
         else:
-            delta_row = steps if (other_loc.row - self.row > 0) else -steps
+            delta_row = 1 if (other_loc.row - self.row > 0) else -1
         if other_loc.col == self.col:
             delta_col = 0
         else:
-            delta_col = steps if (other_loc.col - self.col > 0) else -steps
+            delta_col = 1 if (other_loc.col - self.col > 0) else -1
         return Location(delta_row, delta_col)
 
     def __repr__(self):
@@ -113,21 +113,12 @@ class World(object):
             for _ in range(cols):
                 self.tiles[row].append(tile.make_empty())
         self.hero_location = self._position_hero()
+        self.cell(self.hero_location).creature = the.hero
         self.do_fov()
-
-    def is_walkable(self, loc):
-        """Returns True if the location can be traversed by walking."""
-        if not self.tiles[loc.row][loc.col].walkable:
-            return False
-        if not self.tiles[loc.row][loc.col].creature is None:
-            return False
-        if self.hero_location == loc:
-            return False
-        return True
 
     def is_empty(self, loc):
         """Returns True if the location is empty."""
-        return self.cell(loc).walkable
+        return self.cell(loc).transparent
 
     def is_valid_location(self, loc):
         """Return true if this location is in the world bounds."""
@@ -149,26 +140,6 @@ class World(object):
         if cell.items:
             return cell.items[0].glyph
         return cell.glyph
-
-    def creature_at(self, loc):
-        """Returns the creature at the specified location or None if there is
-        no creature at that location or if the location coordinates are out of
-        bounds."""
-        if self.hero_location == loc:
-            return the.hero
-        return self.cell(loc).creature
-
-    def item_at(self, loc):
-        """Return the top item at the specified location."""
-        items = self.items_at(loc)
-        if items:
-            return items[0]
-        return None
-
-    def items_at(self, loc):
-        """Return all the items at the specified location."""
-        if self.tiles[loc.row][loc.col].items:
-            return self.tiles[loc.row][loc.col].items
 
     def description_at(self, loc):
         """Return a description of the location specified.
@@ -198,8 +169,8 @@ class World(object):
         assert delta.row < 2
         assert delta.col < 2
         to_loc = from_loc.offset(delta.row, delta.col)
-        if self.is_walkable(to_loc):
-            moved_creature = self.creature_at(from_loc)
+        if self.cell(to_loc).walkable:
+            moved_creature = self.cell(from_loc).creature
             LOG.info('Moved creature %r from %r to %r', moved_creature.name,
                      from_loc, to_loc)
             moved_creature.loc = to_loc
@@ -212,12 +183,14 @@ class World(object):
         """Move the hero by (delta_y, delta_x)."""
         old_loc = self.hero_location
         new_loc = self.hero_location.offset(delta_y, delta_x)
-        if self.is_walkable(new_loc):
+        if self.cell(new_loc).walkable:
             LOG.info('Moved hero from %r to %r', old_loc, new_loc)
             self.hero_location = new_loc
+            self.cell(old_loc).creature = None
+            self.cell(new_loc).creature = the.hero
             # If there are items in the new location, report about them in the
             # message LOG.
-            items = self.items_at(new_loc)
+            items = self.cell(new_loc).items
             if items and len(items) == 1:
                 the.messages.add("You see here %s." % items[0].name)
             elif items and len(items) > 1:
@@ -228,7 +201,7 @@ class World(object):
                 the.messages.add(items_msg)
             self.do_fov()
             return engine.movement_cost(delta_y, delta_x)
-        target = self.creature_at(new_loc)
+        target = self.cell(new_loc).creature
         if target:
             return the.hero.melee_attack(target)
 
