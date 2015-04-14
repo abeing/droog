@@ -107,6 +107,7 @@ class World(object):
         self.cols = cols
         self.rows = rows
         self.tiles = []
+        self.generator = engine.Generator()
 
         for row in range(rows):
             self.tiles.append(list())
@@ -207,7 +208,7 @@ class World(object):
 
         # If we have a shield generator, we begin to jurry rig it.
         if self.glyph_at(new_loc) == 'G':
-            return engine.deactivate_generator()
+            return self.generator.deactivate()
         return 0
 
     def _position_hero(self):

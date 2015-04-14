@@ -60,22 +60,23 @@ def is_valid_attribute(attribute):
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
 
 
-# Shield generator stats
-generator_health = 3
-generator_full = 3
+class Generator(object):
+    """Represents the end-game goal."""
 
+    FULL_HEALTH = 3
 
-def deactivate_generator():
-    """Performs one turn worth of deactivation of the generator."""
-    verb = "continue"
-    global generator_health
-    if generator_health == generator_full:
-        verb = "begin"
-        the.messages.add("A defender materializes nearby.")
-        the.world.spawn_monster('z', near=the.world.hero_location)
-    the.messages.add("You %s deactivating the shield generator." % verb)
-    generator_health -= 1
-    if generator_health == 0:
-        the.messages.add("You win!")
-        the.hero.is_dead = True
-    return 8
+    def __init__(self):
+        """Construct a fresh generator with full health."""
+        self.health = 3
+
+    def deactivate(self):
+        """Perform one step of deactivation."""
+        verb = "continue"
+        if self.health == self.FULL_HEALTH:
+            verb = "begin"
+        the.messages.add("You %s deactivating the shield generator." % verb)
+        self.health -= 1
+        if self.health == 0:
+            the.messages.add("You win!")
+            the.hero.is_dead = True
+        return 8
