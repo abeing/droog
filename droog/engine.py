@@ -76,7 +76,7 @@ class Generator(object):
             verb = "begin"
         the.messages.add("You %s deactivating the shield generator." % verb)
         self.health -= 1
-        if self.health == 0:
-            the.messages.add("You win!")
-            the.hero.is_dead = True
         return 8
+
+    def active(self):
+        return self.health != 0

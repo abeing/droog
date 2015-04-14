@@ -45,7 +45,8 @@ def main():
         the.messages.add("Welcome to Droog.")
         the.messages.add("Press ? for help.")
         refresh(ui_object)
-        while the.turn.next():
+        while the.world.generator.active() and not the.hero.is_dead:
+            the.turn.next()
             refresh(ui_object)
         refresh(ui_object)
         ui_object.draw_status("Game over.")

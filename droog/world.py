@@ -180,15 +180,20 @@ class World(object):
             return engine.movement_cost(delta.row, delta.col)
         return 0
 
+    def change_hero_loc(self, new_loc):
+        old_loc = self.hero_location
+        self.hero_location = new_loc
+        self.cell(old_loc).creature = None
+        self.cell(new_loc).creature = the.hero
+        self.do_fov()
+
     def move_hero(self, delta_y, delta_x):
         """Move the hero by (delta_y, delta_x)."""
         old_loc = self.hero_location
         new_loc = self.hero_location.offset(delta_y, delta_x)
         if self.cell(new_loc).walkable:
             LOG.info('Moved hero from %r to %r', old_loc, new_loc)
-            self.hero_location = new_loc
-            self.cell(old_loc).creature = None
-            self.cell(new_loc).creature = the.hero
+            self.change_hero_loc(new_loc)
             # If there are items in the new location, report about them in the
             # message LOG.
             items = self.cell(new_loc).items
@@ -200,7 +205,6 @@ class World(object):
                     items_msg += ", " + item.name
                 items_msg += "."
                 the.messages.add(items_msg)
-            self.do_fov()
             return engine.movement_cost(delta_y, delta_x)
         target = self.cell(new_loc).creature
         if target:
@@ -270,8 +274,8 @@ class World(object):
 
     def teleport_hero(self, near):
         """Teleports the hero to a valid location near a specified location."""
-        location = self.random_empty_location(near)
-        self.hero_location = location
+        new_loc = self.random_empty_location(near)
+        self.change_hero_loc(new_loc)
 
     def spawn_monster(self, monster, near=None):
         """Spawns a monster on the map."""
