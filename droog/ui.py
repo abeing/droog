@@ -416,6 +416,22 @@ class Curses(object):
         del help_screen
         self.redraw()
 
+    def story_screen(self, story):
+        """Display a story screen."""
+        death_screen = curses.newwin(self.area_height, self.area_width,
+                                     MESSAGE_ROWS + 1, 0)
+        row = 0
+        for paragraph in story:
+            text = english.wrap(paragraph, self.area_width)
+            for line in text:
+                death_screen.addstr(row, 0, line)
+                row += 1
+            row += 1
+
+        death_screen.refresh()
+        command = self.input()
+        del death_screen
+
     def history(self, messages):
         """Display the message history."""
         history_screen = curses.newwin(self.area_height, self.area_width,

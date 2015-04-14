@@ -31,6 +31,20 @@ CONJUGATIONS = {
 # Punctuation that is considered approprate to end a sentence with.
 TERMINAL_PUNCTUATION = ['.', '?', '!']
 
+DEATH_STORY = ["""Commander Splinter stared at dart gun the Cop Mark III was
+aiming at him. He felt a sharp pain in his chest and looked down. The dart
+buried deep in his heart filled him with dread which quickly melted into a
+powerful hunger for brains. Seeing no brains, bolted into the street.""", """So
+many humans with brains intact were streaming out into the streets he didn't
+know where to start. He grabbed a young woman and pushed her onto her kneees.
+With powerful fists he bludgeoned her skull until he could see glistening grey
+matter. He stopped his inhuman violence and reached his fingers between skull
+shards and extracted a small handful of brains. He tasted the soft, gooey
+delicacy and savored it briefly before he felt his entire nervous system erupt
+with pleasure. He fell upon the young woman's remaining brain like a starving
+man.""", """He was just one zombie in an entire zombie army that made quick
+work of humanity."""]
+
 
 def definite_creature(who):
     """Returns either a creature's name or "you" if the creature is the hero.
