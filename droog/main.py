@@ -8,6 +8,7 @@ import message
 import creature
 import turn
 import the
+import english
 
 logging.basicConfig(filename="droog.log", level=logging.INFO)
 LOG = logging.getLogger(__name__)
@@ -45,13 +46,13 @@ def main():
         the.messages.add("Welcome to Droog.")
         the.messages.add("Press ? for help.")
         refresh(ui_object)
-        while the.turn.next():
+        while the.world.generator.active() and not the.hero.is_dead:
+            the.turn.next()
             refresh(ui_object)
-        refresh(ui_object)
-        ui_object.draw_status("Game over.")
-        ui_object.draw_hero(the.hero)
-        ui_object.draw_messages(the.messages)
-        ui_object.input()
+        if the.hero.is_dead:
+            ui_object.story_screen(english.FAILURE_STORY)
+        elif not the.world.generator.active():
+            ui_object.story_screen(english.SUCCESS_STORY)
 
 
 if __name__ == "__main__":
