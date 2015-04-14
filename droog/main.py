@@ -50,7 +50,9 @@ def main():
             the.turn.next()
             refresh(ui_object)
         if the.hero.is_dead:
-            ui_object.story_screen(english.DEATH_STORY)
+            ui_object.story_screen(english.FAILURE_STORY)
+        elif not the.world.generator.active():
+            ui_object.story_screen(english.SUCCESS_STORY)
 
 
 if __name__ == "__main__":

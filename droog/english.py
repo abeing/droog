@@ -31,7 +31,7 @@ CONJUGATIONS = {
 # Punctuation that is considered approprate to end a sentence with.
 TERMINAL_PUNCTUATION = ['.', '?', '!']
 
-DEATH_STORY = ["""Commander Splinter stared at dart gun the Cop Mark III was
+FAILURE_STORY = ["""Commander Splinter stared at dart gun the Cop Mark III was
 aiming at him. He felt a sharp pain in his chest and looked down. The dart
 buried deep in his heart filled him with dread which quickly melted into a
 powerful hunger for brains. Seeing no brains, bolted into the street.""", """So
@@ -44,6 +44,15 @@ delicacy and savored it briefly before he felt his entire nervous system erupt
 with pleasure. He fell upon the young woman's remaining brain like a starving
 man.""", """He was just one zombie in an entire zombie army that made quick
 work of humanity."""]
+
+SUCCESS_STORY = ["""The computer display blinks and spews cryptic messages
+on a bright blue screen. You sigh, your mission is a success.""", """All over
+the world, bots shut down and become empty husks. Humans emerge from their
+hiding places and begin to destroy all of the contaminated crops and processed
+foods.""", """Over time, human civilization rebuilds itself. You have saved
+humanity. Your name goes down as one of the most remembered in all of history.
+Even though your body succumbs to radiation sickness, you have achieved
+immortality."""]
 
 
 def definite_creature(who):
