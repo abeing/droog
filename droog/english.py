@@ -1,3 +1,4 @@
+import textwrap
 import engine
 import random
 
@@ -30,6 +31,14 @@ CONJUGATIONS = {
 
 # Punctuation that is considered approprate to end a sentence with.
 TERMINAL_PUNCTUATION = ['.', '?', '!']
+
+CREATION_STORY = [
+    ["Commander Splinter stood before you, pacing the room and"
+     " breifing you on your ultimate mission."],
+    ["'As you know, Private Snaugh, we picked you as humanity's only hope"
+     " because you are the ", "{attrib}", " of my few remaining troops."],
+    ["Our tactical nuke did not take out the mother."]
+]
 
 FAILURE_STORY = ["""Commander Splinter stared at dart gun the Cop Mark III was
 aiming at him. He felt a sharp pain in his chest and looked down. The dart
@@ -191,6 +200,13 @@ def epithet(str, dex, con, conjunction=None):
         return _make_list(bad_attribs, "and")
     else:
         raise RuntimeError
+
+
+def partial_wrap(string, width):
+    """Wrap a string to width but return the remaining unwrapped string too."""
+    first_line = textwrap.wrap(string, width)
+    rest_lines = string[len(first_line[0])+1:]
+    return first_line[0], rest_lines
 
 
 def wrap(string, width):

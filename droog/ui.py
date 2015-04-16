@@ -68,11 +68,12 @@ class Curses(object):
         self.build_palette()
 
         # Our screen size
-        height, width = self.main_window.getmaxyx()
-        LOG.info('Main window has %r width and %r height', width, height)
+        self.height, self.width = self.main_window.getmaxyx()
+        LOG.info('Main window has %r width and %r height', self.width,
+                 self.height)
 
         # Ensure that our screen size is at least the minimum required
-        if width < MINIMUM_WIDTH or height < MINIMUM_HEIGHT:
+        if self.width < MINIMUM_WIDTH or self.height < MINIMUM_HEIGHT:
             shutdown()
             print 'ERROR: Terminal window too small.'
             print 'Minimum width: %r' % MINIMUM_WIDTH
@@ -80,8 +81,8 @@ class Curses(object):
             sys.exit(1)
 
         # Calculate the area window size (it should be the biggest)
-        self.area_width = width - HERO_COLUMNS - 1
-        self.area_height = height - MESSAGE_ROWS - STATUS_ROWS - 1
+        self.area_width = self.width - HERO_COLUMNS - 1
+        self.area_height = self.height - MESSAGE_ROWS - STATUS_ROWS - 1
         LOG.info('Area window has %r width and %r height', self.area_width,
                  self.area_height)
 
@@ -102,18 +103,18 @@ class Curses(object):
                                                    self.area_width + 1)
 
         # Draw the border between the hero window and the message window,
-        for x in range(0, width):
+        for x in range(0, self.width):
             self.main_window.addch(MESSAGE_ROWS, x, '-')
         self.main_window.addch(MESSAGE_ROWS, self.area_width, '+')
 
         self.message_window = self.main_window.subwin(MESSAGE_ROWS,
-                                                      width,
+                                                      self.width,
                                                       0,
                                                       0)
         self.message_window.scrollok(True)
 
         self.status_line = self.main_window.subwin(STATUS_ROWS,
-                                                   width,
+                                                   self.width,
                                                    self.area_height + 1 +
                                                    MESSAGE_ROWS, 0)
         self.status = ""
@@ -416,21 +417,61 @@ class Curses(object):
         del help_screen
         self.redraw()
 
+    def newline(self, screen):
+        """Advance a screen cursor to the next line, if we're not at the start
+        of a line."""
+        _, last_col = screen.getyx()
+        if last_col != 0:
+            screen.addstr("\n")
+
+    def display_paragraph(self, paragraph, screen, col=0, newline=True):
+        """Display a paragraph on a screen, starting at an optional column."""
+        row, _ = screen.getyx()
+        _, width = screen.getmaxyx()
+        line = ""
+        lines = paragraph
+        line_count = 0
+        LOG.info("displaying col %d paragraph %s", col, paragraph)
+        while lines:
+            if line_count > 0:
+                col = 0
+            line, lines = english.partial_wrap(lines, width - col)
+            LOG.info("Line = %s, Lines = %s", line, lines)
+            screen.addstr(row, col, line)
+            row += 1
+            line_count += 1
+        if newline:
+            self.newline(screen)
+        return col + len(line) if line_count == 1 else len(line)
+
     def story_screen(self, story):
         """Display a story screen."""
-        death_screen = curses.newwin(self.area_height, self.area_width,
+        story_screen = curses.newwin(self.area_height, self.area_width,
                                      MESSAGE_ROWS + 1, 0)
-        row = 0
         for paragraph in story:
-            text = english.wrap(paragraph, self.area_width)
-            for line in text:
-                death_screen.addstr(row, 0, line)
-                row += 1
-            row += 1
+            self.display_paragraph(paragraph, story_screen)
+            story_screen.addstr("\n")
+        story_screen.refresh()
+        _ = self.input()
+        del story_screen
 
-        death_screen.refresh()
-        command = self.input()
-        del death_screen
+    def character_creation(self, story):
+        """Perform character creation with a given story."""
+        creation_screen = curses.newwin(self.height, self.width)
+        col = 0
+        for paragraph in story:
+            for segment in paragraph:
+                if segment == "{attrib}":
+                    segment = " strongest"
+                col = self.display_paragraph(segment, creation_screen,
+                                             col=col, newline=False)
+            self.newline(creation_screen)
+            creation_screen.addstr('\n')
+            col = 0
+
+        creation_screen.refresh()
+        _ = self.input()
+        del creation_screen
 
     def history(self, messages):
         """Display the message history."""

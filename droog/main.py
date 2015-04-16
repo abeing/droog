@@ -43,6 +43,7 @@ def main():
     """Bootstraps a new game and cleans up after the game."""
     with _ui.Curses() as ui_object:
         new_game(ui_object)
+        ui_object.character_creation(english.CREATION_STORY)
         the.messages.add("Welcome to Droog.")
         the.messages.add("Press ? for help.")
         refresh(ui_object)
