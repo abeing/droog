@@ -456,18 +456,18 @@ class Curses(object):
         _ = self.input()
         del story_screen
 
-    def character_creation(self, story):
+    def character_creation(self, story, attribs, weapons, gears):
         """Perform character creation with a given story."""
         creation_screen = curses.newwin(self.height, self.width)
         col = 0
         for paragraph in story:
             for segment in paragraph:
                 if segment == "{attrib}":
-                    segment = " strongest"
+                    segment = " " + self.do_cc_menu(creation_screen, attribs)
                 if segment == "{weapon}":
-                    segment = " pistol"
+                    segment = " " + self.do_cc_menu(creation_screen, weapons)
                 if segment == "{gear}":
-                    segment = " porter and knife"
+                    segment = " " + self.do_cc_menu(creation_screen, gears)
                 col = self.display_paragraph(segment, creation_screen,
                                              col=col, newline=False)
             self.newline(creation_screen)
@@ -479,6 +479,30 @@ class Curses(object):
         del creation_screen
         self._draw_borders()
         self.main_window.refresh()
+
+    def do_cc_menu(self, screen, options):
+        """Displays the options and returns the choice made."""
+        assert len(options) < 10
+        top_row = row = self.height - len(options) - 1
+        old_row, old_col = screen.getyx()
+        option_num = 1
+        valid_selections = []
+        for option in options:
+            screen.addstr(row, 0, "%d %s" % (option_num, option))
+            valid_selections.append('%d' % option_num)
+            row += 1
+            option_num += 1
+        screen.refresh()
+        selection = 'none'
+        while selection not in valid_selections:
+            selection = self.input()
+
+        # Restore the screen.
+        for row in xrange(top_row, top_row + len(options)):
+            screen.move(row, 0)
+            screen.clrtoeol()
+        screen.move(old_row, old_col)
+        return options[int(selection)-1]
 
     def history(self, messages):
         """Display the message history."""

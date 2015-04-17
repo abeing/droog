@@ -48,3 +48,18 @@ class Hero(creature.Creature):
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
         return combat.attack(self, target, self.weapon.attack)
+
+
+def attrib_choices():
+    """Return a list of hero attribute options."""
+    return ["strongest", "nimblest", "halest"]
+
+
+def weapon_choices():
+    """Return a list of hero weapon choices."""
+    return ["rifle", "pistol", "knife"]
+
+
+def gear_choices():
+    """Return a list of hero gear choices."""
+    return ["local porter", "battery", "grenades"]
