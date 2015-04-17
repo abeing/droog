@@ -46,7 +46,7 @@ def main():
         ui_object.character_creation(english.CREATION_STORY,
                                      _hero.attrib_choices(),
                                      _hero.weapon_choices(),
-                                    _hero.gear_choices())
+                                     _hero.gear_choices())
         the.messages.add("Welcome to Droog.")
         the.messages.add("Press ? for help.")
         refresh(ui_object)

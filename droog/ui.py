@@ -463,11 +463,17 @@ class Curses(object):
         for paragraph in story:
             for segment in paragraph:
                 if segment == "{attrib}":
-                    segment = " " + self.do_cc_menu(creation_screen, attribs)
+                    attrib, segment = self.do_cc_menu(creation_screen,
+                                                      attribs)
+                    segment = " " + segment
                 if segment == "{weapon}":
-                    segment = " " + self.do_cc_menu(creation_screen, weapons)
+                    weapon, segment = self.do_cc_menu(creation_screen,
+                                                      weapons)
+                    segment = " " + segment
                 if segment == "{gear}":
-                    segment = " " + self.do_cc_menu(creation_screen, gears)
+                    gear, segment = self.do_cc_menu(creation_screen,
+                                                    gears)
+                    segment = " " + segment
                 col = self.display_paragraph(segment, creation_screen,
                                              col=col, newline=False)
             self.newline(creation_screen)
@@ -479,9 +485,12 @@ class Curses(object):
         del creation_screen
         self._draw_borders()
         self.main_window.refresh()
+        return (attrib, weapon, gear)
 
     def do_cc_menu(self, screen, options):
-        """Displays the options and returns the choice made."""
+        """Displays the options and returns the choice made.
+
+        Returns a tuple of (selected zero-based index, selected string)."""
         assert len(options) < 10
         top_row = row = self.height - len(options) - 1
         old_row, old_col = screen.getyx()
@@ -502,7 +511,9 @@ class Curses(object):
             screen.move(row, 0)
             screen.clrtoeol()
         screen.move(old_row, old_col)
-        return options[int(selection)-1]
+
+        selection_index = int(selection) - 1
+        return (selection_index, options[selection_index])
 
     def history(self, messages):
         """Display the message history."""
