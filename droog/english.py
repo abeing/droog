@@ -32,13 +32,20 @@ CONJUGATIONS = {
 # Punctuation that is considered approprate to end a sentence with.
 TERMINAL_PUNCTUATION = ['.', '?', '!']
 
-CREATION_STORY = [
-    ["Commander Splinter stood before you, pacing the room and"
-     " breifing you on your ultimate mission."],
-    ["'As you know, Private Snaugh, we picked you as humanity's only hope"
-     " because you are the ", "{attrib}", " of my few remaining troops."],
-    ["Our tactical nuke did not take out the mother."]
-]
+CREATION_STORY = \
+ [["Commander Splinter stands before you, pacing the room as he briefs you on"
+   " your ultimate mission. 'As you know, our Orbital Sephiroth strike was"
+   " unable to take out the Mother. The whole town is awash in cabalistic"
+   " mana, so we put a Netzach Shield around the perimiter. The trouble is,"
+   " we only have one working Personal Netzach Shield.'"],
+  ["He looks at you with a grim expression, sighs, and continues. 'That's"
+   " where you come in. You are our ", "{attrib}", ". We need you to go in"
+   "there with boots on the ground and finish the job. Our supplies are low,"
+   " so you'll have our last Sephiroth grenade, the PNS, a ", "{weapon}",
+   ", ", "{gear}", ".'"],
+  ["'We'll drop the Netzach wall for a second and teleport you in. Godspeed.'"
+   " He gives you a firm solute."]]
+
 
 FAILURE_STORY = ["""Commander Splinter stared at dart gun the Cop Mark III was
 aiming at him. He felt a sharp pain in his chest and looked down. The dart

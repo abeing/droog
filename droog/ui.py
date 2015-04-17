@@ -93,19 +93,10 @@ class Curses(object):
                                                    self.area_width + 1,
                                                    MESSAGE_ROWS + 1, 0)
 
-        # Draw the border between the area window and the hero windows.
-        for y in range(MESSAGE_ROWS, self.area_height + MESSAGE_ROWS + 1):
-            self.main_window.addch(y, self.area_width, '|')
-
         self.hero_window = self.main_window.subwin(self.area_height,
                                                    HERO_COLUMNS,
                                                    MESSAGE_ROWS + 1,
                                                    self.area_width + 1)
-
-        # Draw the border between the hero window and the message window,
-        for x in range(0, self.width):
-            self.main_window.addch(MESSAGE_ROWS, x, '-')
-        self.main_window.addch(MESSAGE_ROWS, self.area_width, '+')
 
         self.message_window = self.main_window.subwin(MESSAGE_ROWS,
                                                       self.width,
@@ -123,8 +114,18 @@ class Curses(object):
         self.hero_x_offset = self.area_width / 2
         self.hero_y_offset = self.area_height / 2
 
-        # We need to refresh the main window at least once, even if we do all
-        # updates through child windows.
+        self.main_window.refresh()
+
+    def _draw_borders(self):
+        """Draw the borders between windows."""
+        # Draw the border between the area window and the hero windows.
+        for y in range(MESSAGE_ROWS, self.area_height + MESSAGE_ROWS + 1):
+            self.main_window.addch(y, self.area_width, '|')
+        # Draw the border between the hero window and the message window,
+        for x in range(0, self.width):
+            self.main_window.addch(MESSAGE_ROWS, x, '-')
+        self.main_window.addch(MESSAGE_ROWS, self.area_width, '+')
+
         self.main_window.refresh()
 
     def __enter__(self):
@@ -463,6 +464,10 @@ class Curses(object):
             for segment in paragraph:
                 if segment == "{attrib}":
                     segment = " strongest"
+                if segment == "{weapon}":
+                    segment = " pistol"
+                if segment == "{gear}":
+                    segment = " porter and knife"
                 col = self.display_paragraph(segment, creation_screen,
                                              col=col, newline=False)
             self.newline(creation_screen)
@@ -472,6 +477,8 @@ class Curses(object):
         creation_screen.refresh()
         _ = self.input()
         del creation_screen
+        self._draw_borders()
+        self.main_window.refresh()
 
     def history(self, messages):
         """Display the message history."""
