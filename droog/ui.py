@@ -425,8 +425,10 @@ class Curses(object):
         if last_col != 0:
             screen.addstr("\n")
 
-    def display_paragraph(self, paragraph, screen, col=0, newline=True):
+    def display_paragraph(self, paragraph, screen, col=0, newline=True,
+                          color_pair=0):
         """Display a paragraph on a screen, starting at an optional column."""
+        color = curses.color_pair(color_pair)
         row, _ = screen.getyx()
         _, width = screen.getmaxyx()
         line = ""
@@ -438,7 +440,7 @@ class Curses(object):
                 col = 0
             line, lines = english.partial_wrap(lines, width - col)
             LOG.info("Line = %s, Lines = %s", line, lines)
-            screen.addstr(row, col, line)
+            screen.addstr(row, col, line, color)
             row += 1
             line_count += 1
         if newline:
@@ -462,20 +464,25 @@ class Curses(object):
         col = 0
         for paragraph in story:
             for segment in paragraph:
+                color = 0
                 if segment == "{attrib}":
                     attrib = segment = self.do_cc_menu(creation_screen,
                                                        attribs)
                     segment = " " + segment
+                    color = 2
                 if segment == "{weapon}":
                     weapon = segment = self.do_cc_menu(creation_screen,
                                                        weapons)
                     segment = " " + segment
+                    color = 2
                 if segment == "{gear}":
                     gear = segment = self.do_cc_menu(creation_screen,
                                                      gears)
                     segment = " " + segment
+                    color = 2
                 col = self.display_paragraph(segment, creation_screen,
-                                             col=col, newline=False)
+                                             col=col, newline=False,
+                                             color_pair=color)
             self.newline(creation_screen)
             creation_screen.addstr('\n')
             col = 0
@@ -492,12 +499,13 @@ class Curses(object):
 
         Returns a tuple of (selected zero-based index, selected string)."""
         assert len(options) < 10
-        top_row = row = self.height - len(options) - 1
         old_row, old_col = screen.getyx()
+        screen.addstr(" __________")
+        top_row = row = old_row + 2
         option_num = 1
         valid_selections = []
         for option in options:
-            screen.addstr(row, 0, "%d %s" % (option_num, option))
+            screen.addstr(row, 3, "%d %s" % (option_num, option))
             valid_selections.append('%d' % option_num)
             row += 1
             option_num += 1
