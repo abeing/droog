@@ -49,6 +49,18 @@ class Hero(creature.Creature):
         """Performs a melee attack against the target."""
         return combat.attack(self, target, self.weapon.attack)
 
+    def build(self, build):
+        """Apply the character creation build.
+
+        Build is a tuple of attribute name, weapon and items."""
+        attrib_name, weapon, items = build
+        if attrib_name == "strongest":
+            self._strength = 3
+        elif attrib_name == "nimblest":
+            self._dexterity = 3
+        elif attrib_name == "halest":
+            self._constitution = 3
+
 
 def attrib_choices():
     """Return a list of hero attribute options."""

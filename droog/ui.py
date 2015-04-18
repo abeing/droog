@@ -463,16 +463,16 @@ class Curses(object):
         for paragraph in story:
             for segment in paragraph:
                 if segment == "{attrib}":
-                    attrib, segment = self.do_cc_menu(creation_screen,
-                                                      attribs)
+                    attrib = segment = self.do_cc_menu(creation_screen,
+                                                       attribs)
                     segment = " " + segment
                 if segment == "{weapon}":
-                    weapon, segment = self.do_cc_menu(creation_screen,
-                                                      weapons)
+                    weapon = segment = self.do_cc_menu(creation_screen,
+                                                       weapons)
                     segment = " " + segment
                 if segment == "{gear}":
-                    gear, segment = self.do_cc_menu(creation_screen,
-                                                    gears)
+                    gear = segment = self.do_cc_menu(creation_screen,
+                                                     gears)
                     segment = " " + segment
                 col = self.display_paragraph(segment, creation_screen,
                                              col=col, newline=False)
@@ -512,8 +512,7 @@ class Curses(object):
             screen.clrtoeol()
         screen.move(old_row, old_col)
 
-        selection_index = int(selection) - 1
-        return (selection_index, options[selection_index])
+        return options[int(selection) - 1]
 
     def history(self, messages):
         """Display the message history."""
