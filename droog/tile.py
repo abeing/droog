@@ -7,8 +7,9 @@ functions to create different types of tiles.
 
 class Tile(object):
     """Representation of a map tile."""
-    def __init__(self, glyph, description, walkable):
+    def __init__(self, glyph, description, walkable, color=0):
         self.glyph = glyph
+        self.color = color
         self.description = description
         self._walkable = walkable
         self.creature = None
@@ -57,3 +58,8 @@ def make_shield():
 def make_shield_generator():
     """Factory function to create a shield generator tile."""
     return Tile('G', "the shield generator", False)
+
+
+def make_tree():
+    """Create a tree tile."""
+    return Tile('#', "a tree", False, color=2)

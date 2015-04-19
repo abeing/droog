@@ -93,7 +93,8 @@ def test_valid_locations():
 def test_glyph_at():
     """Test that a location within the map has a glyph."""
     sut = world.World(7, 5)
-    assert sut.glyph_at(Location(4, 4)) == '.'
+    glyph_44 = sut.glyph_at(Location(4, 4))
+    assert glyph_44 == '.' or glyph_44 == '#'
 
 
 def test_glyph_at_creature():
@@ -118,8 +119,14 @@ def test_glyph_at_item():
     assert sut.glyph_at(location) == item.glyph
 
 
-def test_generation():
+def test_generate_city():
     """Test that generating a city works."""
     sut = world.World(10, 10)
     world.generate_city(sut)
     assert sut.glyph_at(Location(5, 5)) == 'G'
+
+
+def test_generate_world():
+    """Test the new genreation function."""
+    sut = world.World(10, 10)
+    pass  # TODO put an assertion here.

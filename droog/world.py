@@ -38,6 +38,8 @@ from . import the
 
 LOG = logging.getLogger(__name__)
 
+TREE_CHANCE = 0.05
+
 mult = [
                 [1,  0,  0, -1, -1,  0,  0,  1],
                 [0,  1, -1,  0,  0, -1,  1,  0],
@@ -115,6 +117,7 @@ class World(object):
                 self.tiles[row].append(tile.make_empty())
         self.hero_location = self._position_hero()
         self.cell(self.hero_location).creature = the.hero
+        self._generate()
         self.do_fov()
 
     def is_empty(self, loc):
@@ -365,6 +368,27 @@ class World(object):
                              mult[0][oct], mult[1][oct],
                              mult[2][oct], mult[3][oct], 0)
 
+    def _generate(self):
+        """Generate the world map.
+
+        This function builds the world in several stages.
+
+        1) Generate grasses, bushes and trees.
+        2) Generate the road grid.
+        3) Build the fortress.
+        4) Build the other buildings and a lake.
+        """
+        self._generate_vegetation()
+
+    def _generate_vegetation(self):
+        """Fill the map with vegeation."""
+        for row in xrange(0, self.rows):
+            for col in xrange(0, self.cols):
+                if TREE_CHANCE > random.random():
+                    self.tiles[row][col] = tile.make_tree()
+                else:
+                    self.tiles[row][col] = tile.make_empty()
+
 
 def _add_shield_generator(a_world):
     """Places a shield generator in the center of the map."""
@@ -384,6 +408,8 @@ def _add_shield(a_world):
     for col in range(a_world.cols):
         a_world.tiles[0][col] = tile.make_shield()
         a_world.tiles[a_world.rows - 1][col] = tile.make_shield()
+
+
 
 
 def generate_city(a_world, road_count=10, beta=0.5):
