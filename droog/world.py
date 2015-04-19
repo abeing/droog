@@ -39,6 +39,7 @@ from . import the
 LOG = logging.getLogger(__name__)
 
 TREE_CHANCE = 0.05
+ROAD_GRID_SIZE = 20
 
 mult = [
                 [1,  0,  0, -1, -1,  0,  0,  1],
@@ -252,6 +253,8 @@ class World(object):
     def _log(self):
         """Dumps the world into a file called 'world.dump'"""
         with open("world.dump", "w") as dump_file:
+            for row in self._junction_grid:
+                dump_file.write("%r" % row)
             for row in range(self.rows):
                 for col in range(self.cols):
                     dump_file.write(self.cell(Location(row, col)).glyph)
@@ -394,7 +397,37 @@ class World(object):
 
     def _generate_roads(self):
         """Fill the map with a grid of roads."""
-        pass
+        junction_grid = _create_junction_grid(self.rows, self.cols,
+                                              ROAD_GRID_SIZE)
+        self._junction_grid = junction_grid  # for dumping purposes
+        prev_road_row = 0
+        road_row = ROAD_GRID_SIZE
+        prev_road_col = 0
+        road_col = ROAD_GRID_SIZE
+
+        for junction_row in junction_grid:
+            for junction in junction_row:
+                LOG.debug("Drawing junction %r", junction)
+                if junction[0]:  # North road
+                    LOG.debug("Drawing north road from row %d to row %d in "
+                              "col %d", prev_road_row, road_row, road_col)
+                    for row in xrange(prev_road_row, road_row):
+                        self.tiles[row][road_col] = tile.make_street()
+                if junction[3]:  # West road
+                    LOG.debug("Drawing west road from col %d to col %d in "
+                              "row %d", prev_road_col, road_col, road_row)
+                    for col in xrange(prev_road_col, road_col):
+                        self.tiles[road_row][col] = tile.make_street()
+                prev_road_col = road_col
+                road_col += ROAD_GRID_SIZE
+                if road_col >= self.cols:
+                    road_col = self.cols - 1
+            prev_road_row = road_row
+            road_row += ROAD_GRID_SIZE
+            if road_row >= self.rows:
+                road_row = self.rows - 1
+            prev_road_col = 0
+            road_col = ROAD_GRID_SIZE
 
 
 def _random_junction_element(element):
@@ -408,7 +441,17 @@ def _generate_random_junction(north, south, east, west):
     road must not exist, and None means either is okay.
     """
     result = [north, south, east, west]
+    free_roads = []
+    for index in xrange(0, 3):
+        if result[index] is None:
+            free_roads.append(index)
     result = [_random_junction_element(element) for element in result]
+    road_count = 0
+    for road in result:
+        if road is True:
+            road_count += 1
+    if road_count == 1:  # Avoid dead-ends
+        result[random.choice(free_roads)] = True
     return result
 
 
@@ -427,11 +470,14 @@ def _create_junction_grid(map_rows, map_cols, cell_size):
     rows = map_rows / cell_size
     cols = map_cols / cell_size
 
+    LOG.debug("Creating junction grid of size %d rows by %d columns. cell"
+              " size is %d", rows, cols, cell_size)
+
     for row in xrange(0, rows):
         junction_grid.append([])
         for col in xrange(0, cols):
-            north = junction_grid[row - 1][col][0] if row > 0 else None
-            west = junction_grid[row][col - 1][3] if col > 0 else None
+            north = junction_grid[row - 1][col][2] if row > 0 else None
+            west = junction_grid[row][col - 1][1] if col > 0 else None
             junction = _generate_random_junction(north, None, None, west)
             junction_grid[row].append(junction)
     return junction_grid

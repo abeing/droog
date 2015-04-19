@@ -10,7 +10,7 @@ import turn
 import the
 import english
 
-logging.basicConfig(filename="droog.log", level=logging.INFO)
+logging.basicConfig(filename="droog.log", level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
 EMPTY_STATUS = ""
@@ -24,7 +24,7 @@ def new_game(ui_object):
     the.turn.add_actor(the.hero)
     the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(200, 200)
-    _world.generate_city(the.world)
+    the.world._log()
     the.world.spawn_monster(creature.Zombie())
     the.world.spawn_monster(creature.Zombie())
     the.world.spawn_monster(creature.ZombieDog())
