@@ -106,6 +106,8 @@ class World(object):
 
         The world is a grid of streets with the hero in the center.
         """
+        assert rows > 20
+        assert cols > 20
         self.cols = cols
         self.rows = rows
         self.tiles = []
@@ -379,6 +381,7 @@ class World(object):
         4) Build the other buildings and a lake.
         """
         self._generate_vegetation()
+        self._generate_roads()
 
     def _generate_vegetation(self):
         """Fill the map with vegeation."""
@@ -388,6 +391,36 @@ class World(object):
                     self.tiles[row][col] = tile.make_tree()
                 else:
                     self.tiles[row][col] = tile.make_empty()
+
+    def _generate_roads(self):
+        """Fill the map with a grid of roads."""
+        pass
+
+
+def _generate_random_junction(north, south, east, west):
+    """Generate random junction given which roads much or must not exist.
+    For north, south, east, and west True means road must exist, False means
+    road must not exist, and None means either is okay.
+    """
+    result = [north, south, east, west]
+    for entry in result:
+        if not entry:
+            entry = random.random < 0.5
+    return result
+
+
+def _create_junction_grid(map_rows, map_cols, cell_size):
+    """Create a grid of valid road intersations."""
+    assert cell_size < map_rows
+    assert cell_size < map_cols
+    junction_grid = []
+    for _ in xrange(0, map_rows / cell_size):
+        junction_grid.append([None for _ in range(map_cols / cell_size)])
+
+    for row in junction_grid:
+        for col in row:
+            col = _generate_random_junction(None, None, None, None)
+    return junction_grid
 
 
 def _add_shield_generator(a_world):

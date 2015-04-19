@@ -76,23 +76,23 @@ def test_random_delta():
 
 def test_empty_map():
     """Test that an emtpy map works."""
-    sut = world.World(10, 10)
+    sut = world.World(40, 40)
     assert sut
-    assert sut.cols == sut.rows == 10
+    assert sut.cols == sut.rows == 40
     assert sut.cell(Location(9, 9))
 
 
 def test_valid_locations():
     """Test that an empty map has the right size."""
-    sut = world.World(5, 5)
-    assert sut.is_valid_location(Location(4, 4))
-    assert not sut.is_valid_location(Location(4, 5))
-    assert not sut.is_valid_location(Location(5, 4))
+    sut = world.World(40, 40)
+    assert sut.is_valid_location(Location(39, 39))
+    assert not sut.is_valid_location(Location(39, 40))
+    assert not sut.is_valid_location(Location(40, 39))
 
 
 def test_glyph_at():
     """Test that a location within the map has a glyph."""
-    sut = world.World(7, 5)
+    sut = world.World(47, 45)
     glyph_44 = sut.glyph_at(Location(4, 4))
     assert glyph_44 == '.' or glyph_44 == '#'
 
@@ -100,7 +100,7 @@ def test_glyph_at():
 def test_glyph_at_creature():
     """Test that the glyph at a location with the creature returns the
     creature's glyph."""
-    sut = world.World(20, 20)
+    sut = world.World(40, 40)
     monster = mock.Mock()
     monster.glyph = '$'
     sut.spawn_monster(monster)
@@ -111,7 +111,7 @@ def test_glyph_at_creature():
 def test_glyph_at_item():
     """Test that the glyph at a location with an item returns the item's
     glyph."""
-    sut = world.World(20, 20)
+    sut = world.World(40, 40)
     item = mock.Mock()
     item.glyph = '/'
     location = Location(4, 3)
@@ -121,12 +121,25 @@ def test_glyph_at_item():
 
 def test_generate_city():
     """Test that generating a city works."""
-    sut = world.World(10, 10)
+    sut = world.World(40, 40)
     world.generate_city(sut)
-    assert sut.glyph_at(Location(5, 5)) == 'G'
+    assert sut.glyph_at(Location(20, 20)) == 'G'
 
 
 def test_generate_world():
     """Test the new genreation function."""
-    sut = world.World(10, 10)
+    sut = world.World(40, 40)
     pass  # TODO put an assertion here.
+
+
+def test_create_junction_grid():
+    grid = world._create_junction_grid(40, 45, 20)
+    assert len(grid) == 2
+    assert len(grid[0]) == 2
+
+
+def test_create_random_junction():
+    assert world._generate_random_junction(None, None, None, True)[3] == True
+    assert world._generate_random_junction(None, None, False, True)[2] == False
+    assert world._generate_random_junction(True, None, None, True)[0] == True
+    assert world._generate_random_junction(True, None, None, True)[3] == True
