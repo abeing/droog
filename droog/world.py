@@ -397,16 +397,26 @@ class World(object):
         pass
 
 
+def _random_junction_element(element):
+    """Determine a random element for a junctin."""
+    return random.random() < 0.5 if element is None else element
+
+
 def _generate_random_junction(north, south, east, west):
     """Generate random junction given which roads much or must not exist.
     For north, south, east, and west True means road must exist, False means
     road must not exist, and None means either is okay.
     """
     result = [north, south, east, west]
-    for entry in result:
-        if not entry:
-            entry = random.random < 0.5
+    result = [_random_junction_element(element) for element in result]
     return result
+
+
+def _log_junction_grid(grid):
+    """Writes the junction grid out to the log."""
+    LOG.debug("Junction grid")
+    for row in grid:
+        LOG.debug(row)
 
 
 def _create_junction_grid(map_rows, map_cols, cell_size):
@@ -414,12 +424,16 @@ def _create_junction_grid(map_rows, map_cols, cell_size):
     assert cell_size < map_rows
     assert cell_size < map_cols
     junction_grid = []
-    for _ in xrange(0, map_rows / cell_size):
-        junction_grid.append([None for _ in range(map_cols / cell_size)])
+    rows = map_rows / cell_size
+    cols = map_cols / cell_size
 
-    for row in junction_grid:
-        for col in row:
-            col = _generate_random_junction(None, None, None, None)
+    for row in xrange(0, rows):
+        junction_grid.append([])
+        for col in xrange(0, cols):
+            north = junction_grid[row - 1][col][0] if row > 0 else None
+            west = junction_grid[row][col - 1][3] if col > 0 else None
+            junction = _generate_random_junction(north, None, None, west)
+            junction_grid[row].append(junction)
     return junction_grid
 
 
@@ -441,8 +455,6 @@ def _add_shield(a_world):
     for col in range(a_world.cols):
         a_world.tiles[0][col] = tile.make_shield()
         a_world.tiles[a_world.rows - 1][col] = tile.make_shield()
-
-
 
 
 def generate_city(a_world, road_count=10, beta=0.5):
