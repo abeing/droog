@@ -44,12 +44,11 @@ ROAD_CHANCE = 0.5
 BUILDING_CHANCE = 0.42
 WALL_BREAK_CHANCE = 0.12
 
-mult = [
-                [1,  0,  0, -1, -1,  0,  0,  1],
-                [0,  1, -1,  0,  0, -1,  1,  0],
-                [0,  1,  1,  0,  0, -1, -1,  0],
-                [1,  0,  0,  1, -1,  0,  0, -1]
-            ]
+mult = [[1, 0, 0, -1, -1, 0, 0, 1],
+        [0, 1, -1, 0, 0, -1, 1, 0],
+        [0, 1, 1, 0, 0, -1, -1, 0],
+        [1, 0, 0, 1, -1, 0, 0, -1]]
+
 
 class Location(object):
     """The Location class represents a position on a grid."""
@@ -117,6 +116,8 @@ class World(object):
         self.tiles = []
         self.generator = engine.Generator()
         self.generator_location = None
+        # The junction grid used to make this map, for logging and debugging.
+        self._junction_grid = None
 
         for row in range(rows):
             self.tiles.append(list())
@@ -191,6 +192,7 @@ class World(object):
         return 0
 
     def change_hero_loc(self, new_loc):
+        """Change the hero location."""
         old_loc = self.hero_location
         self.hero_location = new_loc
         self.cell(old_loc).creature = None
@@ -313,9 +315,10 @@ class World(object):
         self.cell(loc).items.append(item)
 
     def set_lit(self, loc):
+        """Set the cell at loc as visible."""
         self.cell(loc).seen = True
 
-    def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy, id):
+    def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy):
         "Recursive lightcasting function"
         if start < end:
             return
@@ -339,7 +342,6 @@ class World(object):
                     break
                 else:
                     # Our light beam is touching this square; light it:
-                    
                     if dx*dx + dy*dy < radius_squared:
                         self.set_lit(loc)
                     if blocked:
@@ -355,7 +357,7 @@ class World(object):
                             # This is a blocking square, start a child scan:
                             blocked = True
                             self._cast_light(cx, cy, j+1, start, l_slope,
-                                             radius, xx, xy, yx, yy, id+1)
+                                             radius, xx, xy, yx, yy)
                             new_start = r_slope
             # Row is scanned; do next row unless last square was blocked:
             if blocked:
@@ -370,12 +372,11 @@ class World(object):
     def do_fov(self):
         "Calculate lit squares from the given location and radius"
         self.reset_fov()
-        for oct in range(8):
-            # TODO: Update the radius.
+        for octant in range(8):
             self._cast_light(self.hero_location.col, self.hero_location.row,
                              1, 1.0, 0.0, 10,
-                             mult[0][oct], mult[1][oct],
-                             mult[2][oct], mult[3][oct], 0)
+                             mult[0][octant], mult[1][octant],
+                             mult[2][octant], mult[3][octant])
 
     def _generate(self):
         """Generate the world map.
@@ -534,7 +535,7 @@ class World(object):
                     if WALL_BREAK_CHANCE < random.random():
                         self.tiles[row][col] = tile.make_wall()
                 else:
-                    self.tiles[row][col] = tile.make_empty()
+                    self.tiles[row][col] = tile.make_floor()
 
 
 def _generate_random_junction(north, south, east, west):

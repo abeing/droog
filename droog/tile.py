@@ -68,3 +68,8 @@ def make_tree():
 def make_wall():
     """Create a wall tile."""
     return Tile('#', "a wall", False)
+
+
+def make_floor():
+    """Create a floor tile."""
+    return Tile(',', "a floor", True)
