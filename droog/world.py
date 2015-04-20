@@ -416,16 +416,36 @@ class World(object):
                     if extended_prev_road_row < 0:
                         extended_prev_road_row = 0
                     for row in xrange(extended_prev_road_row, road_row):
+                        if self.tiles[row][road_col - 5].glyph != '*':
+                            self.tiles[row][road_col - 5] = tile.make_empty()
+                        if self.tiles[row][road_col - 4].glyph != '*':
+                            self.tiles[row][road_col - 4] = tile.make_empty()
                         self.tiles[row][road_col - 3] = tile.make_street()
                         self.tiles[row][road_col - 2] = tile.make_street()
                         self.tiles[row][road_col - 1] = tile.make_street()
+                        if road_col < self.cols - 1 \
+                                and self.tiles[row][road_col].glyph != '*':
+                            self.tiles[row][road_col + 0] = tile.make_empty()
+                        if road_col < self.cols - 2 \
+                                and self.tiles[row][road_col + 1].glyph != '*':
+                            self.tiles[row][road_col + 1] = tile.make_empty()
                 if junction[3]:  # West road
                     LOG.debug("Drawing west road from col %d to col %d in "
                               "row %d", prev_road_col, road_col, road_row)
                     for col in xrange(prev_road_col, road_col):
+                        if self.tiles[road_row - 5][col].glyph != '*':
+                            self.tiles[road_row - 5][col] = tile.make_empty()
+                        if self.tiles[road_row - 4][col].glyph != '*':
+                            self.tiles[road_row - 4][col] = tile.make_empty()
                         self.tiles[road_row - 3][col] = tile.make_street()
                         self.tiles[road_row - 2][col] = tile.make_street()
                         self.tiles[road_row - 1][col] = tile.make_street()
+                        if road_row < self.rows - 1 \
+                                and self.tiles[road_row][col].glyph != '*':
+                            self.tiles[road_row][col] = tile.make_empty()
+                        if road_row < self.rows - 2 \
+                                and self.tiles[road_row + 1][col].glyph != '*':
+                            self.tiles[road_row + 1][col] = tile.make_empty()
                 prev_road_col = road_col
                 road_col += ROAD_GRID_SIZE
                 if road_col >= self.cols:
@@ -436,6 +456,26 @@ class World(object):
                 road_row = self.rows
             prev_road_col = 0
             road_col = ROAD_GRID_SIZE
+
+        road_row = ROAD_GRID_SIZE
+        road_col = ROAD_GRID_SIZE
+        for junction_row in junction_grid:
+            for junction in junction_row:
+                if not junction[0] and not junction[3]:
+                    self.tiles[road_row - 3][road_col - 3] = tile.make_empty()
+                if not junction[2] and not junction[3]:
+                    self.tiles[road_row - 1][road_col - 3] = tile.make_empty()
+                if not junction[1] and not junction[2]:
+                    self.tiles[road_row - 1][road_col - 1] = tile.make_empty()
+                if not junction[0] and not junction[1]:
+                    self.tiles[road_row - 3][road_col - 1] = tile.make_empty()
+                road_col += ROAD_GRID_SIZE
+                if road_col >= self.cols:
+                    road_col = self.cols
+            road_col = ROAD_GRID_SIZE
+            road_row += ROAD_GRID_SIZE
+            if road_row >= self.rows:
+                road_row = self.rows
 
 
 def _generate_random_junction(north, south, east, west):
@@ -463,7 +503,11 @@ def _generate_random_junction(north, south, east, west):
             road_count += 1
     if road_count == 1:
         fill_road = random.choice(free_roads)
+        free_roads.remove(fill_road)
         result[fill_road] = True
+    while free_roads:
+        fill_road = free_roads.pop()
+        result[fill_road] = False
     return result
 
 
