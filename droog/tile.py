@@ -62,4 +62,9 @@ def make_shield_generator():
 
 def make_tree():
     """Create a tree tile."""
-    return Tile('#', "a tree", False, color=2)
+    return Tile('%', "a tree", False, color=2)
+
+
+def make_wall():
+    """Create a wall tile."""
+    return Tile('#', "a wall", False)

@@ -41,6 +41,7 @@ LOG = logging.getLogger(__name__)
 TREE_CHANCE = 0.05
 ROAD_GRID_SIZE = 24
 ROAD_CHANCE = 0.5
+BUILDING_CHANCE = 0.42
 
 mult = [
                 [1,  0,  0, -1, -1,  0,  0,  1],
@@ -114,6 +115,7 @@ class World(object):
         self.rows = rows
         self.tiles = []
         self.generator = engine.Generator()
+        self.generator_location = None
 
         for row in range(rows):
             self.tiles.append(list())
@@ -386,6 +388,9 @@ class World(object):
         """
         self._generate_vegetation()
         self._generate_roads()
+        self._generate_computer()
+        self._generate_shield()
+        self._generate_buildings()
 
     def _generate_vegetation(self):
         """Fill the map with vegeation."""
@@ -477,6 +482,58 @@ class World(object):
             if road_row >= self.rows:
                 road_row = self.rows
 
+    def _generate_computer(self):
+        """Places a shield generator in the center of the map."""
+        row = self.rows / 2
+        col = self.cols / 2
+        self.generator_location = Location(row, col)
+        self.tiles[row][col] = tile.make_shield_generator()
+
+    def _generate_shield(self):
+        """Creates the shield border around the navigable map."""
+
+        for row in range(0, self.rows):
+            self.tiles[row][0] = tile.make_shield()
+            self.tiles[row][self.cols - 1] = tile.make_shield()
+
+        for col in range(self.cols):
+            self.tiles[0][col] = tile.make_shield()
+            self.tiles[self.rows - 1][col] = tile.make_shield()
+
+    def _generate_buildings(self):
+        """Create buildings in some blocks."""
+        cell_begin_row = 0
+        cell_end_row = ROAD_GRID_SIZE
+        cell_begin_col = 0
+        cell_end_col = ROAD_GRID_SIZE
+
+        while cell_end_row < self.rows:
+            while cell_end_col < self.cols:
+                if random.random() < BUILDING_CHANCE:
+                    begin = Location(cell_begin_row, cell_begin_col)
+                    end = Location(cell_end_row, cell_end_col)
+                    self._generate_building(begin, end)
+                cell_begin_col = cell_end_col
+                cell_end_col += ROAD_GRID_SIZE
+            cell_begin_row = cell_end_row
+            cell_end_row += ROAD_GRID_SIZE
+            cell_begin_col = 0
+            cell_end_col = ROAD_GRID_SIZE
+
+    def _generate_building(self, begin, end):
+        """Create a building at the sepcified site."""
+        LOG.debug("Generating a building between %r and %r.", begin, end)
+        top = begin.row + random.randint(3, ROAD_GRID_SIZE / 3)
+        bottom = end.row - random.randint(6, ROAD_GRID_SIZE / 3)
+        left = begin.col + random.randint(3, ROAD_GRID_SIZE / 3)
+        right = end.col - random.randint(6, ROAD_GRID_SIZE / 3)
+        for row in xrange(top, bottom + 1):
+            for col in xrange(left, right + 1):
+                if row == top or row == bottom or col == left or col == right:
+                    self.tiles[row][col] = tile.make_wall()
+                else:
+                    self.tiles[row][col] = tile.make_empty()
+
 
 def _generate_random_junction(north, south, east, west):
     """Generate random junction given which roads much or must not exist.
@@ -538,95 +595,4 @@ def _create_junction_grid(map_rows, map_cols, cell_size):
             junction_grid[row].append(junction)
     return junction_grid
 
-
-def _add_shield_generator(a_world):
-    """Places a shield generator in the center of the map."""
-    row = a_world.rows / 2
-    col = a_world.cols / 2
-    a_world.generator_location = Location(row, col)
-    a_world.tiles[row][col] = tile.make_shield_generator()
-
-
-def _add_shield(a_world):
-    """Creates the shield border around the navigable map."""
-
-    for row in range(0, a_world.rows):
-        a_world.tiles[row][0] = tile.make_shield()
-        a_world.tiles[row][a_world.cols - 1] = tile.make_shield()
-
-    for col in range(a_world.cols):
-        a_world.tiles[0][col] = tile.make_shield()
-        a_world.tiles[a_world.rows - 1][col] = tile.make_shield()
-
-
-def generate_city(a_world, road_count=10, beta=0.5):
-    """Generates a city map.
-
-    We first draw a horizontal road somewhere near the equator of the map,
-    choosing the latitude using a triangular distribution with a mode of
-    the equator.
-
-    Then we draw a vertical road somewhere near the prime meridian of the
-    map, choosing the longitude using a triangular distribution with a
-    mode of the prime meridian.
-
-    Then we select an existing road, an existing point along it, and then
-    draw a road in one, the other or both directions from it. We draw until
-    we reach another road or the edge of the world. If we reach a road,
-    we will continue with probability ß."""
-
-    # We'll store the roads we create here.
-    roads = []
-
-    if road_count == 0:
-        if a_world.rows > a_world.cols:
-            road_count = a_world.rows / 10
-        else:
-            road_count = a_world.cols / 10
-
-    equator = int(random.triangular(low=0, high=a_world.rows,
-                                    mode=a_world.rows / 2))
-    a_world.add_road(Location(equator, 0), 0, 1, 1.0)
-    roads.append(((equator, 0), (equator, a_world.cols - 1)))
-    LOG.info('Equator road from %r to %r', (equator, 0),
-             (equator, a_world.cols))
-
-    meridian = int(random.triangular(low=0, high=a_world.cols,
-                                     mode=a_world.cols / 2))
-    a_world.add_road(Location(0, meridian), 1, 0, 1.0)
-    roads.append(((0, meridian), (a_world.rows - 1, meridian)))
-    LOG.info('Meridian road from %r to %r', (0, meridian),
-             (a_world.rows, meridian))
-
-    for i in range(road_count):
-        ((begin_y, begin_x), (end_y, end_x)) = random.choice(roads)
-        # Choose a direction. Positive is south in the vertical case and
-        # east in the horizontal case. Negative is north in the vertical
-        # case and west in the horizontal case. Zero is both directions in
-        # either case.
-        direction = random.randint(-1, 1)
-        if begin_y == end_y:  # We chose a horizontal road, we will make
-                                # a vertical road
-            bisect = random.randint(begin_x, end_x)
-            LOG.info('Creating road %d vertically from %r heading %d', i,
-                     (begin_y, bisect), direction)
-            if direction > -1:  # Going south.
-                a_world.add_road(Location(begin_y, bisect), 1, 0, beta)
-            if direction < 1:  # Going north.
-                a_world.add_road(Location(begin_y, bisect), -1, 0, beta)
-        elif begin_x == end_x:  # We chose a vertical road, we will make
-                                    # a horizontal road
-            bisect = random.randint(begin_y, end_y)
-            LOG.info('Creating road %d horizontally from %r heading %d', i,
-                     (bisect, begin_x), direction)
-            if direction > -1:  # Going east.
-                a_world.add_road(Location(bisect, begin_x), 0, 1, beta)
-            if direction < 1:  # Going west.
-                a_world.add_road(Location(bisect, begin_x), 0, -1, beta)
-        else:
-            LOG.error('Road is neither horizontal nor vertical')
-
-    _add_shield_generator(a_world)
-    _add_shield(a_world)
-    a_world.do_fov()
 
