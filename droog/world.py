@@ -42,6 +42,7 @@ TREE_CHANCE = 0.05
 ROAD_GRID_SIZE = 24
 ROAD_CHANCE = 0.5
 BUILDING_CHANCE = 0.42
+WALL_BREAK_CHANCE = 0.12
 
 mult = [
                 [1,  0,  0, -1, -1,  0,  0,  1],
@@ -530,7 +531,8 @@ class World(object):
         for row in xrange(top, bottom + 1):
             for col in xrange(left, right + 1):
                 if row == top or row == bottom or col == left or col == right:
-                    self.tiles[row][col] = tile.make_wall()
+                    if WALL_BREAK_CHANCE < random.random():
+                        self.tiles[row][col] = tile.make_wall()
                 else:
                     self.tiles[row][col] = tile.make_empty()
 
