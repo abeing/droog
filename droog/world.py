@@ -40,6 +40,7 @@ LOG = logging.getLogger(__name__)
 
 TREE_CHANCE = 0.05
 ROAD_GRID_SIZE = 24
+ROAD_CHANCE = 0.5
 
 mult = [
                 [1,  0,  0, -1, -1,  0,  0,  1],
@@ -437,11 +438,6 @@ class World(object):
             road_col = ROAD_GRID_SIZE
 
 
-def _random_junction_element(element):
-    """Determine a random element for a junctin."""
-    return random.random() < 0.5 if element is None else element
-
-
 def _generate_random_junction(north, south, east, west):
     """Generate random junction given which roads much or must not exist.
     For north, south, east, and west True means road must exist, False means
@@ -449,16 +445,25 @@ def _generate_random_junction(north, south, east, west):
     """
     result = [north, south, east, west]
     free_roads = []
-    for index in xrange(0, 3):
+    for index in xrange(4):
         if result[index] is None:
             free_roads.append(index)
-    result = [_random_junction_element(element) for element in result]
+    free_road_count = len(free_roads)
+    fill_road_count = 0
+    for _ in xrange(free_road_count):
+        fill_road_count += random.random() < ROAD_CHANCE
+    while fill_road_count > 0:
+        fill_road = random.choice(free_roads)
+        result[fill_road] = True
+        free_roads.remove(fill_road)
+        fill_road_count -= 1
     road_count = 0
     for road in result:
         if road is True:
             road_count += 1
-    if road_count == 1:  # Avoid dead-ends
-        result[random.choice(free_roads)] = True
+    if road_count == 1:
+        fill_road = random.choice(free_roads)
+        result[fill_road] = True
     return result
 
 

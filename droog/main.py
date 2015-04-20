@@ -23,7 +23,7 @@ def new_game(ui_object):
     the.hero = _hero.Hero("Snaugh", ui_object)
     the.turn.add_actor(the.hero)
     the.messages = message.Messages(turn=the.turn)
-    the.world = _world.World(200, 200)
+    the.world = _world.World(240, 240)
     the.world._log()
     the.world.spawn_monster(creature.Zombie())
     the.world.spawn_monster(creature.Zombie())
