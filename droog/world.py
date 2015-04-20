@@ -39,7 +39,7 @@ from . import the
 LOG = logging.getLogger(__name__)
 
 TREE_CHANCE = 0.05
-ROAD_GRID_SIZE = 20
+ROAD_GRID_SIZE = 24
 
 mult = [
                 [1,  0,  0, -1, -1,  0,  0,  1],
@@ -411,21 +411,28 @@ class World(object):
                 if junction[0]:  # North road
                     LOG.debug("Drawing north road from row %d to row %d in "
                               "col %d", prev_road_row, road_row, road_col)
-                    for row in xrange(prev_road_row, road_row):
-                        self.tiles[row][road_col] = tile.make_street()
+                    extended_prev_road_row = prev_road_row - 3
+                    if extended_prev_road_row < 0:
+                        extended_prev_road_row = 0
+                    for row in xrange(extended_prev_road_row, road_row):
+                        self.tiles[row][road_col - 3] = tile.make_street()
+                        self.tiles[row][road_col - 2] = tile.make_street()
+                        self.tiles[row][road_col - 1] = tile.make_street()
                 if junction[3]:  # West road
                     LOG.debug("Drawing west road from col %d to col %d in "
                               "row %d", prev_road_col, road_col, road_row)
                     for col in xrange(prev_road_col, road_col):
-                        self.tiles[road_row][col] = tile.make_street()
+                        self.tiles[road_row - 3][col] = tile.make_street()
+                        self.tiles[road_row - 2][col] = tile.make_street()
+                        self.tiles[road_row - 1][col] = tile.make_street()
                 prev_road_col = road_col
                 road_col += ROAD_GRID_SIZE
                 if road_col >= self.cols:
-                    road_col = self.cols - 1
+                    road_col = self.cols
             prev_road_row = road_row
             road_row += ROAD_GRID_SIZE
             if road_row >= self.rows:
-                road_row = self.rows - 1
+                road_row = self.rows
             prev_road_col = 0
             road_col = ROAD_GRID_SIZE
 
