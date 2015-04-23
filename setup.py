@@ -15,13 +15,11 @@ setup(
     author='Adam Miezianko',
     author_email='adam@theorylounge.org',
 
-    license='None',
-
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: End Users/Desktop',
         'Environment :: Console :: Curses',
-        'License :: Other/Proprietary License',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
