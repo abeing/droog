@@ -136,13 +136,6 @@ def test_glyph_at_item():
     assert sut.glyph_at(location) == item.glyph
 
 
-def test_generate_city():
-    """Test that generating a city works."""
-    sut = world.World(40, 40)
-    world.generate_city(sut)
-    assert sut.glyph_at(Location(20, 20)) == 'G'
-
-
 def test_generate_world():
     """Test the new genreation function."""
     sut = world.World(40, 40)
