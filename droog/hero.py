@@ -17,10 +17,10 @@
 
 """Droog Hero class"""
 import sys
-import the
-import combat
-import creature
-import item
+from . import the
+from . import combat
+from . import creature
+from . import item
 
 
 class Hero(creature.Creature):
@@ -52,6 +52,8 @@ class Hero(creature.Creature):
             return 0
         if command == 'd':
             self.ui.drop(self, the.world)
+        if command == 'p':
+            self.ui.pickup(self, the.world)
         if command == '~':
             self.ui.wizard(the.world)
         if command == 'm':

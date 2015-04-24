@@ -19,10 +19,9 @@
 import curses
 import logging
 import sys
-import message
-import english
 from world import Location
 from . import creature
+from . import english
 
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
@@ -44,8 +43,7 @@ COLOR_MAP = {'Z': 3,
              '~': 6,
              'G': 6,
              ')': 5,
-             '*': 3,
-             }
+             '*': 3}
 
 
 class Curses(object):
@@ -59,8 +57,7 @@ class Curses(object):
                  'y': (-1, -1),  # Northwest
                  'u': (-1, 1),   # Northeast
                  'b': (1, -1),   # Southwest
-                 'n': (1, 1),    # Southeast
-                 }
+                 'n': (1, 1)}    # Southeast
 
     def __init__(self):
         """Initializes the rendering environment.
@@ -383,6 +380,10 @@ class Curses(object):
         index = alpha_to_index(alpha)
         item = hero.inventory.pop(index)
         world.add_item(world.hero_location, item)
+
+    def pickup(self, hero, world):
+        """Pickup the item at the hero's feet."""
+        self.draw_status(message="Not yet implemented.")
 
     def wizard(self, world):
         """Parses a wizard command."""
