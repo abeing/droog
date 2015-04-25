@@ -84,8 +84,10 @@ class DiseaseAction(actor.Actor):
 
 def attack(attacker, defender, attack):
     """Perform an attack by the attacker onto the defender using attack."""
-    assert attack.range == 1  # We only support melee weapons at the moment.
-    melee_attack(attacker, defender, attack)
+    if attack.range == 1:
+        melee_attack(attacker, defender, attack)
+    else:
+        ranged_attack(attacker, defender, attack)
     return 2
 
 
@@ -135,6 +137,11 @@ def melee_attack(attacker, defender, attack):
     log.info("Melee attack missed with %r", attack_magnitude)
     the.messages.add("%s missed." % (english.definite_creature(attacker)))
     return False
+
+
+def ranged_attack(attacker, defender, attack):
+    """Perform a ranged attack."""
+    the.messages.add("You ranged.")
 
 
 def inflict_damage(victim, attack):

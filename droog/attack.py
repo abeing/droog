@@ -70,4 +70,4 @@ def make_knife():
 
 def make_pistol():
     """Make a pistol attack."""
-    return Attack("pistol", ["shoot"], 3, bleed_chance=75)
+    return Attack("pistol", ["shoot"], 3, bleed_chance=75, attack_range=10)
