@@ -204,13 +204,12 @@ class World(object):
             # If there are items in the new location, report about them in the
             # message LOG.
             items = self.cell(new_loc).items
-            if items and len(items) == 1:
-                the.messages.add("You see here %s." % items[0].name)
-            elif items and len(items) > 1:
+            if items:
                 items_msg = "You see here %s" % items[0].name
-                for item in items[1:]:
-                    items_msg += ", " + item.name
-                items_msg += "."
+                if len(items) > 1:
+                    items_msg += " amongst other things."
+                else:
+                    items_msg += "."
                 the.messages.add(items_msg)
             return engine.movement_cost(delta_y, delta_x)
         target = self.cell(new_loc).creature
