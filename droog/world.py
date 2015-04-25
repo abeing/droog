@@ -161,9 +161,21 @@ class World(object):
         if self.cell(loc).creature:
             return english.indefinite_creature(self.cell(loc).creature)
         if self.cell(loc).items:
-            return self.cell(loc).items[0].name
+            return self.item_description_at(loc)
         else:
             return self.cell(loc).description
+
+    def item_description_at(self, loc):
+        """Return a description of the items at a location."""
+        items_msg = ""
+        items = self.cell(loc).items
+        if items:
+            items_msg = "%s" % items[0].name
+            if len(items) > 1:
+                items_msg += " amongst other things."
+            else:
+                items_msg += "."
+        return items_msg
 
     def move_creature(self, from_loc, delta):
         """Move a creature or hero at (y, x) by (delta_y, delta_x) and return
@@ -203,14 +215,9 @@ class World(object):
             self.change_hero_loc(new_loc)
             # If there are items in the new location, report about them in the
             # message LOG.
-            items = self.cell(new_loc).items
-            if items:
-                items_msg = "You see here %s" % items[0].name
-                if len(items) > 1:
-                    items_msg += " amongst other things."
-                else:
-                    items_msg += "."
-                the.messages.add(items_msg)
+            items_msg = self.item_description_at(new_loc)
+            if items_msg:
+                the.messages.add("You see here %s" % items_msg)
             return engine.movement_cost(delta_y, delta_x)
         target = self.cell(new_loc).creature
         if target:
