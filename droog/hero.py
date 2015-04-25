@@ -30,10 +30,8 @@ class Hero(creature.Creature):
         super(Hero, self).__init__('@', name)
         self.ui = user_interface
         self.is_hero = True
-        self.weapon = item.make_knife()
-        self.inventory.append(item.make_knife())
-        self.inventory.append(item.make_knife())
-        self.inventory.append(item.make_knife())
+        self.weapon = item.make_pistol()
+        self.inventory.append(item.make_pistol())
         self.msg = 0
 
     def __repr__(self):

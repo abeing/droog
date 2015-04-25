@@ -21,9 +21,9 @@ The item module defines the general Item class as well as individual items.
 """
 
 import logging
-import attack
+from . import attack as attack_
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class Item(object):
@@ -48,5 +48,10 @@ class Item(object):
 
 def make_knife():
     """Create a knife object."""
-    knife_attack = attack.make_knife()
+    knife_attack = attack_.make_knife()
     return Item(')', 'knife', attack=knife_attack)
+
+
+def make_pistol():
+    """Create a pistol item."""
+    return Item(')', 'pistol')
