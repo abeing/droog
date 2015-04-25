@@ -237,7 +237,7 @@ class Curses(object):
         self.status_line.clrtoeol()
         self.status_line.refresh()
 
-    def draw_hero(self, hero):
+    def draw_hero(self, hero, world):
         """Draws the hero information window. Does not draw the actual @
         symbol on the map; that is handled by draw_area."""
         self.hero_window.clear()
@@ -253,7 +253,8 @@ class Curses(object):
             self.hero_window.addstr(index, 0, line)
             index += 1
         index = self.draw_conditions(hero, index)
-        self.draw_inventory(hero.inventory, index + 1)
+        index = self.draw_inventory(hero.inventory, index + 1)
+        index = self.draw_targets(world.visible_monsters, index + 1)
         self.hero_window.refresh()
 
     def draw_conditions(self, hero, index):
@@ -293,6 +294,14 @@ class Curses(object):
         for row in range(9 + index, HERO_COLUMNS):
             self.hero_window.move(row, 0)
             self.hero_window.clrtoeol()
+        return index
+
+    def draw_targets(self, targets, index):
+        """Draw the targets we can see."""
+        for monster in targets:
+            monster_name = english.indefinite_creature(monster)
+            self.hero_window.addstr(index, 0, '%s' % monster_name)
+            index += 1
         return index
 
     def draw_messages(self, messages):

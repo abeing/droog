@@ -122,6 +122,7 @@ class World(object):
         self.cell(self.hero_location).creature = the.hero
         self._generate()
         self.do_fov()
+        self.visible_monsters = []
 
     def is_empty(self, loc):
         """Returns True if the location is empty."""
@@ -326,6 +327,9 @@ class World(object):
     def set_lit(self, loc):
         """Set the cell at loc as visible."""
         self.cell(loc).seen = True
+        monster = self.cell(loc).creature
+        if monster and monster not in self.visible_monsters:
+            self.visible_monsters.append(monster)
 
     def _cast_light(self, cx, cy, row, start, end, radius, xx, xy, yx, yy):
         "Recursive lightcasting function"
@@ -377,6 +381,7 @@ class World(object):
         for row in xrange(self.rows):
             for col in xrange(self.cols):
                 self.tiles[row][col].seen = False
+        self.visible_monsters = []
 
     def do_fov(self):
         "Calculate lit squares from the given location and radius"
