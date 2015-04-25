@@ -54,4 +54,4 @@ def make_knife():
 
 def make_pistol():
     """Create a pistol item."""
-    return Item(')', 'pistol')
+    return Item(')', 'pistol', attack=attack_.make_pistol())

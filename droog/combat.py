@@ -29,10 +29,11 @@ log = logging.getLogger(__name__)
 
 
 class BleedAction(actor.Actor):
-    def __init__(self, victim):
+    def __init__(self, victim, magnitude):
         """Create a new bleed action, causing the victim to bleed."""
         self.victim = victim
         self.victim.is_bleeding = True
+        self.magnitude = magnitude
 
     def act(self):
         """Bleed."""
@@ -43,14 +44,16 @@ class BleedAction(actor.Actor):
             kill(self.victim)
             return self.DONE
         # We don't check the victim is visible!
-        the.messages.add("%s %s." % (english.definite_creature(self.victim),
-                         english.conjugate_verb(self.victim, "bleed")))
-        if random.randint(0, 100) < self.victim.constitution * 20:
+        victim_english = english.definite_creature(self.victim)
+        if random.randint(0, self.magnitude) > self.victim.constitution * 20:
             self.victim.is_bleeding = False
             the.messages.add("%s %s bleeding." %
-                             (english.definite_creature(self.victim),
+                             (victim_english,
                               english.conjugate_verb(self.victim, "stop")))
             return self.DONE
+        else:
+            the.messages.add("%s %s." % (victim_english,
+                             english.conjugate_verb(self.victim, "bleed")))
         return 60
 
 
@@ -168,7 +171,7 @@ def inflict_damage(victim, attack):
         if victim.is_bleeding:
             victim.blood -= 1
         else:
-            bleed = BleedAction(victim)
+            bleed = BleedAction(victim, attack.bleed_chance)
             the.turn.add_actor(bleed)
 
 
