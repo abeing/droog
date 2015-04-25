@@ -384,11 +384,13 @@ class Curses(object):
         """Enter target mode."""
         if not world.visible_monsters:
             return None
-        self.draw_status(message="Target who? <TAB> to cycle."
-                                 " <SPACE> to select")
+        self.draw_status(message="Target who? <tab>:next <space>:fire"
+                                 " or <esc>")
         select = 0
         command = 1
         while command != ord(' '):
+            if command == 27:
+                return None
             if command == ord('\t'):
                 select += 1
                 if select >= len(world.visible_monsters):
@@ -397,6 +399,8 @@ class Curses(object):
                               select)
             self.hero_window.refresh()
             command = self.main_window.getch()
+
+        return world.visible_monsters[select]
 
     def input(self):
         """Returns when the user types a character on the keyboard."""
