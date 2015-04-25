@@ -315,6 +315,14 @@ class World(object):
         assert self.is_valid_location(loc)
         self.cell(loc).items.append(item)
 
+    def get_item(self, loc):
+        """Get an item from the world."""
+        assert self.is_valid_location(loc)
+        item = None
+        if self.cell(loc).items:
+            item = self.cell(loc).items.pop()
+        return item
+
     def set_lit(self, loc):
         """Set the cell at loc as visible."""
         self.cell(loc).seen = True

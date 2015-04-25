@@ -383,7 +383,9 @@ class Curses(object):
 
     def pickup(self, hero, world):
         """Pickup the item at the hero's feet."""
-        self.draw_status(message="Not yet implemented.")
+        item = world.get_item(world.hero_location)
+        if item:
+            hero.inventory.append(item)
 
     def wizard(self, world):
         """Parses a wizard command."""
