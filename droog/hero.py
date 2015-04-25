@@ -56,6 +56,8 @@ class Hero(creature.Creature):
             self.ui.wizard(the.world)
         if command == 'm':
             self.ui.history(the.messages)
+        if command == 'f':
+            self.ui.target(self, the.world)
         if command == 'q':
             sys.exit(0)
         if command == '?':

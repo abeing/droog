@@ -254,7 +254,8 @@ class Curses(object):
             index += 1
         index = self.draw_conditions(hero, index)
         index = self.draw_inventory(hero.inventory, index + 1)
-        index = self.draw_targets(world.visible_monsters, index + 1)
+        self.target_toprow = index + 1
+        index = self.draw_targets(world.visible_monsters, self.target_toprow)
         self.hero_window.refresh()
 
     def draw_conditions(self, hero, index):
@@ -296,11 +297,16 @@ class Curses(object):
             self.hero_window.clrtoeol()
         return index
 
-    def draw_targets(self, targets, index):
+    def draw_targets(self, targets, index, select=-1):
         """Draw the targets we can see."""
+        selected_row = index + select
         for monster in targets:
             monster_name = english.indefinite_creature(monster)
-            self.hero_window.addstr(index, 0, '%s' % monster_name)
+            if selected_row == index:
+                self.hero_window.addstr(index, 0, '%s' % monster_name,
+                                        curses.A_REVERSE)
+            else:
+                self.hero_window.addstr(index, 0, '%s' % monster_name)
             index += 1
         return index
 
@@ -373,6 +379,24 @@ class Curses(object):
             command = self.input()
         curses.curs_set(0)
         self.draw_status("Done looking around.")
+
+    def target(self, hero, world):
+        """Enter target mode."""
+        if not world.visible_monsters:
+            return None
+        self.draw_status(message="Target who? <TAB> to cycle."
+                                 " <SPACE> to select")
+        select = 0
+        command = 1
+        while command != ord(' '):
+            if command == ord('\t'):
+                select += 1
+                if select >= len(world.visible_monsters):
+                    select = 0
+            self.draw_targets(world.visible_monsters, self.target_toprow,
+                              select)
+            self.hero_window.refresh()
+            command = self.main_window.getch()
 
     def input(self):
         """Returns when the user types a character on the keyboard."""
