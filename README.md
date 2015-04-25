@@ -91,6 +91,8 @@ moving into a space occupied by another creature.
 
 d - drop
 
+p - pickup
+
 ## Other commands
 
 / look
