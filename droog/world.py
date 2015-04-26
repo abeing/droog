@@ -309,8 +309,8 @@ class World(object):
 
     def remove_monster(self, monster):
         """Removes a monster from the map, for example when it dies."""
-        (monster_y, monster_x) = monster.loc
-        self.tiles[monster_y][monster_x].creature = None
+        self.visible_monsters.remove(monster)
+        self.tiles[monster.loc.row][monster.loc.col].creature = None
 
     def add_item(self, loc, item):
         """Add an item to a location."""
