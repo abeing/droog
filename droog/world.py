@@ -239,6 +239,7 @@ class World(object):
         rand_dir = random.uniform(0, 359)
         row = int(rand_dist * math.sin(rand_dir)) + self.rows / 2
         col = int(rand_dist * math.cos(rand_dir)) + self.cols / 2
+        the.hero.loc = Location(row, col)
         return Location(row, col)
 
     def add_road(self, start_loc, delta_y, delta_x, beta):

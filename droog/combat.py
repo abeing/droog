@@ -24,6 +24,7 @@ import actor
 
 # This is the threshold for a melee hit
 MELEE_TOHIT = 4
+RANGED_TOHIT = 5
 
 log = logging.getLogger(__name__)
 
@@ -83,29 +84,12 @@ class DiseaseAction(actor.Actor):
 
 
 def attack(attacker, defender, attack):
-    """Perform an attack by the attacker onto the defender using attack."""
-    if attack.range == 1:
-        melee_attack(attacker, defender, attack)
-    else:
-        ranged_attack(attacker, defender, attack)
-    return 2
-
-
-def melee_attack(attacker, defender, attack):
     """Perform a melee attack.
 
     - Melee offense is the higher of the attacker's strength and dexterity.
     - Melee defense is the higher of the defender's strength and dexterity.
     - Attacker rolls 1d6 + weapon offense + melee offense - melee defense
-    - On a 4 or higher, randomly determine one of the defenders stats, then:
-      - For strength, apply weakened condition
-      - For dexterity, apply hobbled condition
-      - For constitution, apply the weapon's special damage
-    - On a 3 or less, determine a miss reason by adding to a list:
-      - One "dodge" for each dexterity point the defender has.
-      - One "parry" for each strength point the defender has.
-      - Two "miss"
-      - Choosing one of those.
+    - On a 4 or higher, apply damage
 
     attacker -- the higher of their strength and dexterity is used
     defender -- at the moment, this is ignored
@@ -113,16 +97,22 @@ def melee_attack(attacker, defender, attack):
     """
     log.info("Melee attack from %r to %r using %r", attacker, defender, attack)
     verb = random.choice(attack.verbs)
-    attacker_bonus = max(attacker.strength, attacker.dexterity)
-    defender_penalty = max(defender.strength, defender.dexterity)
+    if attack.range == 1:  # Melee attack
+        tohit = MELEE_TOHIT
+        attacker_bonus = max(attacker.strength, attacker.dexterity)
+        defender_penalty = max(defender.strength, defender.dexterity)
+    else:  # Ranged attack
+        tohit = RANGED_TOHIT
+        attacker_bonus = attacker.dexterity
+        defender_penalty = attacker.loc.distance_to(defender.loc) / 10
     weapon_bonus = attack.attack_bonus
     attack_roll = random.randint(1, 6)
     attack_magnitude = attack_roll + attacker_bonus + weapon_bonus - \
         defender_penalty
-    log.info("Melee attack %r (%r die roll + %r attacker bonus + %r attack"
+    log.info("Attack %r (%r die roll + %r attacker bonus + %r attack"
              " bonus - %r defender penalty)", attack_magnitude, attack_roll,
              attacker_bonus, weapon_bonus, defender_penalty)
-    if attack_magnitude >= MELEE_TOHIT:
+    if attack_magnitude >= tohit:
         if defender.is_hero:
             the.messages.add("%s %s." % (english.definite_creature(attacker),
                              english.conjugate_verb(attack, verb)))
@@ -134,14 +124,9 @@ def melee_attack(attacker, defender, attack):
         inflict_damage(defender, attack)
         return True
 
-    log.info("Melee attack missed with %r", attack_magnitude)
+    log.info("Attack missed with %r", attack_magnitude)
     the.messages.add("%s missed." % (english.definite_creature(attacker)))
-    return False
-
-
-def ranged_attack(attacker, defender, attack):
-    """Perform a ranged attack."""
-    the.messages.add("You ranged.")
+    return 2
 
 
 def inflict_damage(victim, attack):

@@ -57,7 +57,9 @@ class Hero(creature.Creature):
         if command == 'm':
             self.ui.history(the.messages)
         if command == 'f':
-            self.ui.target(self, the.world)
+            target = self.ui.target(self, the.world)
+            if target:
+                combat.attack(self, target, self.weapon.attack)
         if command == 'q':
             sys.exit(0)
         if command == '?':

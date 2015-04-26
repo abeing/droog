@@ -399,7 +399,6 @@ class Curses(object):
                               select)
             self.hero_window.refresh()
             command = self.main_window.getch()
-
         return world.visible_monsters[select]
 
     def input(self):
