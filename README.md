@@ -93,6 +93,14 @@ d - drop
 
 p - pickup
 
+## Firing Weapons
+
+f - fire (equipped weapon)
+
+When no targets are available, fire does nothing. When there are visible
+targets, `<tab>` cycles between them, `<space>` accepts the selected target,
+and `<esc>` aborts firing.
+
 ## Other commands
 
 / look
