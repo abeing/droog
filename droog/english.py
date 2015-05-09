@@ -16,22 +16,19 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import textwrap
-import engine
 import random
+from . import engine
 
 # Attribute descriptions in lookup order from 0 to 4.
-ATTRIBUTE_DESCRIPTION = {
-                         'str': ["", "weak", "", "strong", "Herculean"],
+ATTRIBUTE_DESCRIPTION = {'str': ["", "weak", "", "strong", "Herculean"],
                          'dex': ["", "clumsy", "", "nimble", "Hermesian"],
-                         'con': ["", "sickly", "", "hale", "Panacean"],
-                        }
+                         'con': ["", "sickly", "", "hale", "Panacean"]}
 
 # Verb conjugations, in the form:
 #   infinitive: (second_person_singular, third_person_singular)
 # Underscores are used to denote special-purpose verbs, where the second person
 # might use a differnt verb than the third person (e.g. you feel, it looks).
-CONJUGATIONS = {
-                'bite': ("bite", "bites"),
+CONJUGATIONS = {'bite': ("bite", "bites"),
                 'punch': ("punch", "punches"),
                 'chomp': ("chomp", "chomps"),
                 'kick': ("kick", "kicks"),
@@ -43,8 +40,7 @@ CONJUGATIONS = {
                 'bleed': ("bleed", "bleeds"),
                 'die': ("die", "dies"),
                 'stop': ("stop", "stops"),
-                '_disease': ("feel", "looks"),
-               }
+                '_disease': ("feel", "looks")}
 
 # Punctuation that is considered approprate to end a sentence with.
 TERMINAL_PUNCTUATION = ['.', '?', '!']
@@ -122,7 +118,6 @@ def conjugate_verb(subject, verb):
 
     The verb should be provided in the infinitive.
     """
-    global CONJUGATIONS
     if getattr(subject, 'is_hero', False):
         if verb not in CONJUGATIONS:
             return verb
@@ -177,7 +172,7 @@ def _make_list(words, conjunction, no_space=False):
         return "%s%s %s" % (words[0], conjunction, words[1])
     elif len(words) == 3:
         # Note the oxford comma between the firs two terms here.
-        return "%s,%s %s" % (_make_list(words[:-1], ',', no_space=True), 
+        return "%s,%s %s" % (_make_list(words[:-1], ',', no_space=True),
                              conjunction, words[-1])
 
 

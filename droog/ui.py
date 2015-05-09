@@ -559,7 +559,7 @@ class Curses(object):
         del creation_screen
         self._draw_borders()
         self.main_window.refresh()
-        return (attrib, weapon, gear)
+        return (attrib, weapon, inventory)
 
     def do_cc_menu(self, screen, options):
         """Displays the options and returns the choice made.
@@ -587,7 +587,7 @@ class Curses(object):
             screen.clrtoeol()
         screen.move(old_row, old_col)
 
-        return options[int(selection) - 1], int(selection)
+        return options[int(selection) - 1], int(selection) + 1
 
     def history(self, messages):
         """Display the message history."""

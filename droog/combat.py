@@ -17,19 +17,19 @@
 
 import logging
 import random
-import the
-import engine
-import english
-import actor
+from . import the
+from . import english
+from . import actor
 
 # This is the threshold for a melee hit
 MELEE_TOHIT = 4
 RANGED_TOHIT = 5
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class BleedAction(actor.Actor):
+    """Actor to apply bleeding condition to creatures."""
     def __init__(self, victim, magnitude):
         """Create a new bleed action, causing the victim to bleed."""
         self.victim = victim
@@ -53,12 +53,14 @@ class BleedAction(actor.Actor):
                               english.conjugate_verb(self.victim, "stop")))
             return self.DONE
         else:
-            the.messages.add("%s %s." % (victim_english,
-                             english.conjugate_verb(self.victim, "bleed")))
+            the.messages.add("%s %s." %
+                             (victim_english,
+                              english.conjugate_verb(self.victim, "bleed")))
         return 60
 
 
 class DiseaseAction(actor.Actor):
+    """Actor that applies diseased condition on creatures."""
     def __init__(self, victim):
         """Create a new disease action, causing the victim to die
         eventually."""
@@ -74,11 +76,10 @@ class DiseaseAction(actor.Actor):
             kill(self.victim)
             return self.DONE
         self.victim.is_diseased = True
-        the.messages.add("%s %s %s." % (
-                         english.definite_creature(self.victim),
-                         english.conjugate_verb(self.victim, "_disease"),
-                         self.PROGRESS[self.progress]
-                         ))
+        the.messages.add("%s %s %s." %
+                         (english.definite_creature(self.victim),
+                          english.conjugate_verb(self.victim, "_disease"),
+                          self.PROGRESS[self.progress]))
         self.progress -= 1
         return 3600 * self.victim.constitution
 
@@ -95,7 +96,7 @@ def attack(attacker, defender, attack):
     defender -- at the moment, this is ignored
     attack -- an Attack object describing this attack method
     """
-    log.info("Melee attack from %r to %r using %r", attacker, defender, attack)
+    LOG.info("Melee attack from %r to %r using %r", attacker, defender, attack)
     verb = random.choice(attack.verbs)
     if attack.range == 1:  # Melee attack
         tohit = MELEE_TOHIT
@@ -109,22 +110,23 @@ def attack(attacker, defender, attack):
     attack_roll = random.randint(1, 6)
     attack_magnitude = attack_roll + attacker_bonus + weapon_bonus - \
         defender_penalty
-    log.info("Attack %r (%r die roll + %r attacker bonus + %r attack"
+    LOG.info("Attack %r (%r die roll + %r attacker bonus + %r attack"
              " bonus - %r defender penalty)", attack_magnitude, attack_roll,
              attacker_bonus, weapon_bonus, defender_penalty)
     if attack_magnitude >= tohit:
         if defender.is_hero:
-            the.messages.add("%s %s." % (english.definite_creature(attacker),
-                             english.conjugate_verb(attack, verb)))
+            the.messages.add("%s %s." %
+                             (english.definite_creature(attacker),
+                              english.conjugate_verb(attack, verb)))
         else:
-            the.messages.add("%s %s %s." % (
-                             english.definite_creature(attacker),
-                             english.conjugate_verb(attacker, verb),
-                             english.definite_creature(defender)))
+            the.messages.add("%s %s %s." %
+                             (english.definite_creature(attacker),
+                              english.conjugate_verb(attacker, verb),
+                              english.definite_creature(defender)))
         inflict_damage(defender, attack)
         return True
 
-    log.info("Attack missed with %r", attack_magnitude)
+    LOG.info("Attack missed with %r", attack_magnitude)
     the.messages.add("%s missed." % (english.definite_creature(attacker)))
     return 2
 
@@ -136,15 +138,13 @@ def inflict_damage(victim, attack):
         victim.is_weakened = True
         the.messages.add("%s %s weakened." %
                          (english.definite_creature(victim),
-                          english.conjugate_verb(victim, "be"))
-                         )
+                          english.conjugate_verb(victim, "be")))
 
     if random.random() < attack.hobble_chance and not victim.is_hobbled:
         victim.is_hobbled = True
         the.messages.add("%s %s hobbled." %
                          (english.definite_creature(victim),
-                          english.conjugate_verb(victim, "be"))
-                         )
+                          english.conjugate_verb(victim, "be")))
 
     if random.random() < attack.stun_chance and not victim.is_stunned:
         the.messages.add("%s %s %s." %
@@ -152,7 +152,7 @@ def inflict_damage(victim, attack):
                           english.conjugate_verb(victim, "be"), "stunned"))
         victim.is_stunned = True
         stun_time = 10 * (random.randint(2, 5) - victim.constitution)
-        log.info("%s is stunned for %s ticks.", victim, stun_time)
+        LOG.info("%s is stunned for %s ticks.", victim, stun_time)
         the.turn.delay_actor(victim, stun_time)
 
     if random.random() < attack.disease_chance and not victim.is_diseased:
@@ -171,4 +171,4 @@ def kill(victim):
     """Kill the victim."""
     victim.is_dead = True
     the.messages.add("%s %s" % (english.definite_creature(victim),
-                     english.conjugate_verb(victim, "die")))
+                                english.conjugate_verb(victim, "die")))

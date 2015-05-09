@@ -21,6 +21,7 @@ from . import the
 from . import combat
 from . import creature
 from . import item
+from . import attack
 
 
 class Hero(creature.Creature):
@@ -31,6 +32,7 @@ class Hero(creature.Creature):
         self.ui = user_interface
         self.is_hero = True
         self.msg = 0
+        self.weapon = attack.make_unarmed()
 
     def __repr__(self):
         return "the hero %s" % self.name
@@ -81,6 +83,7 @@ class Hero(creature.Creature):
             self._constitution = 3
         self.inventory.append(weapon)
         self.weapon = weapon
+        self.inventory.extend(items)
 
 
 def attrib_choices():

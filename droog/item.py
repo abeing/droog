@@ -43,6 +43,7 @@ class Item(object):
 
     @property
     def name(self):
+        """The name of this item, with appropriate article."""
         return "%s %s" % (self._article, self._name)
 
     def __repr__(self):
