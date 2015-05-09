@@ -1,21 +1,11 @@
 # Iteration 5
 
-Scheduled 2 stories worth 10 points.
+Scheduled 3 stories worth 15 points.
 Velocity WAS 15. [14, 13, 15, 19]
-Pylint score WAS 8.87.
+Pylint improved from 8.87 to 9.05.
 
-## Add items to character creation. [5]
-
-We want to be able to have items generated at character creation, so when the hero selects them in the dialog, they are added to his inventory.
-
-We can change how choices are done in one of several ways.
-
-1. Allow the player to select his weapon, then generate the appropriate-length lists of supporting items. This allows the player two choices, first for weapon, then for items.
-2. Generate appropriate-length lists of weapon with supporting items and give the player one choice of one list which contains their entire starting inventory.
-
-- Pick one of the scenarios for starting inventory selection.
-- Create a function, or set of functions, to generate the sets of starting choices.
-- Create a funtion to populate the starting inventory from the choices.
+Complete stories:
+- Add items to character creation. [5]
 
 ## Add ammunition. [5]
 
@@ -24,6 +14,7 @@ We want pistols to use ammunition when they fire and be reloadable.
 - Add consumption of ammunition to firing the pistol.
 	- Give the pistol a capacity of six shots
 	- Each shot exhausts one bullet
+- Add a display of ammunition in the inventory list.
 - Add 9mm clips
 	- Give the hero two clips to begin with
 - Add a reload command `r`
