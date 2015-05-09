@@ -30,8 +30,6 @@ class Hero(creature.Creature):
         super(Hero, self).__init__('@', name)
         self.ui = user_interface
         self.is_hero = True
-        self.weapon = item.make_pistol()
-        self.inventory.append(item.make_pistol())
         self.msg = 0
 
     def __repr__(self):
@@ -81,6 +79,8 @@ class Hero(creature.Creature):
             self._dexterity = 3
         elif attrib_name == "halest":
             self._constitution = 3
+        self.inventory.append(weapon)
+        self.weapon = weapon
 
 
 def attrib_choices():
@@ -90,9 +90,9 @@ def attrib_choices():
 
 def weapon_choices():
     """Return a list of hero weapon choices."""
-    return ["rifle", "pistol", "knife"]
+    return [item.make_pistol(), item.make_knife()]
 
 
 def gear_choices():
     """Return a list of hero gear choices."""
-    return ["local porter", "battery", "grenades"]
+    return [item.make_porter(), item.make_battery(), item.make_clip()]

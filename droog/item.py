@@ -45,6 +45,10 @@ class Item(object):
     def name(self):
         return "%s %s" % (self._article, self._name)
 
+    def __repr__(self):
+        """Return string representation."""
+        return self.name
+
 
 def make_knife():
     """Create a knife object."""
@@ -54,4 +58,19 @@ def make_knife():
 
 def make_pistol():
     """Create a pistol item."""
-    return Item(')', 'pistol', attack=attack_.make_pistol())
+    return Item(')', '9mm pistol', attack=attack_.make_pistol())
+
+
+def make_porter():
+    """Create a porter item."""
+    return Item('=', 'porter')
+
+
+def make_battery():
+    """Create a battery ite."""
+    return Item('=', 'battery')
+
+
+def make_clip():
+    """Create a 9mm pistol clip."""
+    return Item('=', '9mm clip')

@@ -58,8 +58,8 @@ CREATION_STORY = \
   ["He looks at you with a grim expression, sighs, and continues. 'That's"
    " where you come in. You are our ", "{attrib}", ". We need you to go in"
    "there with boots on the ground and finish the job. Our supplies are low,"
-   " so you'll have our last Sephiroth grenade, the PNS, a ", "{weapon}",
-   ", ", "{gear}", ".'"],
+   " so you'll have our last Sephiroth grenade, the PNS, ", "{weapon}",
+   "{gear}", "{gear}", "{gear}", ".'"],
   ["'We'll drop the Netzach wall for a second and teleport you in. Godspeed.'"
    " He gives you a firm solute."]]
 

@@ -520,27 +520,36 @@ class Curses(object):
         """Perform character creation with a given story."""
         creation_screen = curses.newwin(self.height, self.width)
         col = 0
+        items = 2
+        inventory = []
         for paragraph in story:
             for segment in paragraph:
                 color = 0
                 if segment == "{attrib}":
-                    attrib = segment = self.do_cc_menu(creation_screen,
-                                                       attribs)
-                    segment = " " + segment
+                    attrib, _ = self.do_cc_menu(creation_screen,
+                                                attribs)
+                    segment = " " + attrib
                     color = 2
                 if segment == "{weapon}":
-                    weapon = segment = self.do_cc_menu(creation_screen,
-                                                       weapons)
-                    segment = " " + segment
+                    weapon, items = self.do_cc_menu(creation_screen,
+                                                    weapons)
+                    segment = " " + str(weapon)
                     color = 2
-                if segment == "{gear}":
-                    gear = segment = self.do_cc_menu(creation_screen,
-                                                     gears)
-                    segment = " " + segment
+                if segment == "{gear}" and items:
+                    gear, _ = self.do_cc_menu(creation_screen,
+                                              gears)
+                    if items == 1:
+                        segment = " and " + str(gear)
+                    else:
+                        segment = ", " + str(gear)
+                    inventory.append(gear)
                     color = 2
-                col = self.display_paragraph(segment, creation_screen,
-                                             col=col, newline=False,
-                                             color_pair=color)
+                    items -= 1
+
+                if segment[0] is not '{':
+                    col = self.display_paragraph(segment, creation_screen,
+                                                 col=col, newline=False,
+                                                 color_pair=color)
             self.newline(creation_screen)
             creation_screen.addstr('\n')
             col = 0
@@ -578,7 +587,7 @@ class Curses(object):
             screen.clrtoeol()
         screen.move(old_row, old_col)
 
-        return options[int(selection) - 1]
+        return options[int(selection) - 1], int(selection)
 
     def history(self, messages):
         """Display the message history."""
