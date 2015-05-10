@@ -63,6 +63,8 @@ class Hero(creature.Creature):
             target = self.ui.target(self, the.world)
             if target:
                 combat.attack(self, target, self.weapon.attack)
+        if command == 'r':
+            self.weapon.reload(self.inventory)
         if command == 'q':
             sys.exit(0)
         if command == '?':

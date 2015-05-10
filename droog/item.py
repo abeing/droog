@@ -29,7 +29,8 @@ LOG = logging.getLogger(__name__)
 class Item(object):
     """The Item class represents an item that can be in the game world or
     in a creature's inventory."""
-    def __init__(self, glyph, name, article='a', attack=None, ammo_capacity=0):
+    def __init__(self, glyph, name, article='a', attack=None, ammo_capacity=0,
+                 ammo_type=0):
         """Create an item.
 
         glyph -- a single single character representation, for the map
@@ -38,6 +39,7 @@ class Item(object):
         attack -- how this item is used as a weapon, or None if it cannot be
         ammo_capacity -- how many units of ammunition this item can store; new
           items start with full ammunition.
+        ammo_type -- which type of ammo does this take or fill
         """
         self.glyph = glyph
         self._name = name
@@ -45,6 +47,7 @@ class Item(object):
         self._attack = attack
         self.ammo_capacity = ammo_capacity
         self.ammo = ammo_capacity
+        self.ammo_type = ammo_type
 
     @property
     def name(self):
@@ -65,6 +68,18 @@ class Item(object):
             return self._attack
         return None
 
+    def reload(self, inventory):
+        """Attempt to reload this weapon with a valid ammunition in the
+        inventory."""
+        if self.ammo_capacity and self.ammo_type is not 0:
+            for item in inventory:
+                if item.ammo_type == self.ammo_type \
+                        and item.ammo_capacity == 0:
+                    self.ammo = self.ammo_capacity
+                    inventory.remove(item)
+                    return True
+        return False
+
 
 def make_knife():
     """Create a knife object."""
@@ -75,7 +90,7 @@ def make_knife():
 def make_pistol():
     """Create a pistol item."""
     return Item(')', '9mm pistol', attack=attack_.make_pistol(),
-                ammo_capacity=6)
+                ammo_capacity=6, ammo_type=9)
 
 
 def make_porter():
@@ -90,4 +105,4 @@ def make_battery():
 
 def make_clip():
     """Create a 9mm pistol clip."""
-    return Item('=', '9mm clip')
+    return Item('=', '9mm clip', ammo_type=9)
