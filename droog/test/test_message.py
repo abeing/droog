@@ -1,3 +1,5 @@
+"""Unit test cases for messge.py"""
+
 # Droog
 # Copyright (C) 2015  Adam Miezianko
 #
@@ -34,32 +36,33 @@ class QueueTest(unittest.TestCase):
     def test_add_remove(self):
         """Adding and removing a message should result in the same message and
         an empty queue."""
-        message = "This is a test message."
-        self.sut.add(message)
+        msg = "This is a test message."
+        self.sut.add(msg)
         self.assertFalse(self.sut.empty())
-        got_message = self.sut.get()
-        self.assertEquals(message, got_message)
+        got_msg = self.sut.get()
+        self.assertEquals(msg, got_msg)
         self.assertTrue(self.sut.empty())
 
     def test_make_sentence(self):
         """Messages should be well-formed sentences."""
-        message = "clean me up"
-        clean_message = english.make_sentence(message)
-        self.sut.add(message)
-        got_message = self.sut.get()
-        self.assertEquals(got_message, clean_message)
+        msg = "clean me up"
+        clean_msg = english.make_sentence(msg)
+        self.sut.add(msg)
+        got_msg = self.sut.get()
+        self.assertEquals(got_msg, clean_msg)
 
     def test_no_make_sentence(self):
         """When we specify not to clean up messages, we shouldn't."""
-        message = "don't clean this one up"
-        self.sut.add(message, clean=False)
-        got_message = self.sut.get()
-        self.assertEquals(got_message, message)
+        msg = "don't clean this one up"
+        self.sut.add(msg, clean=False)
+        got_msg = self.sut.get()
+        self.assertEquals(got_msg, msg)
 
-    def test_timestamps(self):
-        """We should be able to provide a Turn for timestamps."""
-        clock = turn.Turn()
-        sut = message.Messages(turn=clock)
+
+def test_timestamps():
+    """We should be able to provide a Turn for timestamps."""
+    clock = turn.Turn()
+    message.Messages(turn=clock)
 
 
 class HistoryTestCase(unittest.TestCase):
@@ -79,8 +82,8 @@ class HistoryTestCase(unittest.TestCase):
 
     def test_history_cap(self):
         """Test that only the maximum number of messages are stored."""
-        for x in range(self.history_size + 1):
-            self.sut.add("Message %d" % (x))
+        for cnt in range(self.history_size + 1):
+            self.sut.add("Message %d" % (cnt))
             self.sut.get()
         self.assertEquals(10, len(self.sut.history))
         self.assertEquals("Message 1.", self.sut.get_history(0, time=False))

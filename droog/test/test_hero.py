@@ -1,3 +1,5 @@
+"""Unit tests for hero.py"""
+
 # Droog
 # Copyright (C) 2015  Adam Miezianko
 #

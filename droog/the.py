@@ -1,3 +1,5 @@
+"""Droog globals."""
+
 # Droog
 # Copyright (C) 2015  Adam Miezianko
 #

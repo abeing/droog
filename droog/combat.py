@@ -129,7 +129,7 @@ def attack(attacker, defender, attack):
                               english.conjugate_verb(attacker, verb),
                               english.definite_creature(defender)))
         inflict_damage(defender, attack)
-        return True
+        return 2
 
     LOG.info("Attack missed with %r", attack_magnitude)
     the.messages.add("%s missed." % (english.definite_creature(attacker)))

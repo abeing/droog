@@ -27,7 +27,7 @@ from . import the
 from . import world
 from . import combat
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class Creature(actor.Actor):
@@ -196,29 +196,30 @@ def ai_act(creature):
     2) If within 15 steps of the hero, move towards her.
     3) Otherwise, move randomly.
     """
-    if creature.loc:  # TODO: This should be an assert, probably.
-        dist = creature.loc.distance_to(the.world.hero_location)
+    assert creature.loc
 
-        log.info("%r is %r from the hero.", creature.name, dist)
+    dist = creature.loc.distance_to(the.world.hero_location)
 
-        # 1) If adjacent to the hero, bite her.
-        if dist < 2:
-            return combat.attack(creature, the.hero,
-                                 random.choice(creature.attacks))
+    LOG.info("%r is %r from the hero.", creature.name, dist)
 
-        # 2) If within 15 steps of the hero, move towards her.
-        elif dist < creature.sense_range:
-            delta = creature.loc.delta_to(the.world.hero_location)
+    # 1) If adjacent to the hero, bite her.
+    if dist < 2:
+        return combat.attack(creature, the.hero,
+                             random.choice(creature.attacks))
 
-        # 3) Otherwise, move randomly.
-        else:
-            delta = world.random_delta()
+    # 2) If within 15 steps of the hero, move towards her.
+    elif dist < creature.sense_range:
+        delta = creature.loc.delta_to(the.world.hero_location)
 
-        log.info("%r wants to move from %r by %r.", creature.name,
-                 creature.loc, delta)
-        cost = the.world.move_creature(creature.loc, delta)
-        if not cost == 0:
-            return cost
+    # 3) Otherwise, move randomly.
+    else:
+        delta = world.random_delta()
+
+    LOG.info("%r wants to move from %r by %r.", creature.name,
+             creature.loc, delta)
+    cost = the.world.move_creature(creature.loc, delta)
+    if not cost == 0:
+        return cost
     return 6  # If the creature fails to move, it stands around a while
 
 

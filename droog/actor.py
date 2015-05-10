@@ -1,3 +1,4 @@
+"""Droog actor object."""
 
 # Droog
 # Copyright (C) 2015  Adam Miezianko
