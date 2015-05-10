@@ -64,7 +64,8 @@ class Hero(creature.Creature):
             if target:
                 combat.attack(self, target, self.weapon.attack)
         if command == 'r':
-            self.weapon.reload(self.inventory)
+            if not self.weapon.reload(self.inventory):
+                the.messages.add("Reload impossible.")
         if command == 'q':
             sys.exit(0)
         if command == '?':
