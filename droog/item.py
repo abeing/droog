@@ -29,17 +29,22 @@ LOG = logging.getLogger(__name__)
 class Item(object):
     """The Item class represents an item that can be in the game world or
     in a creature's inventory."""
-    def __init__(self, glyph, name, article='a', attack=None):
+    def __init__(self, glyph, name, article='a', attack=None, ammo_capacity=0):
         """Create an item.
 
         glyph -- a single single character representation, for the map
         name -- a string representation, for the inventory
         initial_vowel -- when true, use 'an', not 'a' in sentences
+        attack -- how this item is used as a weapon, or None if it cannot be
+        ammo_capacity -- how many units of ammunition this item can store; new
+          items start with full ammunition.
         """
         self.glyph = glyph
         self._name = name
         self._article = article
         self.attack = attack
+        self.ammo_capacity = ammo_capacity
+        self.ammo = ammo_capacity
 
     @property
     def name(self):
@@ -59,7 +64,8 @@ def make_knife():
 
 def make_pistol():
     """Create a pistol item."""
-    return Item(')', '9mm pistol', attack=attack_.make_pistol())
+    return Item(')', '9mm pistol', attack=attack_.make_pistol(),
+                ammo_capacity=6)
 
 
 def make_porter():
