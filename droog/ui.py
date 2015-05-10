@@ -26,7 +26,7 @@ from . import english
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
 
-HERO_COLUMNS = 18
+HERO_COLUMNS = 21
 MESSAGE_ROWS = 1
 STATUS_ROWS = 1
 STATUS_COLUMNS = 47
@@ -289,10 +289,12 @@ class Curses(object):
             self.hero_window.addstr(index, 0,
                                     '%s - %s' % (index_to_alpha(item_index),
                                                  item.name))
+            if item.ammo_capacity:
+                self.hero_window.addstr(" [%d]" % (item.ammo))
             self.hero_window.clrtoeol()
             index += 1
             item_index += 1
-        for row in range(9 + index, HERO_COLUMNS):
+        for row in range(9 + index, self.area_height):
             self.hero_window.move(row, 0)
             self.hero_window.clrtoeol()
         return index
