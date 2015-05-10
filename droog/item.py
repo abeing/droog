@@ -42,7 +42,7 @@ class Item(object):
         self.glyph = glyph
         self._name = name
         self._article = article
-        self.attack = attack
+        self._attack = attack
         self.ammo_capacity = ammo_capacity
         self.ammo = ammo_capacity
 
@@ -54,6 +54,16 @@ class Item(object):
     def __repr__(self):
         """Return string representation."""
         return self.name
+
+    @property
+    def attack(self):
+        """Consume an available ammo and return an attack."""
+        if not self.ammo_capacity:
+            return self._attack
+        if self.ammo_capacity and self.ammo:
+            self.ammo -= 1
+            return self._attack
+        return None
 
 
 def make_knife():

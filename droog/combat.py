@@ -97,6 +97,11 @@ def attack(attacker, defender, attack):
     attack -- an Attack object describing this attack method
     """
     LOG.info("Melee attack from %r to %r using %r", attacker, defender, attack)
+
+    # We might be passed an empty attack in the case of an out-of-ammo weapon
+    if not attack:
+        return
+
     verb = random.choice(attack.verbs)
     if attack.range == 1:  # Melee attack
         tohit = MELEE_TOHIT

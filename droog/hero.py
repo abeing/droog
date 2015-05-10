@@ -57,6 +57,9 @@ class Hero(creature.Creature):
         if command == 'm':
             self.ui.history(the.messages)
         if command == 'f':
+            if self.weapon.ammo_capacity and not self.weapon.ammo:
+                the.messages.add("Your weapon is out of ammo!")
+                return 0
             target = self.ui.target(self, the.world)
             if target:
                 combat.attack(self, target, self.weapon.attack)
