@@ -64,8 +64,11 @@ class Hero(creature.Creature):
             if target:
                 combat.attack(self, target, self.weapon.attack)
         if command == 'r':
+            if self.weapon.ammo_capacity == self.weapon.ammo:
+                the.messages.add("Your magazine is already full.")
+                return 0
             if not self.weapon.reload(self.inventory):
-                the.messages.add("Reload impossible.")
+                the.messages.add("You do not have suitable ammo.")
         if command == 'q':
             sys.exit(0)
         if command == '?':

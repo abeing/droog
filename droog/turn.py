@@ -81,6 +81,7 @@ class Turn(object):
 
     def next(self):
         """Advances to the turn."""
+
         self._current_turn += 1
         self._current_time += datetime.timedelta(seconds=SECONDS_PER_TURN)
 
@@ -90,7 +91,11 @@ class Turn(object):
         # check for death
         is_dead = getattr(actor, "is_dead", False)
         if not is_dead:
-            action_cost = actor.act()
+            action_cost = 0
+            while action_cost == 0:
+                action_cost = actor.act()
+                if action_cost == 0:
+                    LOG.info("Actor %r did nothing; goes again.", actor)
             if action_cost == actor.DONE:
                 LOG.info("Actor %r is done, not requeueing.", actor)
                 return True

@@ -385,6 +385,7 @@ class Curses(object):
     def target(self, hero, world):
         """Enter target mode."""
         if not world.visible_monsters:
+            self.draw_status(message="No visible targets!")
             return None
         self.draw_status(message="Target who? <tab>:next <space>:fire"
                                  " or <esc>")
