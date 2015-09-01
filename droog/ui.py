@@ -231,7 +231,7 @@ class Curses(object):
         """
         if time:
             self.status_line.addstr(0, 0, time)
-        if message:
+        if message or message == "":
             self.status = message
         self.status_line.addstr(0, 10, self.status)
         self.status_line.clrtoeol()
@@ -402,6 +402,7 @@ class Curses(object):
                               select)
             self.hero_window.refresh()
             command = self.main_window.getch()
+        self.draw_status(message="")
         return world.visible_monsters[select]
 
     def input(self):
