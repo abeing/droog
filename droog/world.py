@@ -310,6 +310,8 @@ class World(object):
         location = self.random_empty_location(near)
         if location is None:
             return False
+        if self.cell(location).seen and hidden:
+            return False
         if monster is not None:
             the.turn.add_actor(monster)
             monster.loc = location
