@@ -294,8 +294,18 @@ class World(object):
         new_loc = self.random_empty_location(near)
         self.change_hero_loc(new_loc)
 
-    def spawn_monster(self, monster, near=None):
-        """Spawns a monster on the map."""
+    def attempt_to_place_monster(self, monster, near=None, hidden=False):
+        """Spawns a monster on the map.
+
+        The monster should already be created, place_monster only attempts to
+        find a suitable location on the map and place it. If a suitable
+        location cannot be found in one attempt, it returns False.
+
+        monster - the monster to add to the map
+        near - a location near which to place the monster, or None if anywhere
+               in the world is elligible
+        hidden - whether to exclude locations visible to the hero
+        """
         assert monster
         location = self.random_empty_location(near)
         if location is None:

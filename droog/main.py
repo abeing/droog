@@ -43,12 +43,12 @@ def new_game(ui_object):
     the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(240, 240)
     the.world._log()
-    the.world.spawn_monster(creature.Zombie())
-    the.world.spawn_monster(creature.Zombie())
-    the.world.spawn_monster(creature.ZombieDog())
-    the.world.spawn_monster(creature.ZombieDog())
-    the.world.spawn_monster(creature.Cop())
-    the.world.spawn_monster(creature.Cop())
+    the.world.attempt_to_place_monster(creature.Zombie())
+    the.world.attempt_to_place_monster(creature.Zombie())
+    the.world.attempt_to_place_monster(creature.ZombieDog())
+    the.world.attempt_to_place_monster(creature.ZombieDog())
+    the.world.attempt_to_place_monster(creature.Cop())
+    the.world.attempt_to_place_monster(creature.Cop())
 
 
 def refresh(ui_object):

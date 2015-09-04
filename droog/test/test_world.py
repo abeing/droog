@@ -120,7 +120,7 @@ def test_glyph_at_creature():
     sut = world.World(40, 40)
     monster = mock.Mock()
     monster.glyph = '$'
-    sut.spawn_monster(monster)
+    sut.attempt_to_place_monster(monster)
     assert monster.loc
     assert sut.glyph_at(monster.loc) == '$'
 

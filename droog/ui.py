@@ -438,7 +438,8 @@ class Curses(object):
                 self.draw_status("I know not how to spawn a %s, wizard." %
                                  monster)
             LOG.info("Spawning a %r near the hero.", monster)
-            if not world.spawn_monster(monster, near=world.hero_location):
+            if not world.attempt_to_place_monster(monster,
+                                                  near=world.hero_location):
                 self.draw_status("There wasn't room.")
         if command == 't':
             self.draw_status(message="Teleport where?")
