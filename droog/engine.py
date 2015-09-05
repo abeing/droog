@@ -24,6 +24,7 @@ those classes or modules."""
 import logging
 import random
 import the
+from . import actor
 
 LOG = logging.getLogger(__name__)
 
@@ -75,6 +76,16 @@ ATTRIBUTE_MIN = 1
 def is_valid_attribute(attribute):
     """Verifies if an attribute is in a valid range."""
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
+
+
+class MonsterSpawner(actor.Actor):
+    """Spawns new monsters into the game."""
+    def __init__(self, world):
+        self._world = world
+
+    def act(self):
+        LOG.info("Spawner tick.")
+        return 100
 
 
 class Generator(object):

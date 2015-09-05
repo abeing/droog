@@ -27,6 +27,7 @@ import creature
 import turn
 import the
 import english
+import engine
 
 logging.basicConfig(filename="droog.log", level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
@@ -49,6 +50,8 @@ def new_game(ui_object):
     the.world.attempt_to_place_monster(creature.ZombieDog())
     the.world.attempt_to_place_monster(creature.Cop())
     the.world.attempt_to_place_monster(creature.Cop())
+    spawner = engine.MonsterSpawner(the.world)
+    the.turn.add_actor(spawner)
 
 
 def refresh(ui_object):
