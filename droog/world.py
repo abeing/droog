@@ -26,10 +26,10 @@ World -- A class for reference objects of the World itself.
 import random
 import logging
 import math
-from . import tile
-from . import engine
-from . import english
-from . import the
+import tile
+import engine
+import english
+import the
 
 LOG = logging.getLogger(__name__)
 
@@ -123,6 +123,7 @@ class World(object):
         self._generate()
         self.do_fov()
         self.visible_monsters = []
+        self.monster_count = 0
 
     def is_empty(self, loc):
         """Returns True if the location is empty."""
@@ -317,12 +318,14 @@ class World(object):
             monster.loc = location
             self.cell(location).creature = monster
             LOG.info('%r placed at %r', monster, location)
+            self.monster_count += 1
             return True
 
     def remove_monster(self, monster):
         """Removes a monster from the map, for example when it dies."""
         self.visible_monsters.remove(monster)
         self.tiles[monster.loc.row][monster.loc.col].creature = None
+        self.monster_count -= 1
 
     def add_item(self, loc, item):
         """Add an item to a location."""
@@ -624,5 +627,3 @@ def _create_junction_grid(map_rows, map_cols, cell_size):
             junction = _generate_random_junction(north, None, None, west)
             junction_grid[row].append(junction)
     return junction_grid
-
-

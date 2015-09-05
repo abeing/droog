@@ -19,9 +19,9 @@
 import curses
 import logging
 import sys
-from world import Location
-from . import creature
-from . import english
+import creature
+import english
+import world as _world
 
 MINIMUM_WIDTH = 80
 MINIMUM_HEIGHT = 24
@@ -199,7 +199,7 @@ class Curses(object):
 
         for y in range(top, bottom):
             for x in range(left, right):
-                loc = Location(y, x)
+                loc = _world.Location(y, x)
                 glyph = world.glyph_at(loc)
                 if world.cell(loc).seen:
                     self.area_window.addstr(y - top, x - left,

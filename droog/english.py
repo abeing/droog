@@ -17,7 +17,7 @@
 
 import textwrap
 import random
-from . import engine
+import engine
 
 # Attribute descriptions in lookup order from 0 to 4.
 ATTRIBUTE_DESCRIPTION = {'str': ["", "weak", "", "strong", "Herculean"],

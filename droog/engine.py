@@ -24,7 +24,8 @@ those classes or modules."""
 import logging
 import random
 import the
-from . import actor
+import actor
+import creature
 
 LOG = logging.getLogger(__name__)
 
@@ -78,13 +79,46 @@ def is_valid_attribute(attribute):
     return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
 
 
+def random_monster():
+    """Return a random monster."""
+    die_roll = random.randint(1, 6)
+    if die_roll >= 6:
+        return creature.Cop()
+    elif die_roll >= 3:
+        return creature.ZombieDog()
+    else:
+        return creature.Zombie()
+
+
+# The maximum number of monsters allowed in the world.
+MONSTER_CAP = 10
+MONSTER_STARTING_COUNT = 6
+MONSTER_RESPAWN = 5
+
+
 class MonsterSpawner(actor.Actor):
     """Spawns new monsters into the game."""
     def __init__(self, world):
         self._world = world
+        for _ in xrange(1, MONSTER_STARTING_COUNT):
+            self._world.attempt_to_place_monster(random_monster())
 
     def act(self):
-        LOG.info("Spawner tick.")
+        """On each MonsterSpawner tick, there is a chance to spawn a new
+        monster into the world, so long as we are not above the monster cap."""
+        LOG.info("Spawner ticl. There are %d of %d monsters.",
+                 self._world.monster_count, MONSTER_CAP)
+        if self._world.monster_count < MONSTER_CAP:
+            spawn_roll = random.randint(1, 100)
+            if spawn_roll < MONSTER_RESPAWN:
+                monster = random_monster()
+                self._world.attempt_to_place_monster(monster, hidden=True)
+                LOG.info("Attempted to spawn %d", monster.name)
+            else:
+                LOG.info("Spawn roll failed. Rolled %d with %d chance.",
+                         spawn_roll, MONSTER_RESPAWN)
+        else:
+            LOG.info("Not spawning due to cap.")
         return 100
 
 
