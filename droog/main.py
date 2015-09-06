@@ -61,6 +61,8 @@ def main():
         selected_build = ui_object.character_creation(
             english.CREATION_STORY, _hero.attrib_choices(),
             _hero.weapon_choices(), _hero.gear_choices())
+        if selected_build[0] == None:
+            return
         the.hero.build(selected_build)
         the.messages.add("Welcome to Droog.")
         the.messages.add("Press ? for help.")

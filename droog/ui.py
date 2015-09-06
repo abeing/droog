@@ -539,16 +539,22 @@ class Curses(object):
                 if segment == "{attrib}":
                     attrib, _ = self.do_cc_menu(creation_screen,
                                                 attribs)
+                    if not attrib:
+                        return (None, None, None)
                     segment = " " + attrib
                     color = 2
                 if segment == "{weapon}":
                     weapon, items = self.do_cc_menu(creation_screen,
                                                     weapons)
+                    if not weapon:
+                        return (None, None, None)
                     segment = " " + str(weapon)
                     color = 2
                 if segment == "{gear}" and items:
                     gear, _ = self.do_cc_menu(creation_screen,
                                               gears)
+                    if not gear:
+                        return (None, None, None)
                     if items == 1:
                         segment = " and " + str(gear)
                     else:
@@ -591,6 +597,8 @@ class Curses(object):
         selection = 'none'
         while selection not in valid_selections:
             selection = self.input()
+            if selection == 'q':
+                return None, None
 
         # Restore the screen.
         for row in xrange(top_row, top_row + len(options)):
