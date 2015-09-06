@@ -32,26 +32,22 @@ LOG = logging.getLogger(__name__)
 
 class Creature(actor.Actor):
     """The Creature class manages a creature's statistics and actions."""
-    def __init__(self, glyph, name, initial_vowel=False, str=2, dex=2, con=2):
+    def __init__(self, glyph, name, initial_vowel=False):
         """Create a creature.
+
+        The creature's initial attributes will all be two.
 
         glyph -- a single single character representation, for the map
         name -- a string representation, for elsewhere
         initial_vowel -- when true, use 'an', not 'a' in sentences
-        str -- strength
-        dex -- dexterity
-        con -- constitution
         """
         assert len(glyph) == 1
-        assert engine.is_valid_attribute(str)
-        assert engine.is_valid_attribute(dex)
-        assert engine.is_valid_attribute(con)
         self.glyph = glyph
         self.name = name
         self.initial_vowel = initial_vowel
-        self._strength = str
-        self._dexterity = dex
-        self._constitution = con
+        self._strength = 2
+        self._dexterity = 2
+        self._constitution = 2
         self.is_dead = False
         self.is_hero = False
         self.loc = (None, None)
@@ -84,7 +80,7 @@ class Creature(actor.Actor):
     def strength(self, value):
         """Sets the creature's strength. If the value is invalid this will
         raise an AssertionError"""
-        assert is_valid_attribute(value)
+        assert engine.is_valid_attribute(value)
         self._strength = value
 
     @property
@@ -98,7 +94,7 @@ class Creature(actor.Actor):
     def dexterity(self, value):
         """Sets the creature's dexterity. If the value is invalid this will
         raise an AssertionError"""
-        assert is_valid_attribute(value)
+        assert engine.is_valid_attribute(value)
         self._dexterity = value
 
     @property
@@ -112,7 +108,7 @@ class Creature(actor.Actor):
     def constitution(self, value):
         """Sets the creature's dexterity. If the value is invalid this will
         raise an AssertionError"""
-        assert is_valid_attribute(value)
+        assert engine.is_valid_attribute(value)
         self._constitution = value
 
 
@@ -122,26 +118,30 @@ class Zombie(Creature):
         """Create a zombie.
 
         A zombie uses the average stat array and then raises one stat to three.
-        improvement -- one of 'str', 'dex', or 'con' to improve
+        improvement -- one of 'strength', 'dex', or 'con' to improve
         """
-        str = 2
-        dex = 2
-        con = 2
+        strength = 2
+        dexterity = 2
+        constitution = 2
         if not improvement:
-            improvement = random.choice(['str', 'dex', 'con'])
+            improvement = random.choice(['strength', 'dexterity',
+                                         'constitution'])
         name = "zombie"
-        if improvement == 'str':
-            str = 3
+        if improvement == 'strength':
+            strength = 3
             name = "strong zombie"
         if improvement == 'dex':
-            dex = 3
+            dexterity = 3
             name = "nimble zombie"
         if improvement == 'con':
-            con = 3
+            constitution = 3
             name = "hale zombie"
         self.attacks = [attack.make_bite(), attack.make_unarmed()]
         self.sense_range = 15
-        super(Zombie, self).__init__('Z', name, str=str, dex=dex, con=con)
+        super(Zombie, self).__init__('Z', name)
+        self.strength = strength
+        self.dexterity = dexterity
+        self.constitution = constitution
 
     def act(self):
         """Zombies use the following decision tree:
@@ -158,7 +158,10 @@ class ZombieDog(Creature):
     def __init__(self):
         self.attacks = [attack.make_bite(effectiveness=70)]
         self.sense_range = 30
-        super(ZombieDog, self).__init__('d', 'zombie dog', str=2, dex=3, con=1)
+        super(ZombieDog, self).__init__('d', 'zombie dog')
+        self.strength = 2
+        self.dexterity = 3
+        self.constitution = 1
 
     def act(self):
         """Zombie dogs use the following decision tree:
@@ -173,9 +176,12 @@ class ZombieDog(Creature):
 class Cop(Creature):
     """Cop."""
     def __init__(self):
-        super(Cop, self).__init__('C', 'cop', str=3, dex=1, con=3)
+        super(Cop, self).__init__('C', 'cop')
         self.attacks = []
         self.sense_range = 1
+        self.strength = 3
+        self.dexterity = 1
+        self.constitution = 3
 
     def act(self):
         """Cops use the following decision tree:
@@ -233,4 +239,3 @@ def create_from_glyph(glyph):
     if glyph == 'C':
         monster = Cop()
     return monster
-
