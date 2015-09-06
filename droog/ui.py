@@ -184,6 +184,12 @@ class Curses(object):
         right = hero_col + self.hero_x_offset
         top = hero_row - self.hero_y_offset
         bottom = hero_row + self.hero_y_offset
+        LOG.debug("Calculated map bounds for hero (col=%d, row=%d):",
+                  hero_col, hero_row)
+        LOG.debug("Hero X offset: %d  Hero Y offset %d", self.hero_x_offset,
+                  self.hero_y_offset)
+        LOG.debug("Left = %d, Right = %d, Top = %d, Bottom = %d", left, right,
+                  top, bottom)
         return (left, right, top, bottom)
 
     def draw_area(self, world):

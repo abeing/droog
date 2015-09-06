@@ -26,7 +26,7 @@ import message
 import turn
 import the
 import english
-from engine import MonsterSpawner
+from . import engine
 
 logging.basicConfig(filename="droog.log", level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
@@ -43,8 +43,9 @@ def new_game(ui_object):
     the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(240, 240)
     the.world._log()
-    spawner = MonsterSpawner(the.world)
+    spawner = engine.MonsterSpawner(the.world)
     the.turn.add_actor(spawner)
+    spawner.populate()
 
 
 def refresh(ui_object):

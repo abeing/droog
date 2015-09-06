@@ -20,21 +20,15 @@ creature types."""
 
 import logging
 import random
-import actor
-import attack
-import the
-import world
-import combat
+from . import actor
+from . import attack
+from . import the
+from . import world
+from . import combat
+from . import engine
 
 LOG = logging.getLogger(__name__)
 
-# Attributes should be between 1 and 4, inclusive.
-ATTRIBUTE_MAX = 4
-ATTRIBUTE_MIN = 1
-
-def is_valid_attribute(attribute):
-    """Verifies if an attribute is in a valid range."""
-    return ATTRIBUTE_MIN <= attribute <= ATTRIBUTE_MAX
 
 class Creature(actor.Actor):
     """The Creature class manages a creature's statistics and actions."""
@@ -49,9 +43,9 @@ class Creature(actor.Actor):
         con -- constitution
         """
         assert len(glyph) == 1
-        assert is_valid_attribute(str)
-        assert is_valid_attribute(dex)
-        assert is_valid_attribute(con)
+        assert engine.is_valid_attribute(str)
+        assert engine.is_valid_attribute(dex)
+        assert engine.is_valid_attribute(con)
         self.glyph = glyph
         self.name = name
         self.initial_vowel = initial_vowel

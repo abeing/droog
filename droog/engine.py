@@ -93,15 +93,24 @@ def random_monster():
 # The maximum number of monsters allowed in the world.
 MONSTER_CAP = 10
 MONSTER_STARTING_COUNT = 6
-MONSTER_RESPAWN = 5
+MONSTER_RESPAWN_CHANCE = 20
+MONSTER_RESPAWN_FREQUENCY = 100
 
 
 class MonsterSpawner(actor.Actor):
     """Spawns new monsters into the game."""
     def __init__(self, world):
         self._world = world
+
+    def populate(self):
+        """Spawns the initial monsters into the game."""
+        LOG.info("Creating initial monsters.")
         for _ in xrange(1, MONSTER_STARTING_COUNT):
-            self._world.attempt_to_place_monster(random_monster())
+            monster = random_monster()
+            success = self._world.attempt_to_place_monster(monster)
+            success_string = "Placed" if success else "Failed to place"
+            LOG.info("%s starting %s in the world at %r.", success_string,
+                     monster.name, monster.loc)
 
     def act(self):
         """On each MonsterSpawner tick, there is a chance to spawn a new
@@ -110,16 +119,21 @@ class MonsterSpawner(actor.Actor):
                  self._world.monster_count, MONSTER_CAP)
         if self._world.monster_count < MONSTER_CAP:
             spawn_roll = random.randint(1, 100)
-            if spawn_roll < MONSTER_RESPAWN:
+            if spawn_roll < MONSTER_RESPAWN_CHANCE:
                 monster = random_monster()
-                self._world.attempt_to_place_monster(monster, hidden=True)
-                LOG.info("Attempted to spawn %d", monster.name)
+                success = self._world.attempt_to_place_monster(monster,
+                                                               hidden=True)
+                if success:
+                    LOG.info("Spawned a new %s.", monster.name)
+                else:
+                    LOG.debug("Attempted to spawn %s but did not find a \
+                              location for it.", monster.name)
             else:
-                LOG.info("Spawn roll failed. Rolled %d with %d chance.",
-                         spawn_roll, MONSTER_RESPAWN)
+                LOG.debug("Spawn roll failed. Rolled %d with %d chance.",
+                          spawn_roll, MONSTER_RESPAWN_CHANCE)
         else:
             LOG.info("Not spawning due to cap.")
-        return 100
+        return MONSTER_RESPAWN_FREQUENCY
 
 
 class Generator(object):
