@@ -161,3 +161,10 @@ def test_log_junction_grid():
     # This should not output anything unless the logging fails.
     # assert False
 
+
+def test_position_hero():
+    """Test that the hero does not start too close to the generator."""
+    sut = world.World(240, 240)
+    for _ in xrange(1, 100):
+        hero_location = sut._position_hero()
+        assert hero_location.distance_to(sut.generator_location) > 50

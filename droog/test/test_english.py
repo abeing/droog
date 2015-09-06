@@ -25,9 +25,9 @@ class EnglishTest(unittest.TestCase):
     def setUp(self):
         self.hero = hero.Hero("Test", None)
         self.bare_zombie = creature.Zombie(improvement='bare')
-        self.str_zombie = creature.Zombie(improvement='str')
-        self.dex_zombie = creature.Zombie(improvement='dex')
-        self.con_zombie = creature.Zombie(improvement='con')
+        self.str_zombie = creature.Zombie(improvement='strength')
+        self.dex_zombie = creature.Zombie(improvement='dexterity')
+        self.con_zombie = creature.Zombie(improvement='constitution')
         self.dog = creature.ZombieDog()
         self.cop = creature.Cop()
 

@@ -19,61 +19,26 @@ import unittest
 from .. import creature
 
 
-class ActCheck(unittest.TestCase):
-    def setUp(self):
-        self.c = creature.Creature('Z', "zombie", 2, 2, 2)
+class CreatureChecks(unittest.TestCase):
+    """Unit tests for creatures."""
 
-    def testActRaises(self):
+    def setUp(self):
+        self.sut = creature.Creature('Z', "zombie")
+
+    def test_act_raises(self):
         """Actor.act() should raise a NotImplementedError."""
-        self.c.is_stunned = True
-        self.c.act()
-        self.assertFalse(self.c.is_stunned)
+        self.sut.is_stunned = True
+        self.sut.act()
+        self.assertFalse(self.sut.is_stunned)
 
-
-class NameCheck(unittest.TestCase):
-    def setUp(self):
-        self.c = creature.Creature('Z', "zombie", 2, 2, 2)
-
-    def testZombieName(self):
+    def test_zombie_name(self):
         """Zombie name should include indefinite article."""
-        self.assertEqual("zombie", str(self.c))
+        self.assertEqual("zombie", str(self.sut))
 
-
-class ConstructionCheck(unittest.TestCase):
-    def testLongGlyph(self):
+    def test_long_glyph(self):
         """Creature glyphs should be on character long."""
         self.assertRaises(AssertionError, creature.Creature, 'ZZ', 'zombie',
-                          False, 2, 2, 2)
-
-    def testStrMin(self):
-        """Creature strength should be at least 1."""
-        self.assertRaises(AssertionError, creature.Creature, 'Z', 'zombie',
-                          False, 0, 2, 2)
-
-    def testStrMax(self):
-        """Creature strength should be at most 4."""
-        self.assertRaises(AssertionError, creature.Creature, 'Z', 'zombie',
-                          False, 5, 2, 2)
-
-    def testDexMin(self):
-        """Creature Dexterity should be at least 1."""
-        self.assertRaises(AssertionError, creature.Creature, 'Z', 'zombie',
-                          False, 0, 2, 2)
-
-    def testDexMax(self):
-        """Creature constitution should be at most 4."""
-        self.assertRaises(AssertionError, creature.Creature, 'Z', 'zombie',
-                          False, 5, 2, 2)
-
-    def testConMin(self):
-        """Creature constitution should be at least 1."""
-        self.assertRaises(AssertionError, creature.Creature, 'Z', 'zombie',
-                          False, 0, 2, 2)
-
-    def testConMax(self):
-        """Creature constitution should be at least 4."""
-        self.assertRaises(AssertionError, creature.Creature, 'Z', 'zombie',
-                          False, 5, 2, 2)
+                          False)
 
 if __name__ == "__main__":
     unittest.main()

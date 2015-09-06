@@ -26,10 +26,10 @@ World -- A class for reference objects of the World itself.
 import random
 import logging
 import math
-import tile
-import engine
-import english
-import the
+from . import tile
+from . import engine
+from . import english
+from . import the
 
 LOG = logging.getLogger(__name__)
 
@@ -233,14 +233,13 @@ class World(object):
     def _position_hero(self):
         """Calculates the location for the hero.
 
-        The hero will start close to half way between the center and edge of
-        the map, using a triangular distribution."""
-
-        rand_dist = random.triangular(0, self.cols / 2 - 1)
+        The hero will start in the other ring of the map."""
+        rand_dist = random.uniform(self.cols / 4, self.cols / 2 - 1)
         rand_dir = random.uniform(0, 359)
         row = int(rand_dist * math.sin(rand_dir)) + self.rows / 2
         col = int(rand_dist * math.cos(rand_dir)) + self.cols / 2
         the.hero.loc = Location(row, col)
+        LOG.debug("Hero starts at %r.", the.hero.loc)
         return Location(row, col)
 
     def add_road(self, start_loc, delta_y, delta_x, beta):

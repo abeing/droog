@@ -20,7 +20,9 @@ import unittest
 
 
 class ActCheck(unittest.TestCase):
-    def testActRaises(self):
+    """Actor interface unnit tests."""
+
+    def test_act_raises(self):
         """Actor.act() should raise a NotImplementedError."""
         a = actor.Actor()
         self.assertRaises(NotImplementedError, a.act)

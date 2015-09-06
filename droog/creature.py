@@ -130,10 +130,10 @@ class Zombie(Creature):
         if improvement == 'strength':
             strength = 3
             name = "strong zombie"
-        if improvement == 'dex':
+        if improvement == 'dexterity':
             dexterity = 3
             name = "nimble zombie"
-        if improvement == 'con':
+        if improvement == 'constitution':
             constitution = 3
             name = "hale zombie"
         self.attacks = [attack.make_bite(), attack.make_unarmed()]
