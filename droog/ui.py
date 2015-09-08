@@ -184,6 +184,17 @@ class Curses(object):
         right = hero_col + self.hero_x_offset
         top = hero_row - self.hero_y_offset
         bottom = hero_row + self.hero_y_offset
+
+        # Adjust the bounds to be within the map.
+        if left < 0:
+            left = 0
+        if right > world.cols:
+            right = world.cols
+        if top < 0:
+            top = 0
+        if bottom >= world.rows:
+            bottom = world.rows - 1
+
         LOG.debug("Calculated map bounds for hero (col=%d, row=%d):",
                   hero_col, hero_row)
         LOG.debug("Hero X offset: %d  Hero Y offset %d", self.hero_x_offset,
