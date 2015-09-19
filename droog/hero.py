@@ -57,12 +57,7 @@ class Hero(creature.Creature):
         if command == 'm':
             self.ui.history(the.messages)
         if command == 'f':
-            if self.weapon.ammo_capacity and not self.weapon.ammo:
-                the.messages.add("Your weapon is out of ammo!")
-                return 0
-            target = self.ui.target(self, the.world)
-            if target:
-                combat.attack(self, target, self.weapon.attack)
+            return self.ranged_attack()
         if command == 'r':
             if self.weapon.ammo_capacity == self.weapon.ammo:
                 the.messages.add("Your magazine is already full.")
@@ -77,7 +72,18 @@ class Hero(creature.Creature):
 
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
-        return combat.attack(self, target, self.weapon.attack)
+        ap_cost = combat.attack(self, target, self.weapon.attack)
+        return ap_cost
+
+    def ranged_attack(self):
+        """Perform a ranged attack against a target."""
+        if self.weapon.ammo_capacity and not self.weapon.ammo:
+            the.messages.add("Your weapon is out of ammo!")
+            return 0
+        target = self.ui.target(self, the.world)
+        if target:
+            ap_cost = combat.attack(self, target, self.weapon.attack)
+            return ap_cost
 
     def build(self, build):
         """Apply the character creation build.

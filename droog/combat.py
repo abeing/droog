@@ -100,7 +100,7 @@ def attack(attacker, defender, attack):
 
     # We might be passed an empty attack in the case of an out-of-ammo weapon
     if not attack:
-        return
+        return 0
 
     verb = random.choice(attack.verbs)
     if attack.range == 1:  # Melee attack
