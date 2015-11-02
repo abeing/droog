@@ -28,37 +28,6 @@ RANGED_TOHIT = 5
 LOG = logging.getLogger(__name__)
 
 
-class BleedAction(actor.Actor):
-    """Actor to apply bleeding condition to creatures."""
-    def __init__(self, victim, magnitude):
-        """Create a new bleed action, causing the victim to bleed."""
-        self.victim = victim
-        self.victim.is_bleeding = True
-        self.magnitude = magnitude
-
-    def act(self):
-        """Bleed."""
-        self.victim.blood -= 1
-        if self.victim.blood <= 0:
-            the.messages.add("%s bled out." %
-                             (english.definite_creature(self.victim)))
-            kill(self.victim)
-            return self.DONE
-        # We don't check the victim is visible!
-        victim_english = english.definite_creature(self.victim)
-        if random.randint(0, self.magnitude) > self.victim.constitution * 20:
-            self.victim.is_bleeding = False
-            the.messages.add("%s %s bleeding." %
-                             (victim_english,
-                              english.conjugate_verb(self.victim, "stop")))
-            return self.DONE
-        else:
-            the.messages.add("%s %s." %
-                             (victim_english,
-                              english.conjugate_verb(self.victim, "bleed")))
-        return 60
-
-
 class DiseaseAction(actor.Actor):
     """Actor that applies diseased condition on creatures."""
     def __init__(self, victim):
@@ -151,13 +120,6 @@ def inflict_damage(victim, attack):
     if random.random() < attack.disease_chance and not victim.is_diseased:
         disease = DiseaseAction(victim)
         the.turn.add_actor(disease, 600)
-
-    if random.random() < attack.bleed_chance:
-        if victim.is_bleeding:
-            victim.blood -= 1
-        else:
-            bleed = BleedAction(victim, attack.bleed_chance)
-            the.turn.add_actor(bleed)
 
 
 def kill(victim):

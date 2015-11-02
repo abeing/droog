@@ -52,7 +52,6 @@ class Creature(actor.Actor):
         self.is_hero = False
         self.loc = (None, None)
         self.is_stunned = False
-        self.is_bleeding = False
         self.is_diseased = False
         self.blood = 10
         self.inventory = []

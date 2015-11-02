@@ -65,17 +65,10 @@ class DamageTestCase(unittest.TestCase):
         self.assertEquals(1, condition_count(self.defender))
         self.assertTrue(self.defender.is_stunned)
 
-    def test_bleeding(self):
-        """Test an attack that is guaranteed to make the defender bleed."""
-        bleed_attack = attack.Attack("bleed", ["bleed"], 100, bleed_chance=100)
-        combat.attack(self.attacker, self.defender, bleed_attack)
-        self.assertEquals(1, condition_count(self.defender))
-        self.assertTrue(self.defender.is_bleeding)
-
 
 def condition_count(creature):
     """Count the number of conditions set on the creature."""
-    count = creature.is_bleeding + creature.is_stunned + creature.is_diseased
+    count = creature.is_stunned + creature.is_diseased
     return count
 
 if __name__ == "__main__":

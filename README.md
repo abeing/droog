@@ -48,11 +48,9 @@ starting equipment.
 **Strong** characters are more effective at attacking with the knife or unarmed
 attacks. There is no encumbrance system.
 
-**Nimble** characters are more efficient in maneuvering and have better aim
-with guns.
+**Nimble** characters are harder to hit at range and have better aim with guns.
 
-**Hale** characters resist the effects of poison and disease better. They also
-bleed more slowly.
+**Hale** characters are more difficult to wound and resist the effects of disease better.
 
 ## Weapons
 
