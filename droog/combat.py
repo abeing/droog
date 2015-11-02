@@ -21,9 +21,7 @@ from . import the
 from . import english
 from . import actor
 
-# This is the threshold for a melee hit
-MELEE_TOHIT = 4
-RANGED_TOHIT = 5
+BASE_TOHIT = 3
 
 LOG = logging.getLogger(__name__)
 
@@ -73,21 +71,22 @@ def attack(attacker, defender, attack):
 
     verb = random.choice(attack.verbs)
     if attack.range == 1:  # Melee attack
-        tohit = MELEE_TOHIT
-        attacker_bonus = max(attacker.strength, attacker.dexterity)
-        defender_penalty = max(defender.strength, defender.dexterity)
+        attacker_bonus = attacker.strength
+        defender_penalty = defender.strength
+        ranged_penalty = 0
     else:  # Ranged attack
-        tohit = RANGED_TOHIT
         attacker_bonus = attacker.dexterity
-        defender_penalty = attacker.loc.distance_to(defender.loc) / 10
+        defender_penalty = defender.dexterity
+        ranged_penalty = attacker.loc.distance_to(defender.loc) / 10
     weapon_bonus = attack.attack_bonus
+    attack_tohit = BASE_TOHIT + weapon_bonus + attacker_bonus \
+        - ranged_penalty - defender_penalty
     attack_roll = random.randint(1, 6)
-    attack_magnitude = attack_roll + attacker_bonus + weapon_bonus - \
-        defender_penalty
-    LOG.info("Attack %r (%r die roll + %r attacker bonus + %r attack"
-             " bonus - %r defender penalty)", attack_magnitude, attack_roll,
-             attacker_bonus, weapon_bonus, defender_penalty)
-    if attack_magnitude >= tohit:
+    LOG.info("Attack roll %r on tohit %r (3 + %r attacker bonus + %r weapon"
+             " bonus - %r ranged penalty - %r defender penalty)", attack_roll,
+             attack_tohit, attacker_bonus, weapon_bonus, ranged_penalty,
+             defender_penalty)
+    if attack_roll < attack_tohit:
         if defender.is_hero:
             the.messages.add("%s %s." %
                              (english.definite_creature(attacker),
@@ -99,8 +98,6 @@ def attack(attacker, defender, attack):
                               english.definite_creature(defender)))
         inflict_damage(defender, attack)
         return 2
-
-    LOG.info("Attack missed with %r", attack_magnitude)
     the.messages.add("%s missed." % (english.definite_creature(attacker)))
     return 2
 
