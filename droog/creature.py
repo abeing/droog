@@ -53,7 +53,7 @@ class Creature(actor.Actor):
         self.loc = (None, None)
         self.is_stunned = False
         self.is_diseased = False
-        self.blood = 10
+        self.is_wounded = False
         self.inventory = []
         super(Creature, self).__init__()
 

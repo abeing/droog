@@ -270,9 +270,8 @@ class Curses(object):
     def draw_conditions(self, hero, index):
         """Draw the hero's conditions."""
         idx = index
-        if hero.blood < 10:
-            blood_meter = create_meter(hero.blood, 10)
-            self.hero_window.addstr(idx, 2, blood_meter, curses.color_pair(1))
+        if hero.is_wounded:
+            self.hero_window.addstr(idx, 2, "Wounded", curses.color_pair(1))
             idx += 1
         if hero.is_stunned:
             self.hero_window.addstr(idx, 2, "Stunned", curses.color_pair(1))

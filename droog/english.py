@@ -40,6 +40,7 @@ CONJUGATIONS = {'bite': ("bite", "bites"),
                 'bleed': ("bleed", "bleeds"),
                 'die': ("die", "dies"),
                 'stop': ("stop", "stops"),
+                'wound': ("are wounded", "is wounded"),
                 '_disease': ("feel", "looks")}
 
 # Punctuation that is considered approprate to end a sentence with.

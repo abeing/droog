@@ -28,9 +28,9 @@ They range from +1 to +4 with only flavorful names visible in the UI.
 - action point efficiency
 
 **Constitution** affects:
-- blood clotting chance
 - disease progress rate
 - stun resistance
+- wound resistance
 
 Items
 =====

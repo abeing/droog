@@ -108,6 +108,12 @@ def attack(attacker, defender, attack):
 def inflict_damage(victim, attack):
     """Inflicts damage onto a creature."""
 
+    if random.randint(1, 4) <= victim.constitution:
+        if victim.is_wounded:
+            kill(victim)
+        else:
+            wound(victim)
+
     if random.random() < attack.stun_chance and not victim.is_stunned:
         the.messages.add("%s %s %s." %
                          (english.definite_creature(victim),
@@ -127,3 +133,9 @@ def kill(victim):
     victim.is_dead = True
     the.messages.add("%s %s" % (english.definite_creature(victim),
                                 english.conjugate_verb(victim, "die")))
+
+def wound(victim):
+    """Wound the victim."""
+    victim.is_wounded = True
+    the.messages.add("%s %s" % (english.definite_creature(victim),
+                                english.conjugate_verb(victim, "wound")))
