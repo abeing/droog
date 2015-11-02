@@ -139,12 +139,6 @@ def attack(attacker, defender, attack):
 def inflict_damage(victim, attack):
     """Inflicts damage onto a creature."""
 
-    if random.random() < attack.weaken_chance and not victim.is_weakened:
-        victim.is_weakened = True
-        the.messages.add("%s %s weakened." %
-                         (english.definite_creature(victim),
-                          english.conjugate_verb(victim, "be")))
-
     if random.random() < attack.stun_chance and not victim.is_stunned:
         the.messages.add("%s %s %s." %
                          (english.definite_creature(victim),

@@ -51,7 +51,6 @@ class Creature(actor.Actor):
         self.is_dead = False
         self.is_hero = False
         self.loc = (None, None)
-        self.is_weakened = False
         self.is_stunned = False
         self.is_bleeding = False
         self.is_diseased = False
@@ -70,9 +69,7 @@ class Creature(actor.Actor):
 
     @property
     def strength(self):
-        """Return creature's strength, modified by the weakened condition."""
-        if self.is_weakened and self._strength > 1:
-            return self._strength - 1
+        """The creature's strength."""
         return self._strength
 
     @strength.setter

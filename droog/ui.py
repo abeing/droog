@@ -280,9 +280,6 @@ class Curses(object):
         if hero.is_stunned:
             self.hero_window.addstr(idx, 2, "Stunned", curses.color_pair(1))
             idx += 1
-        if hero.is_weakened:
-            self.hero_window.addstr(idx, 2, "Weakened", curses.color_pair(3))
-            idx += 1
         if hero.is_diseased:
             self.hero_window.addstr(idx, 2, "Diseased", curses.color_pair(3))
             idx += 1
