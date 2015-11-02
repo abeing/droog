@@ -41,26 +41,17 @@ Weapons
 Weapons add to the offense role of an attack. Weapons inflict various effects
 on their victims.
 
-| Weapon            | Type   | Offense | Stun | Bleed | Disease | Burning |
-|-------------------|--------|---------|------|-------|---------|---------|
-| Unaremed          | Melee  |    0    |  30% |   10% |       - |       - |
-| Bite              | Melee  |   +1    |    - |   30% |     35% |       - |
-| Bite (zombie dog) | Melee  |   +1    |    - |   30% |     70% |       - |
-| Knife             | Melee  |   +2    |    - |   50% |       - |       - |
-| Pistol            | Ranged |   +3    |    - |   75% |       - |       - |
-| Rifle             | Ranged |   +4    |    - |   75% |       - |       - |
-| Laser             | Ranged |   +5    |    - |     - |       - |     50% |
-
-All attacks have a uniform 25% chance to inflict weakened or hobbled.
+| Weapon            | Type   | Offense | Stun | Disease | Burning |
+|-------------------|--------|---------|------|---------|---------|
+| Unarmed           | Melee  |    0    |    X |       - |       - |
+| Bite              | Melee  |   +1    |    - |       X |       - |
+| Knife             | Melee  |   +2    |    - |       - |       - |
+| Pistol            | Ranged |   +3    |    - |       - |       - |
+| Rifle             | Ranged |   +4    |    - |       - |       - |
+| Laser             | Ranged |   +5    |    - |       - |       X |
 
 A creature that is **stunned** has his or her next turn moved back 20-50 minus
 10 per their constitution score.
-
-A **bleeding** creature losses one tenth of their blood supply every minute.
-When their blood supply runs out, they die. Each minute they have a chance of
-20% per their constitution score to stop bleeding. Their lost blood remains
-lost. **TODO**: We may implement blood regeneration, perhaps at one tenth per
-hour.
 
 A **diseased** creature suffers a penalty to their constitution after a ten
 minute incubation period. Once fully infected, the creature begins slowly
@@ -100,9 +91,7 @@ Consumables (WIP)
     common to find.
 - Batteries
 - Medicine Kit
-  - Bandages remove the bleeding condition
-  - Splints remove the hobbled condition
-  - Serum delays the diseased condition
+  - Cures a wound.
 
 Enemies
 =======
@@ -123,23 +112,19 @@ with a weapon.
 Combat Mechanics
 ================
 
-Ranged Attacks (NYI)
---------------------
-- Attacker rolls 1d6 + weapon offense + dexterity - range penalty :question: - defense 
-  - Range Penalty : something like -1 per 5 or 10 squares as per weapon
+Attacks
+-------
+Attacker rolls 1d6. The attack hits if the number is equal to or less than:
 
-Melee Attacks
--------------
-- Melee offense is the higher of the attacker's strength and dexterity.
-- Melee defense is the higher of the defender's strength and dexterity.
-- Attacker rolls 1d6 + weapon offense + melee offense - melee defense
-- On a 4 or higher, for each condition:
-  - Roll a percent chance and apply that condition.
-- On a 3 or less, determine a miss reason by adding to a list:
-  - One "dodge" for each dexterity point the defender has.
-  - One "parry" for each strength point the defender has.
-  - Two "miss"
-  - Choosing one of those.
+    3
+    + Attacker Ability (Strength for melee, Dexterity for ranged)
+    - Defender Ability (Strength for melee, Dexterity for ranged)
+    + Weapon Offense
+    - Ranged Penalty (1 for each 2 squares)
+
+If an attack hits and defender is wounded, they die. If the defender does not have a wound, he or she rolls 1d4 and compares it to their constitution score.
+On a result equal or less than the constitution, they gain a wound. Otherwise,
+they die.
 
 Time System
 ============

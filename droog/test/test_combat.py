@@ -80,8 +80,8 @@ class DamageTestCase(unittest.TestCase):
 
 def condition_count(creature):
     """Count the number of conditions set on the creature."""
-    count = creature.is_hobbled + creature.is_weakened + creature.is_bleeding \
-        + creature.is_stunned + creature.is_diseased
+    count = creature.is_weakened + creature.is_bleeding + creature.is_stunned \
+        + creature.is_diseased
     return count
 
 if __name__ == "__main__":

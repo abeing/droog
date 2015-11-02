@@ -291,9 +291,6 @@ class Curses(object):
         if hero.is_weakened:
             self.hero_window.addstr(idx, 2, "Weakened", curses.color_pair(3))
             idx += 1
-        if hero.is_hobbled:
-            self.hero_window.addstr(idx, 2, "Hobbled", curses.color_pair(3))
-            idx += 1
         if hero.is_diseased:
             self.hero_window.addstr(idx, 2, "Diseased", curses.color_pair(3))
             idx += 1

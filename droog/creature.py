@@ -52,7 +52,6 @@ class Creature(actor.Actor):
         self.is_hero = False
         self.loc = (None, None)
         self.is_weakened = False
-        self.is_hobbled = False
         self.is_stunned = False
         self.is_bleeding = False
         self.is_diseased = False
@@ -85,9 +84,7 @@ class Creature(actor.Actor):
 
     @property
     def dexterity(self):
-        """Return creature's dexterity, modified by the hobbled consition."""
-        if self.is_hobbled and self._dexterity > 1:
-            return self._dexterity - 1
+        """The creature's dextierity."""
         return self._dexterity
 
     @dexterity.setter

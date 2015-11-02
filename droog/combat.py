@@ -145,12 +145,6 @@ def inflict_damage(victim, attack):
                          (english.definite_creature(victim),
                           english.conjugate_verb(victim, "be")))
 
-    if random.random() < attack.hobble_chance and not victim.is_hobbled:
-        victim.is_hobbled = True
-        the.messages.add("%s %s hobbled." %
-                         (english.definite_creature(victim),
-                          english.conjugate_verb(victim, "be")))
-
     if random.random() < attack.stun_chance and not victim.is_stunned:
         the.messages.add("%s %s %s." %
                          (english.definite_creature(victim),
