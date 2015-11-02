@@ -206,9 +206,9 @@ class Curses(object):
 
         for y in range(top, bottom):
             for x in range(left, right):
-                if (y < 0 or x < 0):
-                    continue
                 loc = _world.Location(y, x)
+                if not world.is_valid_location(loc):
+                    continue
                 glyph = world.glyph_at(loc)
                 if world.cell(loc).seen:
                     self.area_window.addstr(y - top, x - left,
