@@ -74,6 +74,7 @@ def main():
             ui_object.draw_messages(the.messages)
             ui_object.input()
             ui_object.story_screen(english.FAILURE_STORY)
+            ui_object.score_screen(None)
         elif not the.world.generator.active():
             ui_object.story_screen(english.SUCCESS_STORY)
 
