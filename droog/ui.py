@@ -525,7 +525,7 @@ class Curses(object):
         score_screen = curses.newwin(self.area_height, self.area_width,
                                      MESSAGE_ROWS + 1, 0)
         score_screen.addstr(3, 3, "Length of time survived")
-        score_screen.addstr(3, 33, "34")
+        score_screen.addstr(3, 33, str(score))
         score_screen.addstr(4, 3, "Foes vanquished")
         score_screen.addstr(4, 33, "0")
         score_screen.addstr(5, 3, "Amount of village explored")
@@ -533,7 +533,7 @@ class Curses(object):
         score_screen.addstr(6, 3, "Saving humanity")
         score_screen.addstr(6, 33, "0")
         score_screen.addstr(8, 3, "Total")
-        score_screen.addstr(8, 33, "34")
+        score_screen.addstr(8, 33, str(score))
         score_screen.refresh()
         _ = self.input()
         del score_screen

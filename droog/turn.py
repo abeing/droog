@@ -76,13 +76,13 @@ class Turn(object):
         but for now we'll delibrately leave it as is.
         """
         self._queue = PriorityQueue()
-        self._current_turn = 0
+        self.current_turn = 0
         self._current_time = datetime.datetime(100, 1, 1, 7, 0, 0)  # 07:00:00
 
     def next(self):
         """Advances to the turn."""
 
-        self._current_turn += 1
+        self.current_turn += 1
         self._current_time += datetime.timedelta(seconds=SECONDS_PER_TURN)
 
         actor = self._queue.get()  # Ignoring priority
@@ -99,7 +99,7 @@ class Turn(object):
             if action_cost == actor.DONE:
                 LOG.info("Actor %r is done, not requeueing.", actor)
                 return True
-            next_tick = action_cost + self._current_turn
+            next_tick = action_cost + self.current_turn
             LOG.info("Requeueing actor %r at turn %r", actor, next_tick)
             self._queue.put(actor, next_tick)
         else:
@@ -117,7 +117,7 @@ class Turn(object):
     def add_actor(self, actor, future=0):
         """Add a new actor to the end of the turn queue."""
         assert future >= 0
-        self._queue.put(actor, self._current_turn + future)
+        self._queue.put(actor, self.current_turn + future)
         LOG.info("New actor in the turn queue: %r", actor)
 
     def delay_actor(self, actor, delta):

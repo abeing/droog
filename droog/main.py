@@ -27,6 +27,7 @@ import turn
 import the
 import english
 from . import engine
+from . import score
 
 logging.basicConfig(filename="droog.log", level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
@@ -46,6 +47,18 @@ def new_game(ui_object):
     spawner = engine.MonsterSpawner(the.world)
     the.turn.add_actor(spawner)
     spawner.populate()
+
+
+def end_game(ui_object):
+    """Display the ending, calculate the score and display to top scores."""
+    if the.hero.is_dead:
+        ui_object.draw_messages(the.messages)
+        ui_object.input()
+        ui_object.story_screen(english.FAILURE_STORY)
+    elif not the.world.generator.active():
+        ui_object.story_screen(english.SUCCESS_STORY)
+    time_score = score.calculate_time_score(the.turn, not the.hero.is_dead)
+    ui_object.score_screen(time_score)
 
 
 def refresh(ui_object):
@@ -70,14 +83,7 @@ def main():
         while the.world.generator.active() and not the.hero.is_dead:
             the.turn.next()
             refresh(ui_object)
-        if the.hero.is_dead:
-            ui_object.draw_messages(the.messages)
-            ui_object.input()
-            ui_object.story_screen(english.FAILURE_STORY)
-            ui_object.score_screen(None)
-        elif not the.world.generator.active():
-            ui_object.story_screen(english.SUCCESS_STORY)
-
+        end_game(ui_object)
 
 if __name__ == "__main__":
     main()
