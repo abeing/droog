@@ -71,6 +71,8 @@ def main():
             the.turn.next()
             refresh(ui_object)
         if the.hero.is_dead:
+            ui_object.draw_messages(the.messages)
+            ui_object.input()
             ui_object.story_screen(english.FAILURE_STORY)
         elif not the.world.generator.active():
             ui_object.story_screen(english.SUCCESS_STORY)
