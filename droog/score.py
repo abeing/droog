@@ -31,3 +31,13 @@ def calculate_time_score(turn, victorious):
         return MAX_TURN_POINTS - (turn.current_turn * POINTS_PER_TURN)
     else:
         return turn.current_turn * POINTS_PER_TURN
+
+
+def calculate_map_score(world):
+    """Calculate the score portion based on amount of the map explored."""
+    seen_tiles = 0
+    for rows in world.tiles:
+        for tile in rows:
+            if tile.seen:
+                seen_tiles += 1
+    return seen_tiles

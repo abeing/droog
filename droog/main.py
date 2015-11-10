@@ -58,7 +58,8 @@ def end_game(ui_object):
     elif not the.world.generator.active():
         ui_object.story_screen(english.SUCCESS_STORY)
     time_score = score.calculate_time_score(the.turn, not the.hero.is_dead)
-    ui_object.score_screen(time_score)
+    map_score = score.calculate_map_score(the.world)
+    ui_object.score_screen(time_score, map_score)
 
 
 def refresh(ui_object):
