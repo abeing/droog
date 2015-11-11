@@ -41,3 +41,18 @@ def calculate_map_score(world):
             if tile.seen:
                 seen_tiles += 1
     return seen_tiles
+
+
+def calculate_victory_score(victorious):
+    """Calculate the score portion based on victory."""
+    if victorious:
+        return 25000
+    return 0
+
+
+def calculate_kill_score(monsters_killed):
+    """Calculate the score portion based on monsters killed."""
+    running_total = 0
+    for monster in monsters_killed:
+        running_total += monster.score_value
+    return running_total

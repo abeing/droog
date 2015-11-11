@@ -59,7 +59,9 @@ def end_game(ui_object):
         ui_object.story_screen(english.SUCCESS_STORY)
     time_score = score.calculate_time_score(the.turn, not the.hero.is_dead)
     map_score = score.calculate_map_score(the.world)
-    ui_object.score_screen(time_score, map_score)
+    kill_score = score.calculate_kill_score(the.world.dead_monsters)
+    victory_score = score.calculate_victory_score(not the.hero.is_dead)
+    ui_object.score_screen(time_score, map_score, kill_score, victory_score)
 
 
 def refresh(ui_object):

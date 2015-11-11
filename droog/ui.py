@@ -520,20 +520,21 @@ class Curses(object):
         _ = self.input()
         del story_screen
 
-    def score_screen(self, time_score, map_score):
+    def score_screen(self, time_score, map_score, kill_score, victory_score):
         """Display the score screen."""
         score_screen = curses.newwin(self.area_height, self.area_width,
                                      MESSAGE_ROWS + 1, 0)
         score_screen.addstr(3, 3, "Length of time survived")
         score_screen.addstr(3, 33, str(time_score))
         score_screen.addstr(4, 3, "Foes vanquished")
-        score_screen.addstr(4, 33, "0")
+        score_screen.addstr(4, 33, str(kill_score))
         score_screen.addstr(5, 3, "Amount of village explored")
         score_screen.addstr(5, 33, str(map_score))
         score_screen.addstr(6, 3, "Saving humanity")
-        score_screen.addstr(6, 33, "0")
+        score_screen.addstr(6, 33, str(victory_score))
         score_screen.addstr(8, 3, "Total")
-        score_screen.addstr(8, 33, str(time_score + map_score))
+        total_score = time_score + map_score + kill_score + victory_score
+        score_screen.addstr(8, 33, str(total_score))
         score_screen.refresh()
         _ = self.input()
         del score_screen

@@ -124,6 +124,7 @@ class World(object):
         self.do_fov()
         self.visible_monsters = []
         self.monster_count = 0
+        self.dead_monsters = []
 
     def is_empty(self, loc):
         """Returns True if the location is empty."""
@@ -325,6 +326,7 @@ class World(object):
         self.visible_monsters.remove(monster)
         self.tiles[monster.loc.row][monster.loc.col].creature = None
         self.monster_count -= 1
+        self.dead_monsters.append(monster)
 
     def add_item(self, loc, item):
         """Add an item to a location."""

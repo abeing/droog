@@ -55,6 +55,7 @@ class Creature(actor.Actor):
         self.is_diseased = False
         self.is_wounded = False
         self.inventory = []
+        self.score_value = 0
         super(Creature, self).__init__()
 
     def act(self):
@@ -131,6 +132,7 @@ class Zombie(Creature):
             name = "hale zombie"
         self.attacks = [attack.make_bite(), attack.make_unarmed()]
         self.sense_range = 15
+        self.score_value = 4000
         super(Zombie, self).__init__('Z', name)
         self.strength = strength
         self.dexterity = dexterity
@@ -155,6 +157,7 @@ class ZombieDog(Creature):
         self.strength = 2
         self.dexterity = 3
         self.constitution = 1
+        self.score_value = 2000
 
     def act(self):
         """Zombie dogs use the following decision tree:
@@ -175,6 +178,7 @@ class Cop(Creature):
         self.strength = 3
         self.dexterity = 1
         self.constitution = 3
+        self.score_value = 8000
 
     def act(self):
         """Cops use the following decision tree:
