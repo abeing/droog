@@ -22,6 +22,7 @@ from . import combat
 from . import creature
 from . import item
 from . import attack
+from . import actor
 
 
 class Hero(creature.Creature):
@@ -65,7 +66,9 @@ class Hero(creature.Creature):
             if not self.weapon.reload(self.inventory):
                 the.messages.add("You do not have suitable ammo.")
         if command == 'q':
-            sys.exit(0)
+            self.is_dead = True
+            the.messages.add("You commit suicide!")
+            return actor.Actor.DONE
         if command == '?':
             self.ui.help()
         return 0

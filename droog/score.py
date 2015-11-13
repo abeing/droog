@@ -19,8 +19,13 @@
 
 """Routines for calculating the hero's score at the end of the game."""
 
+import logging
+import os.path
+
+
 POINTS_PER_TURN = 1
 MAX_TURN_POINTS = 25200
+LOG = logging.getLogger(__name__)
 
 
 def calculate_time_score(turn, victorious):
@@ -56,3 +61,11 @@ def calculate_kill_score(monsters_killed):
     for monster in monsters_killed:
         running_total += monster.score_value
     return running_total
+
+
+def write_score_to_record(character, end_reason, total_score):
+    """Write a line to the score record for this game."""
+    record_filename = os.path.expanduser("~/.droog_record")
+    LOG.info("Writing score record to %s", record_filename)
+    with open(record_filename, 'a') as record_file:
+        record_file.write('%s %s %d\n' % (character, end_reason, total_score))
