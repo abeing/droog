@@ -63,7 +63,8 @@ def end_game(ui_object):
     victory_score = score.calculate_victory_score(not the.hero.is_dead)
     ui_object.score_screen(time_score, map_score, kill_score, victory_score)
     total_score = time_score + map_score + kill_score + victory_score
-    score.write_score_to_record(the.hero.name, "ended", total_score)
+    score.write_score_to_record(the.hero.name, the.hero.end_reason,
+                                total_score)
 
 
 def refresh(ui_object):

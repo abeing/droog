@@ -21,6 +21,7 @@
 
 import logging
 import os.path
+import json
 
 
 POINTS_PER_TURN = 1
@@ -63,9 +64,13 @@ def calculate_kill_score(monsters_killed):
     return running_total
 
 
-def write_score_to_record(character, end_reason, total_score):
+def write_score_to_record(hero_name, end_reason, score):
     """Write a line to the score record for this game."""
-    record_filename = os.path.expanduser("~/.droog_record")
+    record_filename = os.path.expanduser("~/.droog_record.json")
     LOG.info("Writing score record to %s", record_filename)
+    score_record = {'hero_name': hero_name,
+                    'end_reason': end_reason,
+                    'score': score}
     with open(record_filename, 'a') as record_file:
-        record_file.write('%s %s %d\n' % (character, end_reason, total_score))
+        json.dump(score_record, record_file)
+        record_file.write('\n')

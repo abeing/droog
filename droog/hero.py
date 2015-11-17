@@ -67,6 +67,7 @@ class Hero(creature.Creature):
                 the.messages.add("You do not have suitable ammo.")
         if command == 'q':
             self.is_dead = True
+            self.end_reason = "commited suicide"
             the.messages.add("You commit suicide!")
             return actor.Actor.DONE
         if command == '?':

@@ -56,6 +56,7 @@ class Creature(actor.Actor):
         self.is_wounded = False
         self.inventory = []
         self.score_value = 0
+        self.end_reason = "befallen by an unspecified disaster"
         super(Creature, self).__init__()
 
     def act(self):

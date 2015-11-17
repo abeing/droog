@@ -40,6 +40,7 @@ class DiseaseAction(actor.Actor):
         if self.victim.is_diseased:
             return self.DONE
         if self.progress == 0:
+            self.victim.end_reason = "killed by deadly disease"
             kill(self.victim)
             return self.DONE
         self.victim.is_diseased = True
@@ -96,17 +97,18 @@ def attack(attacker, defender, attack):
                              (english.definite_creature(attacker),
                               english.conjugate_verb(attacker, verb),
                               english.definite_creature(defender)))
-        inflict_damage(defender, attack)
+        inflict_damage(defender, attack, attacker)
         return 2
     the.messages.add("%s missed." % (english.definite_creature(attacker)))
     return 2
 
 
-def inflict_damage(victim, attack):
+def inflict_damage(victim, attack, attacker):
     """Inflicts damage onto a creature."""
 
     if random.randint(1, 4) <= victim.constitution:
         if victim.is_wounded:
+            victim.end_reason = "killed by %s" % attacker
             kill(victim)
         else:
             wound(victim)
