@@ -539,6 +539,29 @@ class Curses(object):
         _ = self.input()
         del score_screen
 
+    def record_screen(self, high_scores):
+        """Display a list of high score records.
+
+        `high_scores` should be a list of dictionaries with the following keys:
+            'hero_name'
+            'end_reason' -- how the hero's game ended
+            'score'
+            'latest' -- if this is the score for the last game
+        """
+        record_screen = curses.newwin(self.area_height, self.area_width,
+                                      MESSAGE_ROWS + 1, 0)
+        row = 1
+        for high_score in high_scores[:10]:
+            record_screen.addstr(row, 2, high_score['hero_name'])
+            record_screen.addstr(" ")
+            record_screen.addstr(high_score['end_reason'])
+            record_screen.addstr(" ")
+            record_screen.addstr(str(high_score['score']))
+            row += 1
+        record_screen.refresh()
+        _ = self.input()
+        del record_screen
+
     def character_creation(self, story, attribs, weapons, gears):
         """Perform character creation with a given story."""
         creation_screen = curses.newwin(self.height, self.width)
