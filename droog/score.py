@@ -64,13 +64,21 @@ def calculate_kill_score(monsters_killed):
     return running_total
 
 
-def write_score_to_record(hero_name, end_reason, score):
+def record_score(hero_name, end_reason, score):
     """Write a line to the score record for this game."""
     record_filename = os.path.expanduser("~/.droog_record.json")
     LOG.info("Writing score record to %s", record_filename)
     score_record = {'hero_name': hero_name,
                     'end_reason': end_reason,
-                    'score': score}
-    with open(record_filename, 'a') as record_file:
-        json.dump(score_record, record_file)
-        record_file.write('\n')
+                    'score': score,
+                    'latest': True}
+    high_scores = []
+    with open(record_filename) as record_file_read:
+        high_scores = json.load(record_file_read)
+    for high_score in high_scores:
+        high_score['latest'] = False
+    high_scores.append(score_record)
+    high_scores = sorted(high_scores, key=lambda k: k['score'], reverse=True)
+    with open(record_filename, 'w') as record_file_write:
+        json.dump(high_scores, record_file_write)
+    return high_scores
