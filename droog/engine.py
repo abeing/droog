@@ -202,6 +202,8 @@ class Generator(object):
             verb = "begin"
         the.messages.add("You %s deactivating the shield generator." % verb)
         self.health -= 1
+        if not self.active():
+            the.hero.end_reason = "saved the world"
         return 8
 
     def active(self):
