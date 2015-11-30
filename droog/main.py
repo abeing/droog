@@ -47,8 +47,8 @@ def new_game(ui_object):
     monster_spawner = engine.MonsterSpawner(the.world)
     the.turn.add_actor(monster_spawner)
     monster_spawner.populate()
-    loot_placer = engine.LootPlacer()
-    loot_placer.populate(the.world)
+    loot_placer = engine.LootPlacer(the.world)
+    loot_placer.populate()
 
 
 def end_game(ui_object):

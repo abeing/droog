@@ -142,6 +142,26 @@ class World(object):
         """Return the size of the world in tiles."""
         return self.rows * self.cols
 
+    def indoor_walkable_locations(self):
+        """Return a list of Locations that are indoors."""
+        results = []
+        for row in xrange(self.rows):
+            for col in xrange(self.cols):
+                loc = Location(row, col)
+                if self.cell(loc).indoor and self.cell(loc).walkable:
+                    results.append(loc)
+        return results
+
+    def outdoor_walkable_locations(self):
+        """Return a list of Locations that are outside and walkable."""
+        results = []
+        for row in xrange(self.rows):
+            for col in xrange(self.cols):
+                loc = Location(row, col)
+                if not self.cell(loc).indoor and self.cell(loc).walkable:
+                    results.append(loc)
+        return results
+
     def glyph_at(self, loc):
         """Returns the world glyph and its color at the specified location.  If
         the location coordinates are out of bounds, returns a shield character.

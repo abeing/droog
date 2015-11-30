@@ -24,7 +24,7 @@ functions to create different types of tiles.
 
 class Tile(object):
     """Representation of a map tile."""
-    def __init__(self, glyph, description, walkable, color=0):
+    def __init__(self, glyph, description, walkable, indoor, color=0):
         self.glyph = glyph
         self.color = color
         self.description = description
@@ -33,6 +33,7 @@ class Tile(object):
         self.items = []
         self._seen = False
         self.was_seen = False
+        self.indoor = indoor
 
     @property
     def seen(self):
@@ -59,34 +60,34 @@ class Tile(object):
 
 def make_street():
     """Factory function to create a street tile."""
-    return Tile('*', "a street", True)
+    return Tile('*', "a street", True, False)
 
 
 def make_empty():
     """Factory function to create an empty tile."""
-    return Tile('.', "open space", True)
+    return Tile('.', "open space", True, False)
 
 
 def make_shield():
     """Factory function to create a shield tile."""
-    return Tile('~', "the shield", False)
+    return Tile('~', "the shield", False, False)
 
 
 def make_shield_generator():
     """Factory function to create a shield generator tile."""
-    return Tile('G', "the shield generator", False)
+    return Tile('G', "the shield generator", False, False)
 
 
 def make_tree():
     """Create a tree tile."""
-    return Tile('%', "a tree", False, color=2)
+    return Tile('%', "a tree", False, False, color=2)
 
 
 def make_wall():
     """Create a wall tile."""
-    return Tile('#', "a wall", False)
+    return Tile('#', "a wall", False, False)
 
 
 def make_floor():
     """Create a floor tile."""
-    return Tile(',', "a floor", True)
+    return Tile(',', "a floor", True, True)

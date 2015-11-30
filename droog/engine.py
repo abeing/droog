@@ -139,6 +139,9 @@ class MonsterSpawner(actor.Actor):
 # On average, per how many tiles will an item of loot spawn.
 LOOT_SPARSENESS = 1000
 
+# What percentage of loot should be placed indoors?
+LOOT_INDOOR_BIAS = 90
+
 loot_chance = [(4, item.make_knife),
                (2, item.make_pistol),
                (1, item.make_porter),
@@ -148,25 +151,40 @@ loot_chance = [(4, item.make_knife),
 
 class LootPlacer(object):
     """Places loot into the game."""
-    def __init__(self):
+    def __init__(self, world):
         self.rarity_max = 0
         self.loot_table = []
         for rarity, factory in loot_chance:
             self.rarity_max += rarity
             self.loot_table.append((self.rarity_max, factory))
-        LOG.info("Created loot table: %r", self.loot_table)
+        LOG.debug("Created loot table: %r", self.loot_table)
+        # Create a list of indoor and outdoor locations.
+        self.indoor_locations = world.indoor_walkable_locations()
+        LOG.debug("Indoor locations are: %r", self.indoor_locations)
+        self.outdoor_locations = world.outdoor_walkable_locations()
+        LOG.debug("Outdoor locations are: %r", self.indoor_locations)
+        self._world = world
 
-    def populate(self, world):
+    def populate(self):
         """Place a random assortment of loot items into the world."""
-        loot_count = world.size_in_tiles() / LOOT_SPARSENESS
+        loot_count = self._world.size_in_tiles() / LOOT_SPARSENESS
         for item_id in xrange(loot_count):
             roll = random.randint(1, self.rarity_max)
-            LOG.info("Loot item %d, rolled %d.", item_id, roll)
+            LOG.debug("Loot item %d, rolled %d.", item_id, roll)
             for (target, factory) in self.loot_table:
                 if roll < target:
-                    loot_item = factory()
-                    LOG.info("Created a %r", loot_item)
+                    self.place_item(factory())
                     break
+
+    def place_item(self, loot):
+        """Place an item in the world."""
+        loc = None
+        if random.randint(1, 100) < LOOT_INDOOR_BIAS:
+            loc = random.choice(self.indoor_locations)
+        else:
+            loc = random.choice(self.outdoor_locations)
+        self._world.add_item(loc, loot)
+        LOG.info("Placed loot %r at %r", loot, loc)
 
 class Generator(object):
     """Represents the end-game goal."""
