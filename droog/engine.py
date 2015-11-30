@@ -137,7 +137,7 @@ class MonsterSpawner(actor.Actor):
         return MONSTER_RESPAWN_FREQUENCY
 
 # On average, per how many tiles will an item of loot spawn.
-LOOT_SPARSENESS = 1000
+LOOT_SPARSENESS = 4000
 
 # What percentage of loot should be placed indoors?
 LOOT_INDOOR_BIAS = 90
