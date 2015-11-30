@@ -44,9 +44,11 @@ def new_game(ui_object):
     the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(240, 240)
     the.world._log()
-    spawner = engine.MonsterSpawner(the.world)
-    the.turn.add_actor(spawner)
-    spawner.populate()
+    monster_spawner = engine.MonsterSpawner(the.world)
+    the.turn.add_actor(monster_spawner)
+    monster_spawner.populate()
+    loot_placer = engine.LootPlacer()
+    loot_placer.populate(the.world)
 
 
 def end_game(ui_object):

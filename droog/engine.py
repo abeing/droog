@@ -26,6 +26,7 @@ import random
 import the
 import actor
 import creature
+import item
 
 LOG = logging.getLogger(__name__)
 
@@ -135,6 +136,37 @@ class MonsterSpawner(actor.Actor):
             LOG.info("Not spawning due to cap.")
         return MONSTER_RESPAWN_FREQUENCY
 
+# On average, per how many tiles will an item of loot spawn.
+LOOT_SPARSENESS = 1000
+
+loot_chance = [(4, item.make_knife),
+               (2, item.make_pistol),
+               (1, item.make_porter),
+               (10, item.make_clip),
+               (10, item.make_battery)]
+
+
+class LootPlacer(object):
+    """Places loot into the game."""
+    def __init__(self):
+        self.rarity_max = 0
+        self.loot_table = []
+        for rarity, factory in loot_chance:
+            self.rarity_max += rarity
+            self.loot_table.append((self.rarity_max, factory))
+        LOG.info("Created loot table: %r", self.loot_table)
+
+    def populate(self, world):
+        """Place a random assortment of loot items into the world."""
+        loot_count = world.size_in_tiles() / LOOT_SPARSENESS
+        for item_id in xrange(loot_count):
+            roll = random.randint(1, self.rarity_max)
+            LOG.info("Loot item %d, rolled %d.", item_id, roll)
+            for (target, factory) in self.loot_table:
+                if roll < target:
+                    loot_item = factory()
+                    LOG.info("Created a %r", loot_item)
+                    break
 
 class Generator(object):
     """Represents the end-game goal."""

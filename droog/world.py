@@ -138,6 +138,10 @@ class World(object):
         """Return the tile at the location."""
         return self.tiles[loc.row][loc.col]
 
+    def size_in_tiles(self):
+        """Return the size of the world in tiles."""
+        return self.rows * self.cols
+
     def glyph_at(self, loc):
         """Returns the world glyph and its color at the specified location.  If
         the location coordinates are out of bounds, returns a shield character.
