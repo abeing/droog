@@ -31,7 +31,7 @@ sudo pip install .
 To run without installing:
 
 ```
-python -m droog.main
+python -m droog.main [-n <character name>]
 ```
 
 Make sure that you are above the droog source directory.
