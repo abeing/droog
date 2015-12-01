@@ -429,6 +429,20 @@ class Curses(object):
         item = hero.inventory.pop(index)
         world.add_item(world.hero_location, item)
 
+    def wield(self, hero):
+        """Equip an item."""
+        self.draw_status(message="Wield what? '-' for nothing.")
+        alpha = self.input()
+        old_weapon = hero.weapon
+        if alpha == '-':
+            hero.wield(None)
+        else:
+            index = alpha_to_index(alpha)
+            item = hero.inventory.pop(index)
+            hero.wield(item)
+        if not old_weapon.virtual:
+            hero.inventory.append(old_weapon)
+
     def pickup(self, hero, world):
         """Pickup the item at the hero's feet."""
         item = world.get_item(world.hero_location)

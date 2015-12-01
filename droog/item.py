@@ -48,6 +48,7 @@ class Item(object):
         self.ammo_capacity = ammo_capacity
         self.ammo = ammo_capacity
         self.ammo_type = ammo_type
+        self.virtual = False
 
     @property
     def name(self):
@@ -110,4 +111,6 @@ def make_clip():
 
 def make_fists():
     """Retrun a fists item."""
-    return Item(',', 'fists', attack=attack_.make_unarmed())
+    fists = Item(',', 'fists', attack=attack_.make_unarmed())
+    fists.virtual = True
+    return fists

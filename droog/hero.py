@@ -58,6 +58,8 @@ class Hero(creature.Creature):
             self.ui.history(the.messages)
         if command == 'f':
             return self.ranged_attack()
+        if command == 'w':
+            self.ui.wield(self)
         if command == 'r':
             if self.weapon.ammo_capacity == self.weapon.ammo:
                 the.messages.add("Your magazine is already full.")
