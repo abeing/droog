@@ -66,6 +66,8 @@ class Hero(creature.Creature):
                 return 0
             if not self.weapon.reload(self.inventory):
                 the.messages.add("You do not have suitable ammo.")
+                return 0
+            the.messages.add("Weapon reloaded.")
         if command == 'q':
             self.is_dead = True
             self.end_reason = "commited suicide"
@@ -83,7 +85,7 @@ class Hero(creature.Creature):
 
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
-        if self.weapon.attack.range > 1:
+        if self.weapon.is_ranged:
             the.messages.add("Your %s in ineffective in a melee scuffle."
                              % (self.weapon.name))
             return 10
@@ -92,7 +94,7 @@ class Hero(creature.Creature):
 
     def ranged_attack(self):
         """Perform a ranged attack against a target."""
-        if self.weapon.attack.range == 1:
+        if not self.weapon.is_ranged:
             the.messages.add("You can't shoot %s." % (self.weapon))
             return 0
         if self.weapon.ammo_capacity and not self.weapon.ammo:

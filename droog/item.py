@@ -81,6 +81,12 @@ class Item(object):
                     return True
         return False
 
+    def is_ranged(self):
+        """Return true if this is a ranged wepaon."""
+        if self._attack.range > 1:
+            return True
+        return False
+
 
 def make_knife():
     """Create a knife object."""
