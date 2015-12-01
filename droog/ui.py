@@ -262,6 +262,7 @@ class Curses(object):
             self.hero_window.addstr(index, 0, line)
             index += 1
         index = self.draw_conditions(hero, index)
+        index = self.draw_equipment(hero.weapon, None, index + 1)
         index = self.draw_inventory(hero.inventory, index + 1)
         self.target_toprow = index + 1
         index = self.draw_targets(world.visible_monsters, self.target_toprow)
@@ -280,6 +281,14 @@ class Curses(object):
             self.hero_window.addstr(idx, 2, "Diseased", curses.color_pair(3))
             idx += 1
         return idx
+
+    def draw_equipment(self, weapon, armor, index):
+        """Draw the hero's equipped weapon and armor."""
+        self.hero_window.addstr(index, 0, 'W - %s' % (weapon.name))
+        if weapon.ammo_capacity:
+            self.hero_window.addstr(" [%d]" % (weapon.ammo))
+        self.hero_window.addstr(index + 1, 0, 'A - None')
+        return index + 2
 
     def draw_inventory(self, inventory, index):
         """Draw the hero's inventory in the hero screen."""

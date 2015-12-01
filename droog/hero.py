@@ -33,7 +33,7 @@ class Hero(creature.Creature):
         self.ui = user_interface
         self.is_hero = True
         self.msg = 0
-        self.weapon = attack.make_unarmed()
+        self.weapon = None
 
     def __repr__(self):
         return "the hero %s" % self.name
@@ -74,6 +74,12 @@ class Hero(creature.Creature):
             self.ui.help()
         return 0
 
+    def wield(self, weapon):
+        """Wield the specified weapon or None for unarmed attacks."""
+        self.weapon = weapon
+        if self.weapon == None:
+            self.weapon = attack.make_unarmed()
+
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
         ap_cost = combat.attack(self, target, self.weapon.attack)
@@ -100,7 +106,6 @@ class Hero(creature.Creature):
             self._dexterity = 3
         elif attrib_name == "halest":
             self._constitution = 3
-        self.inventory.append(weapon)
         self.weapon = weapon
         self.inventory.extend(items)
 
