@@ -106,3 +106,8 @@ def make_battery():
 def make_clip():
     """Create a 9mm pistol clip."""
     return Item('=', '9mm clip', ammo_type=9)
+
+
+def make_fists():
+    """Retrun a fists item."""
+    return Item(',', 'fists', attack=attack_.make_unarmed())

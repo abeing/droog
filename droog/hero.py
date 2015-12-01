@@ -21,7 +21,6 @@ from . import the
 from . import combat
 from . import creature
 from . import item
-from . import attack
 from . import actor
 
 
@@ -78,7 +77,7 @@ class Hero(creature.Creature):
         """Wield the specified weapon or None for unarmed attacks."""
         self.weapon = weapon
         if self.weapon == None:
-            self.weapon = attack.make_unarmed()
+            self.weapon = item.make_fists()
 
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
