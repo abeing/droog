@@ -111,6 +111,6 @@ def make_clip():
 
 def make_fists():
     """Retrun a fists item."""
-    fists = Item(',', 'fists', attack=attack_.make_unarmed())
+    fists = Item(',', 'fists', article="your", attack=attack_.make_unarmed())
     fists.virtual = True
     return fists

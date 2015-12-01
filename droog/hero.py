@@ -83,11 +83,18 @@ class Hero(creature.Creature):
 
     def melee_attack(self, target):
         """Performs a melee attack against the target."""
+        if self.weapon.attack.range > 1:
+            the.messages.add("Your %s in ineffective in a melee scuffle."
+                             % (self.weapon.name))
+            return 10
         ap_cost = combat.attack(self, target, self.weapon.attack)
         return ap_cost
 
     def ranged_attack(self):
         """Perform a ranged attack against a target."""
+        if self.weapon.attack.range == 1:
+            the.messages.add("You can't shoot %s." % (self.weapon))
+            return 0
         if self.weapon.ammo_capacity and not self.weapon.ammo:
             the.messages.add("Your weapon is out of ammo!")
             return 0
