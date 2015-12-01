@@ -18,9 +18,11 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 """Droog - a present-perfect post-apocalyptic roguelike"""
+import sys
+import getopt
+import logging
 import ui as _ui
 import world as _world
-import logging
 import hero as _hero
 import message
 import turn
@@ -35,11 +37,11 @@ LOG = logging.getLogger(__name__)
 EMPTY_STATUS = ""
 
 
-def new_game(ui_object):
+def new_game(ui_object, hero_name):
     """Creates a new game: the.turn, the.hero and the.world will be
     re-created."""
     the.turn = turn.Turn()
-    the.hero = _hero.Hero("Snaugh", ui_object)
+    the.hero = _hero.Hero(hero_name[:10], ui_object)
     the.turn.add_actor(the.hero)
     the.messages = message.Messages(turn=the.turn)
     the.world = _world.World(240, 240)
@@ -76,10 +78,19 @@ def refresh(ui_object):
     ui_object.draw_status(time=the.turn.current_time())
 
 
-def main():
+def main(argv):
     """Bootstraps a new game and cleans up after the game."""
+    hero_name = 'Snaugh'
+    try:
+        opts, args = getopt.getopt(argv, "n:")
+    except getopt.GetoptError:
+        print 'python -m droog.main'
+        system.exit(2)
+    for opt, arg in opts:
+        if opt == '-n':
+            hero_name = arg
     with _ui.Curses() as ui_object:
-        new_game(ui_object)
+        new_game(ui_object, hero_name)
         selected_build = ui_object.character_creation(
             english.CREATION_STORY, _hero.attrib_choices(),
             _hero.weapon_choices(), _hero.gear_choices())
@@ -95,4 +106,4 @@ def main():
         end_game(ui_object)
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
